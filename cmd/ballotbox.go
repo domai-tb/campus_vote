@@ -10,7 +10,6 @@ import (
 
 	"github.com/dgraph-io/badger"
 	"github.com/spf13/viper"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 	cfg "github.com/tendermint/tendermint/config"
 	tmflags "github.com/tendermint/tendermint/libs/cli/flags"
@@ -20,7 +19,7 @@ import (
 	"github.com/tendermint/tendermint/privval"
 	"github.com/tendermint/tendermint/proxy"
 
-	"github.com/domai-tb/campus_vote/internal/blockchain"
+	"github.com/domai-tb/campus_vote/internal/consensus"
 )
 
 var configFile string
@@ -41,7 +40,7 @@ func main() {
 	}
 
 	defer db.Close()
-	app := blockchain.NewKVStoreApplication(db)
+	app := consensus.NewKVStoreApplication(db)
 
 	node, err := newTendermint(app, configFile)
 	if err != nil {
