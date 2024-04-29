@@ -20,3 +20,6 @@ build/
 
 # Go workspace file
 go.work
+
+# Runtime Data
+node/
