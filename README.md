@@ -1,60 +1,63 @@
 # Campus Vote
 
-This is the project to implement a digital electoral directory for the student elections of Ruhr-University Bochum. This project is definitly not designed to be a digital voting system by itself. Campus Vote is just a centralisied voter registry.
+This project aims to develop a digital electoral directory for the student elections conducted at Ruhr-University Bochum. It is important to note that the scope of this initiative does not encompass the creation of a standalone digital voting system. Rather, Campus Vote serves as a centralized voter registry system.
 
-## Basic Structure
+## Requirements
 
-The system architecture uses the block chain technology to replicate, synchronize and cryptographically verifie the correctness of the voting log. Figure 1.1 visualize the system on an architectural view.  
+Drawing from the parliamentary procedures governing the organization of student elections at Ruhr-University Bochum and official documentation, several requirements must be met to achieve this goal.
+
+1.  It must be ensured that every vote is recorded and that multiple voting is excluded.
+2.  It must not be possible to draw any conclusions about the order in which eligible voters cast their votes from the registration of votes without knowing further information.
+3.  The time at which votes are recorded should be generalized to at least the morning or afternoon of a day.
+4.  The data must be consistent at all times when it can be accessed, and errors must be reliably identifiable. Data loss due to system crashes must be prevented.
+
+## Basic Architecture 
 
 ```mermaid
 ---
 title: "Fig. 1.1: System Architecture"
 ---
 flowchart LR
-    
-    VL{{Voting Log}}
-    VR{{Voter Registry}}
-    
-    VR -- Voter Data --> BB01 & BB02 & BB0N
-    BB01 & BB02 & BB0N <-- Vote --> VL
-
-    subgraph Block Chain Network
-        BB01([Ballot Box 01])
-        BB02([Ballot Box 02])
-        BB0N([Ballot Box N])
-
-        BB01 <-. synchronize .-> BB02 & BB0N
-        BB02 <-. synchronize .-> BB0N
+    subgraph BB01["Ballot Box 01"]
+        VR01[(Encrypted Voter Registry)]
+        BBC01{{Client}}
+        VR01 -- voter data --> BBC01
     end
+
+    subgraph BB02["Ballot Box 02"]
+        VR02[(Encrypted Voter Registry)]
+        BBC02{{Client}}
+        VR02 -- voter data --> BBC02
+    end
+
+    subgraph BBN["Ballot Box N"]
+        VRN[(Encrypted Voter Registry)]
+        BBCN{{Client}}
+        VRN -- voter data --> BBCN
+    end
+
+    subgraph EC["Election Committee"]
+        CVR[(Centralized Voter Registry)]
+        CVC{{Client}}
+        CVR -- voter data --> CVC
+    end
+
+    ER((Election Results))
+
+    BBC01 & BBC02 & BBCN --> ER --> CVC
+    CVR -- initinial sync --> BBC01 & BBC02 & BBCN
+
+    BB01 <-- sync --> BB02
+    BB02 <-- sync --> BBN
 ```
-
-The system has three major elements:
-* Voter Registry
-* Ballot Box
-* Voting Log
-
-The communication between these three elements is based on encrypted and authenticated mutual-TLS gRPC calls.  
 
 ### Voter Registry
 
-The voter registry holds the voters information in an electronical manner. So this is basically a digital version of the student register that is required to check if someone is allowed to vote. As a table, this database will look like this:
+The voter registry holds the voters information in an electronical manner. So this 
+is basically a digital version of the student register that is requireVorname check 
+if someone is allowed to vote. As a table, this database will look like thVorname
 
-| Name  | Martrikelnummer | Block Chain / Public Identifier      |
-| ----- | --------------- | ------------------------------------ |
-| str   | int             | SHA512(Name, Martrikelnummer, Nonce) |
-
-The name and the student ID is required to check if someone is allowed to vote at our university. The public identifier is used within the block chain and public voting log and is build a hash value over the name, student ID and randome nonce. The nonce is generated initially at setting up the voter registry and used to decouple the personal identifiers from the block chain identifier. The randomness of the nonce gurantees that no one is able to get the information if someone voted or not from the public voting log or block chain. 
-
-### Voting Log
-
-The voting log is the public database to gurantee transperency and traceability of the election. If someone votes on any ballot box the block chain / public identifier is stored together with a boolean value and a timestamp within this log. Remind, the public identifier is not retraceable to the personal information. As a table, the database will look like this:
-
-| Block Chain / Public Identifier      | Voted | Timestamp        |
-| ------------------------------------ | ----- | ---------------- |
-| SHA512(Name, Martrikelnummer, Nonce) | bool  | YYYY-MM-DD_HH:MM |
-
-The voting log is either initially created to hold all public identifiers together with default entries or received by the ballot boxes. So any interessted person is able to verify the created block chain of the election bei calculating the block chain by itself. The block chain is builed over all voted (voted atribute is `true`) public identifiers together with the timestamp. 
-
-### Ballot Box
-
-The ballot box is the system that is managed by the election volunteers. They receive the information from the voter registry to check the voters physical documents and set the voted attribut to `true`. The block chain is builed on each ballot seperatly and after each vote (aka. block) synchronized. To build the block chain, [tendermint](https://docs.tendermint.com/) is used.
+| Vorname | Name  | Fakultät  | Wahlurne | Martrikelnummer |
+| ------- | ----- | --------- | -------- | --------------- |
+| str     | str   | int       | int      | int             |
+---
