@@ -1,21 +1,42 @@
-# If you prefer the allow list template instead of the deny list, see community template:
-# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
+# Flutter
+#
 
-# Test binary, built with `go test -c`
-*.test
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
 
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
 
-# Go workspace file
-go.work
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json

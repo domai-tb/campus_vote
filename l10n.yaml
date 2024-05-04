@@ -1,0 +1,3 @@
+arb-dir: lib/src/localization
+template-arb-file: campus_vote_en.arb
+output-localization-file: campus_vote_localizations.dart

@@ -1,0 +1,18 @@
+{
+  "appTitle": "Campus Vote",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "dashboardTitle": "Dashboard",
+  "@dashboardTitle": {
+    "description": "The title of the dashboard view"
+  },
+  "setupTitle": "Setup",
+  "@setupTitle": {
+    "description": "The title of the setup view"
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "The title of the settings view"
+  }
+}
