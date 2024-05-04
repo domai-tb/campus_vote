@@ -10,3 +10,7 @@ Drawing from the parliamentary procedures governing the organization of student 
 2.  It must not be possible to draw any conclusions about the order in which eligible voters cast their votes from the registration of votes without knowing further information.
 3.  The time at which votes are recorded should be generalized to at least the morning or afternoon of a day.
 4.  The data must be consistent at all times when it can be accessed, and errors must be reliably identifiable. Data loss due to system crashes must be prevented.
+
+## Need to install:
+
+`go install src.techknowlogick.com/xgo@latest`

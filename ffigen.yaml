@@ -1,0 +1,27 @@
+# Run with `flutter pub run ffigen --config ffigen.yaml`.
+name: CampusVoteDB
+description: Bindings for database libary.
+
+# Sort the bindings according to name.
+sort: true
+
+# Output path of the generated bindings.
+output:
+  bindings: "gui/db.g.dart"
+
+# The header entry-points and include-directives. Glob syntax is allowed.
+# If include-directives are not specified ffigen will generate everything
+# directly/transitively under the entry-points.
+headers:
+  entry-points:
+    - "libs/db.h"
+
+# Extract documentation comments for declarations.
+comments:
+  style: any
+  length: full
+
+# Raw header of the file, pasted as-it-is.
+# Diaables analysis rules.
+preamble: |
+  // ignore_for_file: camel_case_types, non_constant_identifier_names

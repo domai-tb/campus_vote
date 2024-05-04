@@ -1,4 +1,4 @@
-import 'package:campus_vote/src/settings/settings_service.dart';
+import 'settings_service.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 

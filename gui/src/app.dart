@@ -1,6 +1,6 @@
-import 'package:campus_vote/src/election/election_view.dart';
-import 'package:campus_vote/src/settings/settings_controller.dart';
-import 'package:campus_vote/src/settings/settings_view.dart';
+import 'election/election_view.dart';
+import 'settings/settings_controller.dart';
+import 'settings/settings_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

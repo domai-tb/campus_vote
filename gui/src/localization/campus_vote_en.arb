@@ -14,5 +14,9 @@
   "settingsTitle": "Settings",
   "@settingsTitle": {
     "description": "The title of the settings view"
+  },
+  "votersTitle": "Voters",
+  "@votersTitle": {
+    "description": "the title of the voter registry view"
   }
 }

@@ -11,6 +11,7 @@ environment:
 
 dependencies:
   easy_sidemenu: ^0.6.0
+  ffigen: ^11.0.0
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -32,3 +33,13 @@ flutter:
   assets:
     # Add assets from the images directory to the application.
     - assets/images/
+
+  # GoLang FFI
+  plugin:
+    platforms:
+      linux:
+        ffiPlugin: true
+      macos:
+        ffiPlugin: true
+      windows:
+        ffiPlugin: true

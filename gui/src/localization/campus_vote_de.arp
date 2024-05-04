@@ -14,5 +14,9 @@
   "settingsTitle": "Einstellungen",
   "@settingsTitle": {
     "description": "Titel der Seite um Einstellungen an Campus Vote forzunehmen"
+  },
+  "votersTitle": "Wählervzeichnis",
+  "@votersTitle": {
+    "description": "Titel der Seite um das Wählerverzeichnis zu verwalten"
   }
 }

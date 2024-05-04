@@ -1,5 +1,7 @@
-import 'package:campus_vote/src/settings/settings_controller.dart';
-import 'package:campus_vote/src/settings/settings_view.dart';
+import 'widgets/setup_widget.dart';
+import 'widgets/voter_registry_widget.dart';
+import '../settings/settings_controller.dart';
+import '../settings/settings_view.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
@@ -58,6 +60,13 @@ class _ElectionViewState extends State<ElectionView> {
                   icon: const Icon(Icons.add_circle_outline),
                 ),
                 SideMenuItem(
+                  title: AppLocalizations.of(context)!.votersTitle,
+                  onTap: (index, _) {
+                    sideMenu.changePage(index);
+                  },
+                  icon: const Icon(Icons.group_outlined),
+                ),
+                SideMenuItem(
                   title: AppLocalizations.of(context)!.settingsTitle,
                   icon: const Icon(Icons.settings_outlined),
                   onTap: (_, __) =>
@@ -96,14 +105,8 @@ class _ElectionViewState extends State<ElectionView> {
                       ),
                     ),
                   ),
-                  Container(
-                    child: const Center(
-                      child: Text(
-                        'Users',
-                        style: TextStyle(fontSize: 35),
-                      ),
-                    ),
-                  ),
+                  const ElectionSetup(),
+                  VoterRegistry(),
                 ],
               ),
             ),
