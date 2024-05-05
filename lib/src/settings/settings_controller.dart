@@ -1,3 +1,6 @@
+import 'package:campus_vote/models/db_conf.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'settings_service.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -53,5 +56,29 @@ class SettingsController with ChangeNotifier {
     // Persist the changes to a local database or the internet using the
     // SettingService.
     await _settingsService.updateThemeMode(newThemeMode);
+  }
+
+  Future<void> setDBConf(CampusVoteDBConf conf) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', conf.username);
+    await prefs.setString('host', conf.host);
+    await prefs.setInt('port', conf.port);
+    await prefs.setString('database', conf.database);
+    await prefs.setString('rootCert', conf.rootCert);
+    await prefs.setString('clientCert', conf.clientCert);
+    await prefs.setString('clientKey', conf.clientKey);
+  }
+
+  Future<CampusVoteDBConf> getDBConf() async {
+    final prefs = await SharedPreferences.getInstance();
+    return CampusVoteDBConf(
+      username: prefs.getString('username') ?? '',
+      host: prefs.getString('host') ?? '',
+      port: prefs.getInt('port') ?? -1,
+      database: prefs.getString('database') ?? '',
+      rootCert: prefs.getString('rootCert') ?? '',
+      clientCert: prefs.getString('clientCert') ?? '',
+      clientKey: prefs.getString('clientKey') ?? '',
+    );
   }
 }

@@ -17,6 +17,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   package_info_plus: ^8.0.0
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

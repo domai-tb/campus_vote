@@ -1,4 +1,5 @@
-import 'settings_controller.dart';
+import 'package:campus_vote/src/settings/settings_controller.dart';
+import 'package:campus_vote/src/settings/widgets/db_conf_widget.dart';
 import 'package:flutter/material.dart';
 
 /// Displays the various settings that can be customized by the user.
@@ -24,7 +25,7 @@ class SettingsView extends StatelessWidget {
         //
         // When a user selects a theme from the dropdown list, the
         // SettingsController is updated, which rebuilds the MaterialApp.
-        child: Column(
+        child: ListView(
           children: [
             DropdownButton<ThemeMode>(
               // Read the selected themeMode from the controller
@@ -46,6 +47,8 @@ class SettingsView extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 20),
+            CampusVoteDBConfForm(controller: controller),
             const SizedBox(height: 20),
             Text('Version: ${controller.packageInfo.version}'),
           ],

@@ -7,14 +7,14 @@ sort: true
 
 # Output path of the generated bindings.
 output:
-  bindings: "gui/db.g.dart"
+  bindings: "lib/ffi/db.g.dart"
 
 # The header entry-points and include-directives. Glob syntax is allowed.
 # If include-directives are not specified ffigen will generate everything
 # directly/transitively under the entry-points.
 headers:
   entry-points:
-    - "libs/db.h"
+    - "linux/campus_vote/db/db-linux-amd64.h"
 
 # Extract documentation comments for declarations.
 comments:
@@ -24,4 +24,4 @@ comments:
 # Raw header of the file, pasted as-it-is.
 # Diaables analysis rules.
 preamble: |
-  // ignore_for_file: camel_case_types, non_constant_identifier_names
+  // ignore_for_file: camel_case_types, non_constant_identifier_names, unused_element

@@ -14,3 +14,7 @@ Drawing from the parliamentary procedures governing the organization of student 
 ## Need to install:
 
 `go install src.techknowlogick.com/xgo@latest`
+
+## Need fot FFI:
+
+`CPATH="/usr/lib/clang/17/include/"`

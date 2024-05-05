@@ -40,3 +40,8 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+#
+#   CoackRoach DB
+#
+cockroach/

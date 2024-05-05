@@ -1,6 +1,6 @@
-import 'src/app.dart';
-import 'src/settings/settings_controller.dart';
-import 'src/settings/settings_service.dart';
+import 'package:campus_vote/src/app.dart';
+import 'package:campus_vote/src/settings/settings_controller.dart';
+import 'package:campus_vote/src/settings/settings_service.dart';
 import 'package:flutter/material.dart';
 
 void main() async {

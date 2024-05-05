@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ElectionSetup extends StatelessWidget {
-  const ElectionSetup({Key? key}) : super(key: key);
+  const ElectionSetup({super.key});
 
   @override
   Widget build(BuildContext context) {
