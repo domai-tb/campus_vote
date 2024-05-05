@@ -1,4 +1,4 @@
-import 'package:campus_vote/models/db_conf.dart';
+import 'package:campus_vote/src/models/db_conf.dart';
 import 'package:campus_vote/src/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 
