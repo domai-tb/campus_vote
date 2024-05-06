@@ -15,9 +15,12 @@ func main() {
 		StudentId: 10801910718,
 		BallotBox: "MC",
 		Faculity: "Informatik",
+		Voted: false,
 	}
 
-	db.CreateNewVoter(voter)
+	if err := db.CreateNewVoter(voter); err != nil {
+		fmt.Println(err)
+	}
 
 	student, err := db.GetVoterByStudentId(10801910718)
 	if err != nil {

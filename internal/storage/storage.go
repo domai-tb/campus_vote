@@ -33,8 +33,7 @@ func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error{
 		log.Fatal(err)
 	}
 
-	_, err = cvdb.GetVoterByStudentId(voter.StudentId)
-	if err != nil {
+	if _, err = cvdb.GetVoterByStudentId(voter.StudentId); err == nil {
 		return fmt.Errorf("voter allready in database")
 	}
 	
@@ -53,7 +52,7 @@ func (cvdb *CampusVoteStorage) GetVoterByStudentId(id int) (Voter, error) {
 	var tmp EncVoter
 	db.Model(&EncVoter{StudentId: cvdb.encrypt(strconv.Itoa(id))}).First(&tmp)
 
-	result := cvdb.DecryptVoter(tmp)
+	result, _ := cvdb.DecryptVoter(tmp)
 
 	if result.StudentId == id {
 		return result, nil

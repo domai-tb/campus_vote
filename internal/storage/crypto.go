@@ -4,8 +4,8 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"fmt"
 	"io"
-	"strconv"
 )
 
 func (cvdb *CampusVoteStorage) encrypt(plaintext string) []byte {
@@ -22,43 +22,23 @@ func (cvdb *CampusVoteStorage) encrypt(plaintext string) []byte {
 	return cvdb.cipher.Seal(nonce, nonce, []byte(plaintext), nil)
 }
 
-func (cvdb *CampusVoteStorage) decrypt(ciphertext []byte) string {
+func (cvdb *CampusVoteStorage) decrypt(ciphertext []byte) (string, error) {
+
+	if len(ciphertext) <= cvdb.cipher.NonceSize() {
+		return "", fmt.Errorf("malformed ciphertext")
+	}
+
 	nonceSize := cvdb.cipher.NonceSize()
 	nonce, data := ciphertext[:nonceSize], ciphertext[nonceSize:]
 
 	//Decrypt the data
 	plaintext, err := cvdb.cipher.Open(nil, nonce, data, nil)
 	if err != nil {
-		panic(err.Error())
+		return "", fmt.Errorf("failed to decrypt ciphertext")
 	}
 
-	return string(plaintext)
+	return string(plaintext), nil
 
-}
-
-func (cvdb *CampusVoteStorage) EncryptVoter(v Voter) EncVoter {
-	return EncVoter{
-		Firstname: cvdb.encrypt(v.Firstname),
-		Lastname: cvdb.encrypt(v.Lastname),
-		StudentId: cvdb.encrypt(strconv.Itoa(v.StudentId)),
-		BallotBox: cvdb.encrypt(v.BallotBox),
-		Faculity: cvdb.encrypt(v.Faculity),
-	}
-}
-
-func (cvdb *CampusVoteStorage) DecryptVoter(v EncVoter) Voter {
-	id, err := strconv.Atoi(cvdb.decrypt((v.StudentId)))
-	if err != nil {
-		panic(err)
-	}
-	
-	return Voter{
-		Firstname: cvdb.decrypt(v.Firstname),
-		Lastname: cvdb.decrypt(v.Lastname),
-		StudentId: id,
-		BallotBox: cvdb.decrypt(v.BallotBox),
-		Faculity: cvdb.decrypt(v.Faculity),
-	}
 }
 
 func createCipher(key [32]byte) cipher.AEAD {
