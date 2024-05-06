@@ -1,4 +1,4 @@
-package models
+package storage
 
 type Voter struct {
 	Firstname string

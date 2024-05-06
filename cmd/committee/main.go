@@ -3,22 +3,21 @@ package main
 import (
 	"fmt"
 
-	"github.com/domai-tb/campus_vote/internal/db"
-	"github.com/domai-tb/campus_vote/internal/models"
+	"github.com/domai-tb/campus_vote/internal/storage"
 )
 
 func main() {
-	db := db.New(*models.DefaultDBConfig(), "1234")
+	db := storage.New(*storage.DefaultDBConfig(), "1234")
 
-	// voter := models.Voter{
-	// 	Firstname: "Tim",
-	// 	Lastname: "Barsch",
-	// 	StudentId: 10801910718,
-	// 	BallotBox: "MC",
-	// 	Faculity: "Informatik",
-	// }
+	voter := storage.Voter{
+		Firstname: "Tim",
+		Lastname: "Barsch",
+		StudentId: 10801910718,
+		BallotBox: "MC",
+		Faculity: "Informatik",
+	}
 
-	// db.CreateNewVoter(voter)
+	db.CreateNewVoter(voter)
 
 	student, err := db.GetVoterByStudentId(10801910718)
 	if err != nil {

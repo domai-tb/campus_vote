@@ -1,4 +1,4 @@
-package db
+package storage
 
 import (
 	"crypto/cipher"
@@ -9,27 +9,25 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-
-	"github.com/domai-tb/campus_vote/internal/models"
 )
 
-type CampusVoteDB struct {
-	conf models.DBConfig
+type CampusVoteStorage struct {
+	conf DBConfig
 	cipher cipher.AEAD
 }
 
-func New(conf models.DBConfig, password string) *CampusVoteDB {	
+func New(conf DBConfig, password string) *CampusVoteStorage {	
 	// init crypto
 	cipher := createCipher(sha256.Sum256([]byte(password)))
 
 	// init database
 	db := getCockroachDB(conf.GetConnectionString())
-	db.AutoMigrate(&models.EncVoter{})
+	db.AutoMigrate(&EncVoter{})
 
-	return &CampusVoteDB{conf: conf, cipher: cipher}
+	return &CampusVoteStorage{conf: conf, cipher: cipher}
 }
 
-func (cvdb *CampusVoteDB) CreateNewVoter(voter models.Voter) error{
+func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error{
 	db, err := gorm.Open(postgres.Open(cvdb.conf.GetConnectionString()), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
@@ -46,14 +44,14 @@ func (cvdb *CampusVoteDB) CreateNewVoter(voter models.Voter) error{
 	return nil
 }
 
-func (cvdb *CampusVoteDB) GetVoterByStudentId(id int) (models.Voter, error) {
+func (cvdb *CampusVoteStorage) GetVoterByStudentId(id int) (Voter, error) {
 	db, err := gorm.Open(postgres.Open(cvdb.conf.GetConnectionString()), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var tmp models.EncVoter
-	db.Model(&models.EncVoter{StudentId: cvdb.encrypt(strconv.Itoa(id))}).First(&tmp)
+	var tmp EncVoter
+	db.Model(&EncVoter{StudentId: cvdb.encrypt(strconv.Itoa(id))}).First(&tmp)
 
 	result := cvdb.DecryptVoter(tmp)
 
@@ -61,5 +59,14 @@ func (cvdb *CampusVoteDB) GetVoterByStudentId(id int) (models.Voter, error) {
 		return result, nil
 	}
 
-	return models.Voter{}, fmt.Errorf("could not found voter with id: %d", id)
+	return Voter{}, fmt.Errorf("could not found voter with id: %d", id)
+}
+
+func getCockroachDB(connectionString string) *gorm.DB {
+	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return db
 }

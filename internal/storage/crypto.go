@@ -1,14 +1,14 @@
-package db
+package storage
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
 	"crypto/rand"
 	"io"
 	"strconv"
-
-	"github.com/domai-tb/campus_vote/internal/models"
 )
 
-func (cvdb *CampusVoteDB) encrypt(plaintext string) []byte {
+func (cvdb *CampusVoteStorage) encrypt(plaintext string) []byte {
 
 	// Create a nonce. Nonce should be from GCM
 	nonce := make([]byte, cvdb.cipher.NonceSize())
@@ -22,7 +22,7 @@ func (cvdb *CampusVoteDB) encrypt(plaintext string) []byte {
 	return cvdb.cipher.Seal(nonce, nonce, []byte(plaintext), nil)
 }
 
-func (cvdb *CampusVoteDB) decrypt(ciphertext []byte) string {
+func (cvdb *CampusVoteStorage) decrypt(ciphertext []byte) string {
 	nonceSize := cvdb.cipher.NonceSize()
 	nonce, data := ciphertext[:nonceSize], ciphertext[nonceSize:]
 
@@ -36,8 +36,8 @@ func (cvdb *CampusVoteDB) decrypt(ciphertext []byte) string {
 
 }
 
-func (cvdb *CampusVoteDB) EncryptVoter(v models.Voter) models.EncVoter {
-	return models.EncVoter{
+func (cvdb *CampusVoteStorage) EncryptVoter(v Voter) EncVoter {
+	return EncVoter{
 		Firstname: cvdb.encrypt(v.Firstname),
 		Lastname: cvdb.encrypt(v.Lastname),
 		StudentId: cvdb.encrypt(strconv.Itoa(v.StudentId)),
@@ -46,17 +46,34 @@ func (cvdb *CampusVoteDB) EncryptVoter(v models.Voter) models.EncVoter {
 	}
 }
 
-func (cvdb *CampusVoteDB) DecryptVoter(v models.EncVoter) models.Voter {
+func (cvdb *CampusVoteStorage) DecryptVoter(v EncVoter) Voter {
 	id, err := strconv.Atoi(cvdb.decrypt((v.StudentId)))
 	if err != nil {
 		panic(err)
 	}
 	
-	return models.Voter{
+	return Voter{
 		Firstname: cvdb.decrypt(v.Firstname),
 		Lastname: cvdb.decrypt(v.Lastname),
 		StudentId: id,
 		BallotBox: cvdb.decrypt(v.BallotBox),
 		Faculity: cvdb.decrypt(v.Faculity),
 	}
+}
+
+func createCipher(key [32]byte) cipher.AEAD {
+	// Create a new cipher block from key
+	// Key in CampusVoteStorage has 32 byte => AES256
+	block, err := aes.NewCipher(key[:])
+	if err != nil {
+		panic(err)
+	}
+
+	// Create a new AES256 cipher and use GCM 
+	cipher, err := cipher.NewGCM(block)
+	if err != nil {
+		panic(err)
+	}
+
+	return cipher
 }
