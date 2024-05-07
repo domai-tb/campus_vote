@@ -11,11 +11,10 @@ func main() {
 
 	voter := storage.Voter{
 		Firstname: "Tim",
-		Lastname: "Barsch",
+		Lastname:  "Barsch",
 		StudentId: 10801910718,
 		BallotBox: "MC",
-		Faculity: "Informatik",
-		Voted: false,
+		Faculity:  "Informatik",
 	}
 
 	if err := db.CreateNewVoter(voter); err != nil {

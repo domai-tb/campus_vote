@@ -11,7 +11,7 @@ P = \033[0;35m	# Purple
 C = \033[0;36m	# Cyan
 N = \033[0m		# No Color
 
-cockroach-create:
+cockroach-create: check-requirements
 	@mkdir -p  $(CRDB_CERTS_DIR)
 	@echo -e "$PCreate the CA (Certificate Authority) certificate and key pair$N"
 	cockroach cert create-ca \
@@ -34,7 +34,7 @@ cockroach-create:
 		--lifetime 335h0m0s \
 		root
 
-cockroach-start-node:
+cockroach-start-node: check-requirements
 	@echo -e "$PStart the local node$N"
 	cockroach start \
 		--certs-dir=$(CRDB_CERTS_DIR) \
@@ -43,9 +43,16 @@ cockroach-start-node:
 		--http-addr=127.0.0.1:8080 \
 		--join=127.0.0.1:26257
 
-cockroach-init:
-	@echo -e "$PTry to initialize coackroach node$N"
+cockroach-init: check-requirements
+	@echo -e "$PTry to initialize cockroach node$N"
 	cockroach init --certs-dir=$(CRDB_CERTS_DIR) --host=127.0.0.1:26257
+
+check-requirements:
+	@if ! command -v cockroach; then \
+	    echo -e "$RCockRoachDB is not installed. Please install it.$N\n"; \
+		echo -e "Checkout:  https://www.cockroachlabs.com/docs/stable/install-cockroachdb-linux.html\n"; \
+	    exit 1; \
+	fi
 
 clean:
 	rm -rf $(CRDB_ROOT_DIR)

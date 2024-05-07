@@ -11,10 +11,69 @@ Drawing from the parliamentary procedures governing the organization of student 
 3.  The time at which votes are recorded should be generalized to at least the morning or afternoon of a day.
 4.  The data must be consistent at all times when it can be accessed, and errors must be reliably identifiable. Data loss due to system crashes must be prevented.
 
-## Need to install:
+## System Architecture & Design 
 
-`go install src.techknowlogick.com/xgo@latest`
+The election is designed in a peer-to-peer design. Each ballotbox and the central election committee has a local database (based on [CockRoachDB](https://github.com/cockroachdb/cockroach)) that sync with each other node. The privilidges of ballotboxes and the election committee nodes differ in the way how they insert data.
 
-## Need fot FFI:
+```mermaid
+flowchart LR
+    BB1(["BallotBox 1"])
+    BB2(["BallotBox 2"])
+    BB3(["BallotBox 3"])
+    BBN(["BallotBox N"])
+    EC{{"Election Committee"}}
 
-`CPATH="/usr/lib/clang/17/include/"`
+    BB1 <-.sync.-> BB2
+    BB1 <-.sync.-> EC
+    BB1 <-.sync.-> BB3
+    BB2 <-.sync.-> BBN
+    EC <-.sync.-> BBN
+    BB3 <-.sync.-> BBN
+
+    BB2 <-.sync.-> EC
+    EC <-.sync.-> BB3
+```
+
+### BallotBox
+
+Ballotboxes are the decentral points the voters insert there choice.
+
+```mermaid
+flowchart LR
+    subgraph BB["BallotBox"]
+        subgraph CR1["CockRoachDB"]
+            R{{"Voter Registry Table"}}
+            V{{"Voted Table"}}
+        end
+
+        API(["BallotBox API"])
+        GUI(["GUI"]) 
+    end
+
+    R -.read voter data.-> API
+    V -.check allready voted.-> API   
+    API -.set voted status.-> V
+
+    API <--> GUI   
+```
+
+### Election Committee
+
+```mermaid
+flowchart LR
+    subgraph BB["BallotBox"]
+        subgraph CR1["CockRoachDB"]
+            R{{"Voter Registry Table"}}
+            V{{"Voted Table"}}
+        end
+
+        API(["BallotBox API"])
+        GUI(["GUI"]) 
+    end
+
+    R -.read voter data.-> API
+    API -.initially set.-> R
+    V -.check allready voted.-> API   
+
+    API <--> GUI   
+```

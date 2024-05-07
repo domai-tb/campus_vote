@@ -12,22 +12,23 @@ import (
 )
 
 type CampusVoteStorage struct {
-	conf DBConfig
+	conf   DBConfig
 	cipher cipher.AEAD
 }
 
-func New(conf DBConfig, password string) *CampusVoteStorage {	
+func New(conf DBConfig, password string) *CampusVoteStorage {
 	// init crypto
 	cipher := createCipher(sha256.Sum256([]byte(password)))
 
 	// init database
 	db := getCockroachDB(conf.GetConnectionString())
 	db.AutoMigrate(&EncVoter{})
+	db.AutoMigrate(&EncVoted{})
 
 	return &CampusVoteStorage{conf: conf, cipher: cipher}
 }
 
-func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error{
+func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error {
 	db, err := gorm.Open(postgres.Open(cvdb.conf.GetConnectionString()), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
@@ -36,7 +37,7 @@ func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error{
 	if _, err = cvdb.GetVoterByStudentId(voter.StudentId); err == nil {
 		return fmt.Errorf("voter allready in database")
 	}
-	
+
 	envVoter := cvdb.EncryptVoter(voter)
 	db.Create(envVoter)
 
