@@ -29,12 +29,9 @@ func New(conf DBConfig, password string) *CampusVoteStorage {
 }
 
 func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error {
-	db, err := gorm.Open(postgres.Open(cvdb.conf.GetConnectionString()), &gorm.Config{})
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := getCockroachDB(cvdb.conf.GetConnectionString())
 
-	if _, err = cvdb.GetVoterByStudentId(voter.StudentId); err == nil {
+	if _, err := cvdb.GetVoterByStudentId(voter.StudentId); err == nil {
 		return fmt.Errorf("voter allready in database")
 	}
 
@@ -45,15 +42,13 @@ func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error {
 }
 
 func (cvdb *CampusVoteStorage) GetVoterByStudentId(id int) (Voter, error) {
-	db, err := gorm.Open(postgres.Open(cvdb.conf.GetConnectionString()), &gorm.Config{})
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := getCockroachDB(cvdb.conf.GetConnectionString())
 
 	var tmp EncVoter
-	db.Model(&EncVoter{StudentId: cvdb.encrypt(strconv.Itoa(id))}).First(&tmp)
+	db.Where("student_id = ?", cvdb.encryptWithoutNonce(strconv.Itoa(id))).First(&tmp)
 
 	result, _ := cvdb.DecryptVoter(tmp)
+	fmt.Printf("Result of search for %d: %v\n", id, result)
 
 	if result.StudentId == id {
 		return result, nil
@@ -69,4 +64,23 @@ func getCockroachDB(connectionString string) *gorm.DB {
 	}
 
 	return db
+}
+
+func (cvdb *CampusVoteStorage) SetVoterAsVoted(v Voter) {
+	db := getCockroachDB(cvdb.conf.GetConnectionString())
+	db.Create(cvdb.EncryptVoterStatus(v))
+}
+
+func (cvdb *CampusVoteStorage) CheckVoterStatus(v Voter) (bool, error) {
+	db := getCockroachDB(cvdb.conf.GetConnectionString())
+
+	var tmp EncVoted
+	db.Where("student_id = ?", cvdb.encryptWithoutNonce(strconv.Itoa(v.StudentId))).First(&tmp)
+
+	vstatus, err := cvdb.DecryptVoterStatus(tmp)
+	if err != nil {
+		return true, fmt.Errorf("failed to decrypt voter status: %w", err)
+	}
+
+	return vstatus.Status, nil
 }

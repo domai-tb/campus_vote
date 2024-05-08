@@ -16,9 +16,14 @@ func (cvdb *CampusVoteStorage) encrypt(plaintext string) []byte {
 		panic(err)
 	}
 
-	// Since we don't want to save the nonce somewhere else in this case, 
-	// we add it as a prefix to the encrypted data. The first nonce argument 
+	// Since we don't want to save the nonce somewhere else in this case,
+	// we add it as a prefix to the encrypted data. The first nonce argument
 	// in Seal is the prefix.
+	return cvdb.cipher.Seal(nonce, nonce, []byte(plaintext), nil)
+}
+
+func (cvdb *CampusVoteStorage) encryptWithoutNonce(plaintext string) []byte {
+	nonce := make([]byte, cvdb.cipher.NonceSize())
 	return cvdb.cipher.Seal(nonce, nonce, []byte(plaintext), nil)
 }
 
@@ -49,7 +54,7 @@ func createCipher(key [32]byte) cipher.AEAD {
 		panic(err)
 	}
 
-	// Create a new AES256 cipher and use GCM 
+	// Create a new AES256 cipher and use GCM
 	cipher, err := cipher.NewGCM(block)
 	if err != nil {
 		panic(err)
