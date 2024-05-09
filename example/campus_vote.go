@@ -11,50 +11,50 @@ var LIST_OF_VOTERS = [...]storage.Voter{
 		StudentId: 10800000000,
 		Firstname: "Olaf",
 		Lastname: "Scholz",
-		BallotBox: "MC",
+		BallotBox: "Berlin",
 		Faculity: "Bundeskanzler",
 	},
 	{
 		StudentId: 10800000001,
-		Firstname: "Patrick",
-		Lastname: "Walkowiak",
-		BallotBox: "MC",
+		Firstname: "Gustav",
+		Lastname: "Braun",
+		BallotBox: "NB",
 		Faculity: "Physik",
 	},
 	{
 		StudentId: 10800000002,
-		Firstname: "Tim",
-		Lastname: "Barsch",
+		Firstname: "Jens",
+		Lastname: "Mett",
 		BallotBox: "MC",
 		Faculity: "Informatik",
 	},
 	{
 		StudentId: 10800000003,
-		Firstname: "Ron",
-		Lastname: "Agethen",
-		BallotBox: "MC",
+		Firstname: "Ronald",
+		Lastname: "McDonald",
+		BallotBox: "ND",
 		Faculity: "Biologie",
 	},
 	{
 		StudentId: 10800000004,
-		Firstname: "Elisabeth",
-		Lastname: "Tillbürger",
-		BallotBox: "MC",
+		Firstname: "Tilli",
+		Lastname: "Billi",
+		BallotBox: "IA",
 		Faculity: "Geographie",
 	},
 	{
 		StudentId: 10800000005,
-		Firstname: "Hendrik",
-		Lastname: "Meinert",
-		BallotBox: "MC",
-		Faculity: "Physik",
+		Firstname: "Rolando",
+		Lastname: "Michelanchilo",
+		BallotBox: "GD",
+		Faculity: "Jura",
 	},
 	{
 		StudentId: 10800000006,
 		Firstname: "Robin",
-		Lastname: "Wegener",
-		BallotBox: "MC",
-		Faculity: "Phylospohie",
+		Lastname: "Grumelberg",
+		BallotBox: "GA",
+		Faculity: "Philosophie",
 	},
 }
 
@@ -81,10 +81,15 @@ func main() {
 	}
 
 	// Ongoing election...
+	fmt.Printf("\n === student election === \n")
 	for i, voter := range LIST_OF_VOTERS {
-		if i%2 == 0 {
+		if i%2 != 0 {
 			// Ever second student votes!! <3
-			electionStorage.SetVoterAsVoted(voter)
+			if err := electionStorage.SetVoterAsVoted(voter); err != nil {
+				fmt.Println(err) // voter already voted
+			} else {
+				fmt.Printf("%s %s (%d) votes!\n", voter.Firstname, voter.Lastname, voter.StudentId)
+			}
 		}
 	}
 
