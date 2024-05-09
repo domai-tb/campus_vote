@@ -21,7 +21,17 @@ type EncVoter struct {
 	Faculity  []byte
 }
 
-func (cvdb *CampusVoteStorage) EncryptVoter(v Voter) EncVoter {
+type VoterStatus struct {
+	StudentId int
+	Status    bool
+}
+
+type EncVoterStatus struct {
+	StudentId []byte
+	Status    []byte
+}
+
+func (cvdb *CampusVoteStorage) encryptVoter(v Voter) EncVoter {
 	return EncVoter{
 		Firstname: cvdb.encrypt(v.Firstname),
 		Lastname:  cvdb.encrypt(v.Lastname),
@@ -31,7 +41,7 @@ func (cvdb *CampusVoteStorage) EncryptVoter(v Voter) EncVoter {
 	}
 }
 
-func (cvdb *CampusVoteStorage) DecryptVoter(v EncVoter) (Voter, error) {
+func (cvdb *CampusVoteStorage) decryptVoter(v EncVoter) (Voter, error) {
 
 	strId, err := cvdb.decrypt((v.StudentId))
 	if err != nil {
@@ -72,46 +82,36 @@ func (cvdb *CampusVoteStorage) DecryptVoter(v EncVoter) (Voter, error) {
 	}, nil
 }
 
-type Voted struct {
-	StudentId int
-	Status    bool
-}
-
-type EncVoted struct {
-	StudentId []byte
-	Status    []byte
-}
-
-func (cvdb *CampusVoteStorage) EncryptVoterStatus(v Voter) EncVoted {
-	return EncVoted{
+func (cvdb *CampusVoteStorage) encryptVoterStatus(v Voter) EncVoterStatus {
+	return EncVoterStatus{
 		StudentId: cvdb.encryptWithoutNonce(strconv.Itoa(v.StudentId)),
 		Status:    cvdb.encrypt("true"),
 	}
 }
 
-func (cvdb *CampusVoteStorage) DecryptVoterStatus(v EncVoted) (Voted, error) {
+func (cvdb *CampusVoteStorage) decryptVoterStatus(v EncVoterStatus) (VoterStatus, error) {
 
 	strId, err := cvdb.decrypt(v.StudentId)
 	if err != nil {
-		return Voted{}, fmt.Errorf("failed to decrypt voter status: %w", err)
+		return VoterStatus{}, fmt.Errorf("failed to decrypt voter status: %w", err)
 	}
 
 	id, err := strconv.Atoi(strId)
 	if err != nil {
-		return Voted{}, fmt.Errorf("failed to decode studentId: %w", err)
+		return VoterStatus{}, fmt.Errorf("failed to decode studentId: %w", err)
 	}
 
 	strStatus, err := cvdb.decrypt(v.Status)
 	if err != nil {
-		return Voted{}, fmt.Errorf("failed to decrypt voter status: %w", err)
+		return VoterStatus{}, fmt.Errorf("failed to decrypt voter status: %w", err)
 	}
 
 	status, err := strconv.ParseBool(strStatus)
 	if err != nil {
-		return Voted{}, fmt.Errorf("failed to decode voter status: %w", err)
+		return VoterStatus{}, fmt.Errorf("failed to decode voter status: %w", err)
 	}
 
-	return Voted{
+	return VoterStatus{
 		StudentId: id,
 		Status:    status,
 	}, nil
