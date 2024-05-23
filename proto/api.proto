@@ -1,0 +1,29 @@
+syntax = "proto3";
+option go_package = "pkg/api";
+
+message StudentId { int64 num = 1; }
+
+message Voter {
+  string firstname = 1;
+  string lastname = 2;
+  StudentId studentId = 3;
+  string ballotBox = 4;
+  string faculity = 5;
+}
+
+message StatusCode {
+  // -1 => something unexpected
+  // 0  => no error
+  // 1  => student allready exists
+  // 2  => student not found
+  // 3  => student allready voted
+  int32 status = 1;
+  string msg = 2;
+}
+
+service CampusVote {
+  rpc CreateVoter(Voter) returns (StatusCode);
+  rpc GetVoterByStudentId(StudentId) returns (Voter);
+  rpc SetVoterAsVoted(StudentId) returns (StatusCode);
+  rpc CheckVoterStatus(StudentId) returns (StatusCode);
+}

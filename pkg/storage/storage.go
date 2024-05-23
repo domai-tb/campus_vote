@@ -3,13 +3,14 @@ package storage
 import (
 	"crypto/cipher"
 	"crypto/sha256"
-	"fmt"
 	"log"
 	"strconv"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+
+	"github.com/domai-tb/campus_vote/pkg/core"
 )
 
 type CampusVoteStorage struct {
@@ -33,7 +34,7 @@ func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error {
 	db := getCockroachDB(cvdb.conf.GetConnectionString())
 
 	if _, err := cvdb.GetVoterByStudentId(voter.StudentId); err == nil {
-		return fmt.Errorf("voter allready in database")
+		return core.StudentAllreadyExistsError()
 	}
 
 	envVoter := cvdb.encryptVoter(voter)
@@ -54,7 +55,7 @@ func (cvdb *CampusVoteStorage) GetVoterByStudentId(id int) (Voter, error) {
 		return result, nil
 	}
 
-	return Voter{}, fmt.Errorf("could not found voter with id: %d", id)
+	return Voter{}, core.StudentNotFoundError()
 }
 
 func getCockroachDB(connectionString string) *gorm.DB {
@@ -74,11 +75,26 @@ func (cvdb *CampusVoteStorage) SetVoterAsVoted(v Voter) error {
 	status := cvdb.CheckVoterStatus(v)
 
 	if status {
-		return fmt.Errorf("voter %d already voted", v.StudentId)
+		return core.StudentAllreadyVotedError()
 	}
 
 	db.Create(cvdb.encryptVoterStatus(v))
 	return nil
+}
+
+func (cvdb *CampusVoteStorage) SetVoterAsVotedByStudentId(id int) error {
+	voter, err := cvdb.GetVoterByStudentId(id)
+
+	if err != nil {
+		cvErr, ok := err.(*core.CampusVoteError)
+		if ok {
+			return cvErr
+		} else {
+			return core.UnexpectedError(err.Error())
+		}
+	}
+
+	return cvdb.SetVoterAsVoted(voter)
 }
 
 func (cvdb *CampusVoteStorage) CheckVoterStatus(v Voter) bool {
@@ -89,10 +105,20 @@ func (cvdb *CampusVoteStorage) CheckVoterStatus(v Voter) bool {
 
 	vstatus, err := cvdb.decryptVoterStatus(tmp)
 	if err != nil {
-		// voter not in list of voted 
+		// voter not in list of voted
 		return false
 	}
 
 	// should always true
 	return vstatus.Status
+}
+
+func (cvdb *CampusVoteStorage) CheckVoterStatusByStudentId(id int) bool {
+	voter, err := cvdb.GetVoterByStudentId(id)
+
+	if err != nil {
+		return false
+	}
+
+	return cvdb.CheckVoterStatus(voter)
 }
