@@ -11,7 +11,7 @@ P = \033[0;35m	# Purple
 C = \033[0;36m	# Cyan
 N = \033[0m		# No Color
 
-cockroach-create: check-requirements
+cockroach-create-cluster: check-requirements
 	@mkdir -p  $(CRDB_CERTS_DIR)
 	@echo -e "$PCreate the CA (Certificate Authority) certificate and key pair$N"
 	cockroach cert create-ca \
@@ -43,7 +43,7 @@ cockroach-start-node: check-requirements
 		--http-addr=127.0.0.1:8080 \
 		--join=127.0.0.1:26257
 
-cockroach-init: check-requirements
+cockroach-init-cluster: check-requirements
 	@echo -e "$PTry to initialize cockroach node$N"
 	cockroach init --certs-dir=$(CRDB_CERTS_DIR) --host=127.0.0.1:26257
 
@@ -53,6 +53,9 @@ check-requirements:
 		echo -e "Checkout:  https://www.cockroachlabs.com/docs/stable/install-cockroachdb-linux.html\n"; \
 	    exit 1; \
 	fi
+
+cockroach-sql:
+	cockroach sql --certs-dir=$(CRDB_CERTS_DIR) --host=127.0.0.1:26257
 
 clean:
 	rm -rf $(CRDB_ROOT_DIR)

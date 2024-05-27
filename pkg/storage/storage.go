@@ -3,38 +3,39 @@ package storage
 import (
 	"crypto/cipher"
 	"crypto/sha256"
-	"log"
+	"slices"
 	"strconv"
-
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 
 	"github.com/domai-tb/campus_vote/pkg/core"
 )
 
 type CampusVoteStorage struct {
-	conf   DBConfig
+	conf   CampusVoteConf
 	cipher cipher.AEAD
 }
 
-func New(conf DBConfig, password string) *CampusVoteStorage {
+func New(conf CampusVoteConf, password string) *CampusVoteStorage {
 	// init crypto
 	cipher := createCipher(sha256.Sum256([]byte(password)))
 
 	// init database
-	db := getCockroachDB(conf.GetConnectionString())
-	db.AutoMigrate(&EncVoter{})
-	db.AutoMigrate(&EncVoterStatus{})
+	db := getCockroachDB(conf.GetDBConnectionString())
+	db.AutoMigrate(&EncVoter{}, &EncVoterStatus{}, &ElectionStats{}) // election
+
+	db.Create(newStats(conf.ElectionYear, conf.BallotBoxes))
 
 	return &CampusVoteStorage{conf: conf, cipher: cipher}
 }
 
 func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error {
-	db := getCockroachDB(cvdb.conf.GetConnectionString())
+	db := getCockroachDB(cvdb.conf.GetDBConnectionString())
 
 	if _, err := cvdb.GetVoterByStudentId(voter.StudentId); err == nil {
 		return core.StudentAllreadyExistsError()
+	}
+
+	if !slices.Contains(cvdb.conf.BallotBoxes, voter.BallotBox) {
+		return core.BallotBoxDoesNotExistError()
 	}
 
 	envVoter := cvdb.encryptVoter(voter)
@@ -44,12 +45,16 @@ func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error {
 }
 
 func (cvdb *CampusVoteStorage) GetVoterByStudentId(id int) (Voter, error) {
-	db := getCockroachDB(cvdb.conf.GetConnectionString())
+	db := getCockroachDB(cvdb.conf.GetDBConnectionString())
 
 	var tmp EncVoter
 	db.Where("student_id = ?", cvdb.encryptWithoutNonce(strconv.Itoa(id))).First(&tmp)
 
-	result, _ := cvdb.decryptVoter(tmp)
+	result, err := cvdb.decryptVoter(tmp)
+
+	if err != nil {
+		return Voter{}, core.StudentNotFoundError()
+	}
 
 	if result.StudentId == id {
 		return result, nil
@@ -58,19 +63,8 @@ func (cvdb *CampusVoteStorage) GetVoterByStudentId(id int) (Voter, error) {
 	return Voter{}, core.StudentNotFoundError()
 }
 
-func getCockroachDB(connectionString string) *gorm.DB {
-	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent), // disable SQL logging
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return db
-}
-
 func (cvdb *CampusVoteStorage) SetVoterAsVoted(v Voter) error {
-	db := getCockroachDB(cvdb.conf.GetConnectionString())
+	db := getCockroachDB(cvdb.conf.GetDBConnectionString())
 
 	status := cvdb.CheckVoterStatus(v)
 
@@ -79,6 +73,8 @@ func (cvdb *CampusVoteStorage) SetVoterAsVoted(v Voter) error {
 	}
 
 	db.Create(cvdb.encryptVoterStatus(v))
+	cvdb.countVote(v.BallotBox)
+
 	return nil
 }
 
@@ -98,14 +94,13 @@ func (cvdb *CampusVoteStorage) SetVoterAsVotedByStudentId(id int) error {
 }
 
 func (cvdb *CampusVoteStorage) CheckVoterStatus(v Voter) bool {
-	db := getCockroachDB(cvdb.conf.GetConnectionString())
+	db := getCockroachDB(cvdb.conf.GetDBConnectionString())
 
 	var tmp EncVoterStatus
 	db.Where("student_id = ?", cvdb.encryptWithoutNonce(strconv.Itoa(v.StudentId))).First(&tmp)
 
 	vstatus, err := cvdb.decryptVoterStatus(tmp)
 	if err != nil {
-		// voter not in list of voted
 		return false
 	}
 
@@ -113,12 +108,17 @@ func (cvdb *CampusVoteStorage) CheckVoterStatus(v Voter) bool {
 	return vstatus.Status
 }
 
-func (cvdb *CampusVoteStorage) CheckVoterStatusByStudentId(id int) bool {
+func (cvdb *CampusVoteStorage) CheckVoterStatusByStudentId(id int) (bool, error) {
 	voter, err := cvdb.GetVoterByStudentId(id)
 
 	if err != nil {
-		return false
+		cvErr, ok := err.(*core.CampusVoteError)
+		if ok {
+			return false, cvErr
+		} else {
+			return false, core.UnexpectedError(err.Error())
+		}
 	}
 
-	return cvdb.CheckVoterStatus(voter)
+	return cvdb.CheckVoterStatus(voter), nil
 }

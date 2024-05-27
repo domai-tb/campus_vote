@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	cvdb := storage.New(*storage.DefaultDBConfig(), "123456")
+	cvdb := storage.New(*storage.DefaultCampusVoteConf(), "123456")
 	api.New(*cvdb)
 }

@@ -2,15 +2,10 @@ package api
 
 import (
 	context "context"
-	"crypto/tls"
-	"crypto/x509"
-	"fmt"
 	"log"
 	"net"
-	"os"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 
 	"github.com/domai-tb/campus_vote/pkg/core"
 	"github.com/domai-tb/campus_vote/pkg/storage"
@@ -102,36 +97,20 @@ func (cvapi *CampusVoteAPI) SetVoterAsVoted(c context.Context, id *StudentId) (*
 }
 
 func (cvapi *CampusVoteAPI) CheckVoterStatus(c context.Context, id *StudentId) (*StatusCode, error) {
-	if cvapi.cvdb.CheckVoterStatusByStudentId(int(id.Num)) {
+	status, err := cvapi.cvdb.CheckVoterStatusByStudentId(int(id.Num))
+
+	if err != nil {
+		return statusStudentNotFound(), nil
+	}
+
+	if status {
 		return statusStudentAllreadyVoted(), nil
 	}
+
 	return statusOk(), nil
 }
 
-func loadTLSCredentials() (credentials.TransportCredentials, error) {
-	// Load certificate of the CA who signed client's certificate
-	pemClientCA, err := os.ReadFile(clientCACertFile)
-	if err != nil {
-		return nil, err
-	}
-
-	certPool := x509.NewCertPool()
-	if !certPool.AppendCertsFromPEM(pemClientCA) {
-		return nil, fmt.Errorf("failed to add client CA's certificate")
-	}
-
-	// Load server's certificate and private key
-	serverCert, err := tls.LoadX509KeyPair(serverCertFile, serverKeyFile)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create the credentials and return it
-	config := &tls.Config{
-		Certificates: []tls.Certificate{serverCert},
-		ClientAuth:   tls.RequireAndVerifyClientCert,
-		ClientCAs:    certPool,
-	}
-
-	return credentials.NewTLS(config), nil
+func (cvapi *CampusVoteAPI) GetElectionStats(context.Context, *Void) (*ElectionStats, error) {
+	stats := cvapi.cvdb.GetElectionStats()
+	return storageStatsToElectionStats(stats), nil
 }

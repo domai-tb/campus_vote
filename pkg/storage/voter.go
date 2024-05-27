@@ -8,27 +8,27 @@ import (
 type Voter struct {
 	Firstname string
 	Lastname  string
-	StudentId int
+	StudentId int `gorm:"primaryKey;type:bytes"`
 	BallotBox string
 	Faculity  string
 }
 
 type EncVoter struct {
-	Firstname []byte
-	Lastname  []byte
-	StudentId []byte
-	BallotBox []byte
-	Faculity  []byte
+	Firstname []byte `gorm:"type:bytes"`
+	Lastname  []byte `gorm:"type:bytes"`
+	StudentId []byte `gorm:"primaryKey;type:bytes"`
+	BallotBox []byte `gorm:"type:bytes"`
+	Faculity  []byte `gorm:"type:bytes"`
 }
 
 type VoterStatus struct {
-	StudentId int
-	Status    bool
+	StudentId int  `gorm:"primaryKey;->;<-:create"`
+	Status    bool `gorm:"->;<-:create"`
 }
 
 type EncVoterStatus struct {
-	StudentId []byte
-	Status    []byte
+	StudentId []byte `gorm:"primaryKey;->;<-:create;type:bytes"`
+	Status    []byte `gorm:"->;<-:create;type:bytes"`
 }
 
 func (cvdb *CampusVoteStorage) encryptVoter(v Voter) EncVoter {

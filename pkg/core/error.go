@@ -9,6 +9,7 @@ type CampusVoteError struct {
 	// 1  => student allready exists
 	// 2  => student not found
 	// 3  => student allready voted
+	// 4  => ballotboy doesn't exist
 	StatusCode int32
 }
 
@@ -30,4 +31,8 @@ func StudentNotFoundError() error {
 
 func StudentAllreadyVotedError() error {
 	return &CampusVoteError{StatusCode: 3, ErrorMsg: "student allready voted"}
+}
+
+func BallotBoxDoesNotExistError() error {
+	return &CampusVoteError{StatusCode: 4, ErrorMsg: "ballotbox does not exist"}
 }

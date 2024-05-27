@@ -10,57 +10,57 @@ var LIST_OF_VOTERS = [...]storage.Voter{
 	{
 		StudentId: 10800000000,
 		Firstname: "Olaf",
-		Lastname: "Scholz",
-		BallotBox: "Berlin",
-		Faculity: "Bundeskanzler",
+		Lastname:  "Scholz",
+		BallotBox: "MA",
+		Faculity:  "Bundeskanzler",
 	},
 	{
 		StudentId: 10800000001,
 		Firstname: "Gustav",
-		Lastname: "Braun",
-		BallotBox: "NB",
-		Faculity: "Physik",
+		Lastname:  "Braun",
+		BallotBox: "NC",
+		Faculity:  "Physik",
 	},
 	{
 		StudentId: 10800000002,
 		Firstname: "Jens",
-		Lastname: "Mett",
-		BallotBox: "MC",
-		Faculity: "Informatik",
+		Lastname:  "Mett",
+		BallotBox: "MA",
+		Faculity:  "Informatik",
 	},
 	{
 		StudentId: 10800000003,
 		Firstname: "Ronald",
-		Lastname: "McDonald",
-		BallotBox: "ND",
-		Faculity: "Biologie",
+		Lastname:  "McDonald",
+		BallotBox: "NC",
+		Faculity:  "Biologie",
 	},
 	{
 		StudentId: 10800000004,
 		Firstname: "Tilli",
-		Lastname: "Billi",
-		BallotBox: "IA",
-		Faculity: "Geographie",
+		Lastname:  "Billi",
+		BallotBox: "IB",
+		Faculity:  "Geographie",
 	},
 	{
 		StudentId: 10800000005,
 		Firstname: "Rolando",
-		Lastname: "Michelanchilo",
+		Lastname:  "Michelanchilo",
 		BallotBox: "GD",
-		Faculity: "Jura",
+		Faculity:  "Jura",
 	},
 	{
 		StudentId: 10800000006,
 		Firstname: "Robin",
-		Lastname: "Grumelberg",
+		Lastname:  "Grumelberg",
 		BallotBox: "GA",
-		Faculity: "Philosophie",
+		Faculity:  "Philosophie",
 	},
 }
 
 func main() {
 	// Create a new campus vote storage with password "patrick4president"
-	electionStorage := storage.New(*storage.DefaultDBConfig(), "patrick4president")
+	electionStorage := storage.New(*storage.DefaultCampusVoteConf(), "patrick4president")
 
 	// Create voter registry
 	fmt.Printf("\n === initialize voter registry with students === \n")
@@ -96,10 +96,15 @@ func main() {
 	// See who allready voted
 	fmt.Printf("\n === election: student already voted? === \n")
 	for _, voter := range LIST_OF_VOTERS {
+		// CheckVoterStatus will always return a status; on error it will be false
 		if electionStorage.CheckVoterStatus(voter) {
 			fmt.Printf("%s %s (%d): voted :)\n", voter.Firstname, voter.Lastname, voter.StudentId)
 		} else {
 			fmt.Printf("%s %s (%d): not voted :(\n", voter.Firstname, voter.Lastname, voter.StudentId)
 		}
 	}
+
+	// Get insights to ongoing elections
+	fmt.Printf("\n === election statistics === \n")
+	fmt.Printf("%+v", electionStorage.GetElectionStats())
 }

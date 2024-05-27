@@ -26,6 +26,7 @@ type CampusVoteClient interface {
 	GetVoterByStudentId(ctx context.Context, in *StudentId, opts ...grpc.CallOption) (*Voter, error)
 	SetVoterAsVoted(ctx context.Context, in *StudentId, opts ...grpc.CallOption) (*StatusCode, error)
 	CheckVoterStatus(ctx context.Context, in *StudentId, opts ...grpc.CallOption) (*StatusCode, error)
+	GetElectionStats(ctx context.Context, in *Void, opts ...grpc.CallOption) (*ElectionStats, error)
 }
 
 type campusVoteClient struct {
@@ -72,6 +73,15 @@ func (c *campusVoteClient) CheckVoterStatus(ctx context.Context, in *StudentId, 
 	return out, nil
 }
 
+func (c *campusVoteClient) GetElectionStats(ctx context.Context, in *Void, opts ...grpc.CallOption) (*ElectionStats, error) {
+	out := new(ElectionStats)
+	err := c.cc.Invoke(ctx, "/CampusVote/GetElectionStats", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CampusVoteServer is the server API for CampusVote service.
 // All implementations must embed UnimplementedCampusVoteServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type CampusVoteServer interface {
 	GetVoterByStudentId(context.Context, *StudentId) (*Voter, error)
 	SetVoterAsVoted(context.Context, *StudentId) (*StatusCode, error)
 	CheckVoterStatus(context.Context, *StudentId) (*StatusCode, error)
+	GetElectionStats(context.Context, *Void) (*ElectionStats, error)
 	mustEmbedUnimplementedCampusVoteServer()
 }
 
@@ -98,6 +109,9 @@ func (UnimplementedCampusVoteServer) SetVoterAsVoted(context.Context, *StudentId
 }
 func (UnimplementedCampusVoteServer) CheckVoterStatus(context.Context, *StudentId) (*StatusCode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckVoterStatus not implemented")
+}
+func (UnimplementedCampusVoteServer) GetElectionStats(context.Context, *Void) (*ElectionStats, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetElectionStats not implemented")
 }
 func (UnimplementedCampusVoteServer) mustEmbedUnimplementedCampusVoteServer() {}
 
@@ -184,6 +198,24 @@ func _CampusVote_CheckVoterStatus_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CampusVote_GetElectionStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Void)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CampusVoteServer).GetElectionStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/CampusVote/GetElectionStats",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CampusVoteServer).GetElectionStats(ctx, req.(*Void))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CampusVote_ServiceDesc is the grpc.ServiceDesc for CampusVote service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +238,10 @@ var CampusVote_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckVoterStatus",
 			Handler:    _CampusVote_CheckVoterStatus_Handler,
+		},
+		{
+			MethodName: "GetElectionStats",
+			Handler:    _CampusVote_GetElectionStats_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
