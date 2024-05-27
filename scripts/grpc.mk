@@ -1,5 +1,9 @@
-PROTO_DIR = ../proto
-PROTO_OPTS = --go_out=.. --go-grpc_out=.. --proto_path=$(PROTO_DIR)
+PROTO_DIR = ../protos
+CERTS_DIR = ../certs
+PROTO_OPTS = \
+	--go_out=.. --go-grpc_out=.. \
+	--proto_path=$(PROTO_DIR) \
+	--dart_out=grpc:../gui/lib/generated
 
 # Colors
 R = \033[0;31m	# Red
@@ -22,10 +26,10 @@ certs:
 
 client:
 	evans \
-		--proto ../proto/api.proto \
+		--proto $(PROTO_DIR)/api.proto \
 		--host 127.0.0.1 \
 		--port 21797 \
 		--tls \
-		--cacert ../certs/ca-cert.pem \
-		--cert ../certs/client-cert.pem \
-		--certkey ../certs/client-key.pem
+		--cacert $(CERTS_DIR)/ca-cert.pem \
+		--cert $(CERTS_DIR)/client-cert.pem \
+		--certkey $(CERTS_DIR)/client-key.pem

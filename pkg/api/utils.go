@@ -52,13 +52,13 @@ func statusStudentAllreadyVoted() *StatusCode {
 
 func loadTLSCredentials() (credentials.TransportCredentials, error) {
 	// Load certificate of the CA who signed client's certificate
-	pemClientCA, err := os.ReadFile(clientCACertFile)
+	rootCA, err := os.ReadFile(rootCACertFile)
 	if err != nil {
 		return nil, err
 	}
 
 	certPool := x509.NewCertPool()
-	if !certPool.AppendCertsFromPEM(pemClientCA) {
+	if !certPool.AppendCertsFromPEM(rootCA) {
 		return nil, fmt.Errorf("failed to add client CA's certificate")
 	}
 

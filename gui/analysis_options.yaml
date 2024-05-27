@@ -11,6 +11,9 @@ analyzer:
     implicit-casts: true
     implicit-dynamic: true
 
+  exclude:
+    - lib/campus_vote/generated/**
+
 dart_code_metrics:
   metrics:
     cyclomatic-complexity: 20

@@ -14,7 +14,7 @@ import (
 const (
 	serverCertFile   = "certs/server-cert.pem"
 	serverKeyFile    = "certs/server-key.pem"
-	clientCACertFile = "certs/ca-cert.pem"
+	rootCACertFile   = "certs/ca-cert.pem"
 )
 
 type CampusVoteAPI struct {

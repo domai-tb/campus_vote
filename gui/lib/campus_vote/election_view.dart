@@ -1,5 +1,6 @@
-import 'package:campus_vote/election/widgets/setup_widget.dart';
-import 'package:campus_vote/election/widgets/voter_registry_widget.dart';
+import 'package:campus_vote/campus_vote/widgets/dashboard_widget.dart';
+import 'package:campus_vote/campus_vote/widgets/setup_widget.dart';
+import 'package:campus_vote/campus_vote/widgets/voter_registry_widget.dart';
 import 'package:campus_vote/settings/settings_controller.dart';
 import 'package:campus_vote/settings/settings_view.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
@@ -33,15 +34,15 @@ class _ElectionViewState extends State<ElectionView> {
               style: SideMenuStyle(
                 openSideMenuWidth: 200,
                 hoverColor:
-                    Theme.of(context).colorScheme.onBackground.withAlpha(50),
+                    Theme.of(context).colorScheme.onSurface.withAlpha(50),
                 selectedColor: Theme.of(context).colorScheme.primary,
                 selectedIconColor: Theme.of(context).colorScheme.onPrimary,
-                unselectedIconColor: Theme.of(context).colorScheme.onBackground,
-                backgroundColor: Theme.of(context).colorScheme.background,
+                unselectedIconColor: Theme.of(context).colorScheme.onSurface,
+                backgroundColor: Theme.of(context).colorScheme.surface,
                 selectedTitleTextStyle:
                     TextStyle(color: Theme.of(context).colorScheme.onPrimary),
                 unselectedTitleTextStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               items: [
@@ -96,16 +97,9 @@ class _ElectionViewState extends State<ElectionView> {
             Expanded(
               child: PageView(
                 controller: pageController,
-                children: [
-                  Container(
-                    child: const Center(
-                      child: Text(
-                        'Dashboard',
-                        style: TextStyle(fontSize: 35),
-                      ),
-                    ),
-                  ),
-                  const ElectionSetup(),
+                children: const [
+                  Dashboard(),
+                  ElectionSetup(),
                   VoterRegistry(),
                 ],
               ),

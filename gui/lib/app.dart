@@ -1,4 +1,4 @@
-import 'package:campus_vote/election/election_view.dart';
+import 'package:campus_vote/campus_vote/election_view.dart';
 import 'package:campus_vote/settings/settings_controller.dart';
 import 'package:campus_vote/settings/settings_view.dart';
 import 'package:flutter/material.dart';
