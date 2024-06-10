@@ -1,8 +1,11 @@
 package storage
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -43,10 +46,30 @@ func DefaultCampusVoteConf() *CampusVoteConf {
 	}
 }
 
-func getCockroachDB(connectionString string) *gorm.DB {
-	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent), // disable SQL logging
+func (conf *CampusVoteConf) GetCockroachDB() *gorm.DB {
+	// TODO: Replace with keychain / credential storage
+	certPEMBlock, _ := os.ReadFile(conf.ClientCert)
+	keyPEMBlock, _ := os.ReadFile(conf.ClientKey)
+	rootCA, _ := os.ReadFile(conf.RootCert)
+
+	certPool := x509.NewCertPool()
+	certPool.AppendCertsFromPEM(rootCA)
+	clientCert, _ := tls.X509KeyPair(certPEMBlock, keyPEMBlock)
+
+	driver := postgres.New(postgres.Config{
+		DSN: conf.GetDBConnectionString(),
+		TLSConfig: &tls.Config{
+			ServerName:   conf.Host,
+			Certificates: []tls.Certificate{clientCert},
+			RootCAs:      certPool,
+		},
 	})
+
+	db, err := gorm.Open(driver, &gorm.Config{
+		Logger:      logger.Default.LogMode(logger.Silent), // disable SQL logging
+		PrepareStmt: true,                                  // use prepared statements
+	})
+
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -11,7 +11,7 @@ P = \033[0;35m	# Purple
 C = \033[0;36m	# Cyan
 N = \033[0m		# No Color
 
-cockroach-create-cluster: check-requirements
+cockroach-create-cluster: check-requirements clean
 	@mkdir -p  $(CRDB_CERTS_DIR)
 	@echo -e "$PCreate the CA (Certificate Authority) certificate and key pair$N"
 	cockroach cert create-ca \
@@ -41,11 +41,15 @@ cockroach-start-node: check-requirements
 		--store=$(CRDB_ROOT_DIR)/node \
 		--listen-addr=127.0.0.1:26257 \
 		--http-addr=127.0.0.1:8080 \
-		--join=127.0.0.1:26257
+		--join=127.0.0.1:26257 \
+		--cluster-name=stupa-bochum
 
 cockroach-init-cluster: check-requirements
 	@echo -e "$PTry to initialize cockroach node$N"
-	cockroach init --certs-dir=$(CRDB_CERTS_DIR) --host=127.0.0.1:26257
+	cockroach init \
+		--certs-dir=$(CRDB_CERTS_DIR) \
+		--host=127.0.0.1:26257 \
+		--cluster-name=stupa-bochum
 
 check-requirements:
 	@if ! command -v cockroach; then \

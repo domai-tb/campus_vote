@@ -63,6 +63,7 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 	}
 
 	// Load server's certificate and private key
+	// TODO: Load from keychain / credential manager via  tls.X509KeyPair([]bytes, []bytes)
 	serverCert, err := tls.LoadX509KeyPair(serverCertFile, serverKeyFile)
 	if err != nil {
 		return nil, err
@@ -79,7 +80,6 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 }
 
 func storageStatsToElectionStats(s storage.ElectionStats) *ElectionStats {
-
 	// create gRPC ballotboxes
 	var boxStats []*BallotBoxStats
 	for _, box := range s.BallotBoxs {

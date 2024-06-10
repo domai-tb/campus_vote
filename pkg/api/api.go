@@ -11,10 +11,11 @@ import (
 	"github.com/domai-tb/campus_vote/pkg/storage"
 )
 
+// TODO: Do not use plain files. Use keychain / credential manager instead
 const (
-	serverCertFile   = "certs/server-cert.pem"
-	serverKeyFile    = "certs/server-key.pem"
-	rootCACertFile   = "certs/ca-cert.pem"
+	serverCertFile = "certs/api-server.crt"
+	serverKeyFile  = "certs/api-server.key"
+	rootCACertFile = "certs/api-ca.crt"
 )
 
 type CampusVoteAPI struct {

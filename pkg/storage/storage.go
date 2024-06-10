@@ -19,7 +19,7 @@ func New(conf CampusVoteConf, password string) *CampusVoteStorage {
 	cipher := createCipher(sha256.Sum256([]byte(password)))
 
 	// init database
-	db := getCockroachDB(conf.GetDBConnectionString())
+	db := conf.GetCockroachDB()
 	db.AutoMigrate(&EncVoter{}, &EncVoterStatus{}, &ElectionStats{}) // election
 
 	db.Create(newStats(conf.ElectionYear, conf.BallotBoxes))
@@ -28,7 +28,7 @@ func New(conf CampusVoteConf, password string) *CampusVoteStorage {
 }
 
 func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error {
-	db := getCockroachDB(cvdb.conf.GetDBConnectionString())
+	db := cvdb.conf.GetCockroachDB()
 
 	if _, err := cvdb.GetVoterByStudentId(voter.StudentId); err == nil {
 		return core.StudentAllreadyExistsError()
@@ -45,7 +45,7 @@ func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error {
 }
 
 func (cvdb *CampusVoteStorage) GetVoterByStudentId(id int) (Voter, error) {
-	db := getCockroachDB(cvdb.conf.GetDBConnectionString())
+	db := cvdb.conf.GetCockroachDB()
 
 	var tmp EncVoter
 	db.Where("student_id = ?", cvdb.encryptWithoutNonce(strconv.Itoa(id))).First(&tmp)
@@ -64,7 +64,7 @@ func (cvdb *CampusVoteStorage) GetVoterByStudentId(id int) (Voter, error) {
 }
 
 func (cvdb *CampusVoteStorage) SetVoterAsVoted(v Voter) error {
-	db := getCockroachDB(cvdb.conf.GetDBConnectionString())
+	db := cvdb.conf.GetCockroachDB()
 
 	status := cvdb.CheckVoterStatus(v)
 
@@ -94,7 +94,7 @@ func (cvdb *CampusVoteStorage) SetVoterAsVotedByStudentId(id int) error {
 }
 
 func (cvdb *CampusVoteStorage) CheckVoterStatus(v Voter) bool {
-	db := getCockroachDB(cvdb.conf.GetDBConnectionString())
+	db := cvdb.conf.GetCockroachDB()
 
 	var tmp EncVoterStatus
 	db.Where("student_id = ?", cvdb.encryptWithoutNonce(strconv.Itoa(v.StudentId))).First(&tmp)

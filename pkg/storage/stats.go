@@ -67,7 +67,7 @@ func newStats(year int, ballotboxes []string) *ElectionStats {
 }
 
 func (cvdb *CampusVoteStorage) GetElectionStats() ElectionStats {
-	db := getCockroachDB(cvdb.conf.GetDBConnectionString())
+	db := cvdb.conf.GetCockroachDB()
 
 	var stats ElectionStats
 	db.First(&stats)
@@ -76,7 +76,7 @@ func (cvdb *CampusVoteStorage) GetElectionStats() ElectionStats {
 }
 
 func (cvdb *CampusVoteStorage) countVote(ballotbox string) {
-	db := getCockroachDB(cvdb.conf.GetDBConnectionString())
+	db := cvdb.conf.GetCockroachDB()
 
 	var stats ElectionStats
 	db.First(&stats)

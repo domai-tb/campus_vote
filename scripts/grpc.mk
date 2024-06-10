@@ -30,6 +30,6 @@ client:
 		--host 127.0.0.1 \
 		--port 21797 \
 		--tls \
-		--cacert $(CERTS_DIR)/ca-cert.pem \
-		--cert $(CERTS_DIR)/client-cert.pem \
-		--certkey $(CERTS_DIR)/client-key.pem
+		--cacert $(CERTS_DIR)/api-ca.crt \
+		--cert $(CERTS_DIR)/api-client.crt \
+		--certkey $(CERTS_DIR)/api-client.key
