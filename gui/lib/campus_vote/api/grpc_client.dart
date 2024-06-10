@@ -13,9 +13,9 @@ class CampusVoteAPIClient {
       port: 21797,
       options: ChannelOptions(
         credentials: CVAPIChannelCredentials(
-          trustedRoots: File('../certs/ca-cert.pem').readAsBytesSync(),
-          certificateChain: File('../certs/client-cert.pem').readAsBytesSync(),
-          privateKey: File('../certs/client-key.pem').readAsBytesSync(),
+          trustedRoots: File('../certs/api-ca.crt').readAsBytesSync(),
+          certificateChain: File('../certs/api-client.crt').readAsBytesSync(),
+          privateKey: File('../certs/api-client.key').readAsBytesSync(),
           authority: '127.0.0.1',
         ),
       ),
@@ -27,6 +27,8 @@ class CampusVoteAPIClient {
   Future<ElectionStats> getElectionStats() async {
     return await client.getElectionStats(Void());
   }
+
+  
 }
 
 class CVAPIChannelCredentials extends ChannelCredentials {

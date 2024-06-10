@@ -15,7 +15,7 @@ import 'dart:core' as $core;
 import 'package:grpc/service_api.dart' as $grpc;
 import 'package:protobuf/protobuf.dart' as $pb;
 
-import 'api.pb.dart' as $0;
+import 'package:campus_vote/generated/api.pb.dart' as $0;
 
 export 'api.pb.dart';
 
@@ -24,29 +24,29 @@ class CampusVoteClient extends $grpc.Client {
   static final _$createVoter = $grpc.ClientMethod<$0.Voter, $0.StatusCode>(
       '/CampusVote/CreateVoter',
       ($0.Voter value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.StatusCode.fromBuffer(value));
+      ($core.List<$core.int> value) => $0.StatusCode.fromBuffer(value),);
   static final _$getVoterByStudentId = $grpc.ClientMethod<$0.StudentId, $0.Voter>(
       '/CampusVote/GetVoterByStudentId',
       ($0.StudentId value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.Voter.fromBuffer(value));
+      ($core.List<$core.int> value) => $0.Voter.fromBuffer(value),);
   static final _$setVoterAsVoted = $grpc.ClientMethod<$0.StudentId, $0.StatusCode>(
       '/CampusVote/SetVoterAsVoted',
       ($0.StudentId value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.StatusCode.fromBuffer(value));
+      ($core.List<$core.int> value) => $0.StatusCode.fromBuffer(value),);
   static final _$checkVoterStatus = $grpc.ClientMethod<$0.StudentId, $0.StatusCode>(
       '/CampusVote/CheckVoterStatus',
       ($0.StudentId value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.StatusCode.fromBuffer(value));
+      ($core.List<$core.int> value) => $0.StatusCode.fromBuffer(value),);
   static final _$getElectionStats = $grpc.ClientMethod<$0.Void, $0.ElectionStats>(
       '/CampusVote/GetElectionStats',
       ($0.Void value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.ElectionStats.fromBuffer(value));
+      ($core.List<$core.int> value) => $0.ElectionStats.fromBuffer(value),);
 
   CampusVoteClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
-      $core.Iterable<$grpc.ClientInterceptor>? interceptors})
+      $core.Iterable<$grpc.ClientInterceptor>? interceptors,})
       : super(channel, options: options,
-        interceptors: interceptors);
+        interceptors: interceptors,);
 
   $grpc.ResponseFuture<$0.StatusCode> createVoter($0.Voter request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$createVoter, request, options: options);
@@ -80,35 +80,35 @@ abstract class CampusVoteServiceBase extends $grpc.Service {
         false,
         false,
         ($core.List<$core.int> value) => $0.Voter.fromBuffer(value),
-        ($0.StatusCode value) => value.writeToBuffer()));
+        ($0.StatusCode value) => value.writeToBuffer(),),);
     $addMethod($grpc.ServiceMethod<$0.StudentId, $0.Voter>(
         'GetVoterByStudentId',
         getVoterByStudentId_Pre,
         false,
         false,
         ($core.List<$core.int> value) => $0.StudentId.fromBuffer(value),
-        ($0.Voter value) => value.writeToBuffer()));
+        ($0.Voter value) => value.writeToBuffer(),),);
     $addMethod($grpc.ServiceMethod<$0.StudentId, $0.StatusCode>(
         'SetVoterAsVoted',
         setVoterAsVoted_Pre,
         false,
         false,
         ($core.List<$core.int> value) => $0.StudentId.fromBuffer(value),
-        ($0.StatusCode value) => value.writeToBuffer()));
+        ($0.StatusCode value) => value.writeToBuffer(),),);
     $addMethod($grpc.ServiceMethod<$0.StudentId, $0.StatusCode>(
         'CheckVoterStatus',
         checkVoterStatus_Pre,
         false,
         false,
         ($core.List<$core.int> value) => $0.StudentId.fromBuffer(value),
-        ($0.StatusCode value) => value.writeToBuffer()));
+        ($0.StatusCode value) => value.writeToBuffer(),),);
     $addMethod($grpc.ServiceMethod<$0.Void, $0.ElectionStats>(
         'GetElectionStats',
         getElectionStats_Pre,
         false,
         false,
         ($core.List<$core.int> value) => $0.Void.fromBuffer(value),
-        ($0.ElectionStats value) => value.writeToBuffer()));
+        ($0.ElectionStats value) => value.writeToBuffer(),),);
   }
 
   $async.Future<$0.StatusCode> createVoter_Pre($grpc.ServiceCall call, $async.Future<$0.Voter> request) async {

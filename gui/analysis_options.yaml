@@ -12,7 +12,7 @@ analyzer:
     implicit-dynamic: true
 
   exclude:
-    - lib/campus_vote/generated/**
+    - lib/generated/**
 
 dart_code_metrics:
   metrics:
