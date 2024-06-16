@@ -10,11 +10,11 @@ import (
 )
 
 type CampusVoteStorage struct {
-	conf   CampusVoteConf
+	conf   core.CampusVoteConf
 	cipher cipher.AEAD
 }
 
-func New(conf CampusVoteConf, password string) *CampusVoteStorage {
+func New(conf core.CampusVoteConf, password string) *CampusVoteStorage {
 	// init crypto
 	cipher := createCipher(sha256.Sum256([]byte(password)))
 

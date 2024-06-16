@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/domai-tb/campus_vote/pkg/core"
 	"github.com/domai-tb/campus_vote/pkg/storage"
 )
 
@@ -60,7 +61,7 @@ var LIST_OF_VOTERS = [...]storage.Voter{
 
 func main() {
 	// Create a new campus vote storage with password "patrick4president"
-	electionStorage := storage.New(*storage.DefaultCampusVoteConf(), "patrick4president")
+	electionStorage := storage.New(*core.DefaultCampusVoteConf(), "patrick4president")
 
 	// Create voter registry
 	fmt.Printf("\n === initialize voter registry with students === \n")
