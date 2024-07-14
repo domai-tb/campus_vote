@@ -6,13 +6,14 @@ analyzer:
     close_sinks: ignore
     missing_required_param: error
     missing_return: error
+    constant_identifier_names: ignore
 
   strong-mode:
     implicit-casts: true
     implicit-dynamic: true
 
   exclude:
-    - lib/generated/**
+    - lib/core/api/generated**
 
 dart_code_metrics:
   metrics:
@@ -21,7 +22,7 @@ dart_code_metrics:
     maximum-nesting-level: 5
     source-lines-of-code: 50
     maintainability-index: 40
-  
+
   rules:
     - no-boolean-literal-compare
     - no-empty-block
@@ -41,13 +42,13 @@ dart_code_metrics:
     - prefer-single-widget-per-file:
         ignore-private-widgets: true
     - prefer-extracting-callbacks
-  
+
   metrics-exclude:
     - test/**
-  
+
   rules-exclude:
     - test/**
-  
+
   anti-patterns:
     - long-method
     - long-parameter-list
