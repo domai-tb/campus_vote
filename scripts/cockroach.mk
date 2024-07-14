@@ -1,6 +1,10 @@
 # CockRoachDB
 CRDB_ROOT_DIR = ../cockroach
+CRDB_ROOT_DIR_TESTING = ../cockroach-test
 CRDB_CERTS_DIR = $(CRDB_ROOT_DIR)/certs
+
+# Configs
+CA_CONF = ../conf/ca.conf
 
 # Colors
 R = \033[0;31m	# Red
@@ -42,7 +46,8 @@ cockroach-start-node: check-requirements
 		--listen-addr=127.0.0.1:26257 \
 		--http-addr=127.0.0.1:8080 \
 		--join=127.0.0.1:26257 \
-		--cluster-name=stupa-bochum
+		--cluster-name=stupa-bochum \
+		--background
 
 cockroach-init-cluster: check-requirements
 	@echo -e "$PTry to initialize cockroach node$N"
@@ -58,8 +63,22 @@ check-requirements:
 	    exit 1; \
 	fi
 
-cockroach-sql:
+cockroach-sql: check-requirements
 	cockroach sql --certs-dir=$(CRDB_CERTS_DIR) --host=127.0.0.1:26257
+
+openssl-gen-certs: clean-test
+	@mkdir -p  $(CRDB_ROOT_DIR_TESTING)
+	@echo -e "$PGenerate CA's private RSA key$N"
+	openssl genrsa -out $(CRDB_ROOT_DIR_TESTING)/ca.key 4096
+	chmod 400 $(CRDB_ROOT_DIR_TESTING)/ca.key
+	@echo -e "$PGenerate CA's certificate$N"
+	openssl req -new -x509 -days 14 -batch \
+		-config $(CA_CONF) \
+		-key $(CRDB_ROOT_DIR_TESTING)/ca.key \
+		-out $(CRDB_ROOT_DIR_TESTING)/ca.crt
 
 clean:
 	rm -rf $(CRDB_ROOT_DIR)
+
+clean-test:
+	rm -rf $(CRDB_ROOT_DIR_TESTING)
