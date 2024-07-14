@@ -3,7 +3,7 @@ CERTS_DIR = ../certs
 PROTO_OPTS = \
 	--go_out=.. --go-grpc_out=.. \
 	--proto_path=$(PROTO_DIR) \
-	--dart_out=grpc:../gui/lib/generated
+	--dart_out=grpc:../gui/lib/core/api/generated
 
 # Colors
 R = \033[0;31m	# Red

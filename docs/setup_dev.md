@@ -4,7 +4,7 @@ This guide will help you to setup the developmet version of Campus Vote. All com
 
 ### Install requirements
 
-To start developing you need [GoLang](https://go.dev/doc/install) (version 1.22) and [CockRoachDB](https://www.cockroachlabs.com/docs/v23.2/install-cockroachdb-linux.html) (version 23.2.5). Follow the linked installation guides.
+To start developing you need [GoLang](https://go.dev/doc/install) (version 1.22) and [CockRoachDB](https://www.cockroachlabs.com/docs/v24.1/install-cockroachdb-linux.html) (version 24.1.1). Follow the linked installation guides.
 
 To follow the section _Terminal UI_, the gRPC client [Evans](https://github.com/ktr0731/evans) is required. The graphical client requires [Flutter](https://docs.flutter.dev/get-started/install/linux).
 
