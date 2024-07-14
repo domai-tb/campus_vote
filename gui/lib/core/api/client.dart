@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:campus_vote/generated/api.pbgrpc.dart';
+import 'package:campus_vote/core/api/generated/api.pbgrpc.dart';
 import 'package:grpc/grpc.dart';
 
 class CampusVoteAPIClient {
@@ -27,8 +27,6 @@ class CampusVoteAPIClient {
   Future<ElectionStats> getElectionStats() async {
     return await client.getElectionStats(Void());
   }
-
-  
 }
 
 class CVAPIChannelCredentials extends ChannelCredentials {

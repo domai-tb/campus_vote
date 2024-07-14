@@ -1,0 +1,17 @@
+{
+  "languageEn": "Englisch",
+  "languageDe": "Deutsch",
+  "appTitle": "Campus Vote",
+  "dashboardTitle": "Überblick",
+  "setupTitle": "Setup",
+  "setupFormPeriod": "Wahlzeitraum",
+  "setupFormBallotBoxes": "Standort / Gebäudename der Urnen",
+  "setupFormAddBox": "Neue Urne",
+  "setupFormBoxName": "Urnenstandort",
+  "setupFormBoxIP": "IP der Urne",
+  "settingsTitle": "Einstellungen",
+  "votersTitle": "Wählervzeichnis",
+  "chatTitle": "Chat",
+  "errorEmptySetupData": "",
+  "tooltipLoadSetup": "Lade Einstellungen für eine Urne."
+}

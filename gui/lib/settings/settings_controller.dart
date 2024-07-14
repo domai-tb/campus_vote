@@ -1,84 +1,72 @@
-import 'package:campus_vote/models/db_conf.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:campus_vote/settings/settings_service.dart';
+import 'package:campus_vote/settings/settings_model.dart';
+import 'package:campus_vote/settings/settings_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-/// A class that many Widgets can interact with to read user settings, update
-/// user settings, or listen to user settings changes.
-///
-/// Controllers glue Data Services to Flutter Widgets. The SettingsController
-/// uses the SettingsService to store and retrieve user settings.
 class SettingsController with ChangeNotifier {
-  // Make SettingsService a private variable so it is not used directly.
-  final SettingsService _settingsService;
+  /// Holds the currently used settings.
+  late Settings _currentSettings = loadSettings();
 
-  // Make ThemeMode a private variable so it is not updated directly without
-  // also persisting the changes with the SettingsService.
-  late ThemeMode _themeMode;
+  /// Holds static package info, e.g. platform or version
+  late PackageInfo packageInfo;
 
-  // PackageInfo: Version number etc.
-  late PackageInfo _packageInfo;
+  /// Storage for preferences
+  late SharedPreferences prefs;
 
-  SettingsController(this._settingsService);
+  SettingsController({required this.packageInfo, required this.prefs});
 
-  // Allow Widgets to read package info
-  PackageInfo get packageInfo => _packageInfo;
+  /// Settings getter
+  Settings get currentSettings => _currentSettings;
 
-  // Allow Widgets to read the user's preferred ThemeMode.
-  ThemeMode get themeMode => _themeMode;
+  /// Get current version
+  String get currentVersion => packageInfo.version;
 
-  /// Load the user's settings from the SettingsService. It may load from a
-  /// local database or the internet. The controller only knows it can load the
-  /// settings from the service.
-  Future<void> loadSettings() async {
-    _themeMode = await _settingsService.themeMode();
-    _packageInfo = await _settingsService.packageInfo();
+  /// Get current language.
+  Locale get language => _currentSettings.language;
 
-    // Important! Inform listeners a change has occurred.
-    notifyListeners();
+  /// Get current theme mode .
+  ThemeMode get themeMode => _currentSettings.themeMode;
+
+  void updateLanguage(Locale? newLanguage) {
+    if (newLanguage == null) return;
+
+    // Do not perform any work if new and old ThemeMode are identical
+    if (newLanguage == _currentSettings.language) return;
+
+    _updateSettings(_currentSettings.copyWith(language: newLanguage));
+  }
+
+  /// Load the saved settings or initialize new settings
+  Settings loadSettings() {
+    return Settings(
+      themeMode: strToTm(prefs.getString(PREFS_THEMEMODE) ?? 'system'),
+      useSystemTextScaling: prefs.getBool(PREFS_TEXTSCALING) ?? false,
+      latestVersion:
+          prefs.getString(PREFS_LATESTVERSION) ?? packageInfo.version,
+      language: Locale(prefs.getString(PREFS_LANGUAGE) ?? 'en'),
+    );
   }
 
   /// Update and persist the ThemeMode based on the user's selection.
-  Future<void> updateThemeMode(ThemeMode? newThemeMode) async {
+  void updateThemeMode(ThemeMode? newThemeMode) {
     if (newThemeMode == null) return;
 
     // Do not perform any work if new and old ThemeMode are identical
-    if (newThemeMode == _themeMode) return;
+    if (newThemeMode == _currentSettings.themeMode) return;
 
-    // Otherwise, store the new ThemeMode in memory
-    _themeMode = newThemeMode;
+    _updateSettings(_currentSettings.copyWith(themeMode: newThemeMode));
+  }
 
-    // Important! Inform listeners a change has occurred.
+  /// Notifies the listeners whenever the settings are changed and saves
+  /// the new settings.
+  void _updateSettings(Settings newSettings) {
+    _currentSettings = newSettings;
     notifyListeners();
 
-    // Persist the changes to a local database or the internet using the
-    // SettingService.
-    await _settingsService.updateThemeMode(newThemeMode);
-  }
-
-  Future<void> setDBConf(CampusVoteDBConf conf) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('username', conf.username);
-    await prefs.setString('host', conf.host);
-    await prefs.setInt('port', conf.port);
-    await prefs.setString('database', conf.database);
-    await prefs.setString('rootCert', conf.rootCert);
-    await prefs.setString('clientCert', conf.clientCert);
-    await prefs.setString('clientKey', conf.clientKey);
-  }
-
-  Future<CampusVoteDBConf> getDBConf() async {
-    final prefs = await SharedPreferences.getInstance();
-    return CampusVoteDBConf(
-      username: prefs.getString('username') ?? '',
-      host: prefs.getString('host') ?? '',
-      port: prefs.getInt('port') ?? -1,
-      database: prefs.getString('database') ?? '',
-      rootCert: prefs.getString('rootCert') ?? '',
-      clientCert: prefs.getString('clientCert') ?? '',
-      clientKey: prefs.getString('clientKey') ?? '',
-    );
+    prefs.setString(PREFS_THEMEMODE, tMtoStr(newSettings.themeMode));
+    prefs.setBool(PREFS_TEXTSCALING, newSettings.useSystemTextScaling);
+    prefs.setString(PREFS_LATESTVERSION, newSettings.latestVersion);
+    prefs.setString(PREFS_LANGUAGE, newSettings.language.languageCode);
   }
 }

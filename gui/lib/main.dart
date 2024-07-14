@@ -1,22 +1,54 @@
-import 'package:campus_vote/app.dart';
+import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/settings/settings_controller.dart';
-import 'package:campus_vote/settings/settings_service.dart';
+import 'package:campus_vote/themes/theme_dark.dart';
+import 'package:campus_vote/themes/theme_light.dart';
+import 'package:campus_vote/widgets/main_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 void main() async {
-  // Ensure correct initialization
+  // ensure initialisation
   WidgetsFlutterBinding.ensureInitialized();
+  await initServices();
 
-  // Set up the SettingsController, which will glue user settings to multiple
-  // Flutter Widgets.
-  final settingsController = SettingsController(SettingsService());
+  runApp(CampusVote());
+}
 
-  // Load the user's preferred theme while the splash screen is displayed.
-  // This prevents a sudden theme change when the app is first displayed.
-  await settingsController.loadSettings();
+class CampusVote extends StatelessWidget {
+  final settingsController = serviceLocator<SettingsController>();
 
-  // Run the app and pass in the SettingsController. The app listens to the
-  // SettingsController for changes, then passes it further down to the
-  // SettingsView.
-  runApp(CampusVote(settingsController: settingsController));
+  CampusVote({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: settingsController,
+      builder: (BuildContext context, Widget? child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          restorationScopeId: 'campus_vote',
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            FormBuilderLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'),
+            Locale('de'),
+          ],
+          locale: settingsController.language,
+          onGenerateTitle: (BuildContext context) =>
+              AppLocalizations.of(context)!.appTitle,
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          themeMode: settingsController.themeMode,
+          home: MainView(),
+        );
+      },
+    );
+  }
 }

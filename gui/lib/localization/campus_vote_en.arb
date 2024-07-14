@@ -1,22 +1,17 @@
 {
+  "languageEn": "English",
+  "languageDe": "German",
   "appTitle": "Campus Vote",
-  "@appTitle": {
-    "description": "The title of the application"
-  },
   "dashboardTitle": "Dashboard",
-  "@dashboardTitle": {
-    "description": "The title of the dashboard view"
-  },
   "setupTitle": "Setup",
-  "@setupTitle": {
-    "description": "The title of the setup view"
-  },
+  "setupFormPeriod": "Election Period",
+  "setupFormBallotBoxes": "Locations / Building names of ballot boxes",
+  "setupFormAddBox": "Add Ballot Box",
+  "setupFormBoxName": "Ballot Box",
+  "setupFormBoxIP": "IP of ballot box system",
   "settingsTitle": "Settings",
-  "@settingsTitle": {
-    "description": "The title of the settings view"
-  },
   "votersTitle": "Voters",
-  "@votersTitle": {
-    "description": "the title of the voter registry view"
-  }
+  "chatTitle": "Chat",
+  "errorEmptySetupData": "Nooob",
+  "tooltipLoadSetup": "Load ballotbox settings."
 }
