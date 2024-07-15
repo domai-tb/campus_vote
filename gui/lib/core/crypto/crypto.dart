@@ -1,4 +1,4 @@
-import 'package:campus_vote/core/crypto/utils.dart';
+import 'package:campus_vote/core/crypto/crypto_utils.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:campus_vote/core/crypto/decrypt_unzip.dart' as dec;
 import 'package:campus_vote/core/crypto/zip_encrypt.dart' as enc;
@@ -26,7 +26,6 @@ class Crypto {
       }
     }
 
-    print('crypto.getEncKey: ${encKey.base64}');
     return encKey;
   }
 
@@ -47,11 +46,29 @@ class Crypto {
 
   /// Decrypts and unzips encrypted zip files in [inputDirPath] and writes the
   /// unzipped directories to [outputDirPath].
-  Future<void> decryptAndUnzipFile(
+  Future<String> decryptAndUnzipFile(
     String inputDirPath,
     String outputDirPath,
   ) async {
     final encKey = await getExportEncKey();
     return dec.decryptAndUnzipFile(inputDirPath, outputDirPath, encKey);
+  }
+
+  /// Encrypts the file at [inputFilePath] and writes the encrypted data to [outputFilePath].
+  Future<void> encryptFile(
+    String inputFilePath,
+    String outputFilePath,
+  ) async {
+    final encKey = await getExportEncKey();
+    await enc.encryptFile(inputFilePath, outputFilePath, encKey);
+  }
+
+  /// Decrypts the file at [inputFilePath] and writes the decrypted data to [outputFilePath].
+  Future<void> decryptFile(
+    String inputFilePath,
+    String outputFilePath,
+  ) async {
+    final encKey = await getExportEncKey();
+    await dec.decryptFile(inputFilePath, outputFilePath, encKey);
   }
 }

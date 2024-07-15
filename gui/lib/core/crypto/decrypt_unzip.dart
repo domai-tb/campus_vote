@@ -40,7 +40,8 @@ Future<void> decryptAndUnzipDirectories(
 }
 
 /// Decrypt and unzip encrypted zip file in [inputFilePath] and writes the unzipped files to [outputDirPath].
-Future<void> decryptAndUnzipFile(
+/// Return the path to the encrypted and unziped directory.
+Future<String> decryptAndUnzipFile(
   String inputFilePath,
   String outputDirPath,
   encrypt.Key key,
@@ -63,10 +64,12 @@ Future<void> decryptAndUnzipFile(
   await decryptFile(inputFile.path, zipFilePath, key);
 
   // Unzip the decrypted file
-  await unzipFile(zipFilePath, outputDir.path);
+  final unzipDir = await unzipFile(zipFilePath, outputDir.path);
 
   // Remove the decrypted zip file
   await File(zipFilePath).delete();
+
+  return unzipDir;
 }
 
 /// Decrypts the file at [inputFilePath] and writes the decrypted data to [outputFilePath].
@@ -97,7 +100,8 @@ Future<void> decryptFile(
 }
 
 /// Unzips the zip file at [zipFilePath] to the directory at [outputDirPath].
-Future<void> unzipFile(String zipFilePath, String outputDirPath) async {
+/// Returns the path to unziped files: $outputDirPath/$dirName
+Future<String> unzipFile(String zipFilePath, String outputDirPath) async {
   final zipFile = File(zipFilePath);
   final bytes = await zipFile.readAsBytes();
   final archive = ZipDecoder().decodeBytes(bytes);
@@ -114,4 +118,7 @@ Future<void> unzipFile(String zipFilePath, String outputDirPath) async {
       await Directory(filename).create(recursive: true);
     }
   }
+
+  // ballot box directory name
+  return path.join(outputDirPath, path.dirname(archive.first.name));
 }

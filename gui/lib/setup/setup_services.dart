@@ -1,14 +1,16 @@
 import 'dart:io';
 import 'package:campus_vote/core/crypto/crypto.dart';
 import 'package:campus_vote/core/injection.dart';
+import 'package:campus_vote/core/utils/path_utils.dart';
 import 'package:campus_vote/setup/setup_models.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:campus_vote/setup/setup_utils.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SetupServices {
   late String _COCKROACH_BIN;
 
   final crypto = serviceLocator<Crypto>();
+  final storage = serviceLocator<FlutterSecureStorage>();
 
   SetupServices() {
     final exePath = Platform.resolvedExecutable;
@@ -34,6 +36,10 @@ class SetupServices {
   Future<void> createElection(SetupSettingsModel setupData) async {
     final tmpCVDir = await getTempDirPath();
     final appCVDir = await getAppDirPath();
+
+    // Store information that this instances created the note.
+    // This node will not and cannot load any ballotbox data.
+    await storage.write(key: STORAGEKEY_COMMITTEE, value: true.toString());
 
     // Generate a CA certificate "<certs-dir>/ca.crt" and CA key "<ca-key>".
     // The certs directory is created if it does not exist.
@@ -130,6 +136,11 @@ class SetupServices {
     // Encrypt ballotbox data and export
     await crypto.zipAndEncryptDirectories(tmpCVDir, appCVDir);
 
+    // Store and encrypt setup data config directory
+    final settingsPath = '$tmpCVDir${PATHSEP}settings.json';
+    await saveSetupSettingsModelToFile(setupData, settingsPath);
+    await crypto.encryptFile(settingsPath, await getCommitteeDataFilePath());
+
     // Delete temporary directory
     Directory(tmpCVDir).deleteSync(recursive: true);
   }
@@ -137,23 +148,51 @@ class SetupServices {
   /// Load ballotbox configuration from encrypted config file.
   /// The config files are generated on initially creation of
   /// election setup by the election committee.
-  Future<void> loadBallotBox(
-    FilePickerResult file,
+  Future<SetupSettingsModel> loadBallotBox(
+    String filePath,
     String boxDataPassword,
   ) async {
     final appCVDir = await getAppDirPath();
 
     // Store decryption password
     await crypto.storeExportEncKey(boxDataPassword);
-    print('loadBallotbox with boxDataPassword = $boxDataPassword');
 
     // Copy encrypted file to application dir
-    // bb = ballotbox
-    await File('$appCVDir${PATHSEP}campusvote.bb').writeAsBytes(
-      await File(file.files.single.path!).readAsBytes(),
-    );
+    if (filePath != await getBallotBoxDataFilePath()) {
+      await File(await getBallotBoxDataFilePath()).writeAsBytes(
+        await File(filePath).readAsBytes(),
+      );
+    }
 
     // Encrypt ballotbox data
-    await crypto.decryptAndUnzipFile(file.files.single.path!, appCVDir);
+    final bbPath = await crypto.decryptAndUnzipFile(filePath, appCVDir);
+
+    final setupData =
+        await loadSetupSettingsModelFromFile('$bbPath${PATHSEP}settings.json');
+
+    return setupData;
+  }
+
+  /// Return [SetupSettingsModel] from encrypted storage.
+  Future<SetupSettingsModel> loadCommittee() async {
+    final tmpFile = '${await getTempDirPath()}/settings.json';
+    final ecFilePath = await getCommitteeDataFilePath();
+
+    // decrypt and load setup settings
+    await crypto.decryptFile(ecFilePath, tmpFile);
+    final settings = await loadSetupSettingsModelFromFile(tmpFile);
+
+    return settings;
+  }
+
+  /// Get the information if the this nodes created the election.
+  /// If true, this node is the election committee.
+  Future<bool> isElectionCommittee() async {
+    final boolStr = await storage.read(key: STORAGEKEY_COMMITTEE);
+    if (boolStr == null) {
+      return false; // election was not created on this node
+    } else {
+      return bool.parse(boolStr); // in this case always true
+    }
   }
 }

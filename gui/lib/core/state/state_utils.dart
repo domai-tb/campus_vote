@@ -1,4 +1,5 @@
 const STORAGEKEY_STATE = 'campus_vote_state';
+const STORAGEKEY_BALLOTBOX_ENC_KEY = 'ballotbox_enc_key';
 
 enum CVStates {
   AWAITING_SETUP,

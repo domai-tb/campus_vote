@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:campus_vote/core/state/state_utils.dart';
+import 'package:campus_vote/core/utils/path_utils.dart';
 import 'package:campus_vote/setup/setup_models.dart';
 import 'package:campus_vote/setup/setup_services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -80,7 +81,21 @@ class CampusVoteState extends ChangeNotifier with WidgetsBindingObserver {
         // Fresh started GUI application
         final storedStateName = await storage.read(key: STORAGEKEY_STATE);
         if (storedStateName != null) {
-          state = stateFromStr(storedStateName);
+          if (stateFromStr(storedStateName) != CVStates.AWAITING_SETUP) {
+            boxDataPassword =
+                await storage.read(key: STORAGEKEY_BALLOTBOX_ENC_KEY);
+            if (!await setupServices.isElectionCommittee()) {
+              setupData = await setupServices.loadBallotBox(
+                await getBallotBoxDataFilePath(),
+                boxDataPassword!,
+              );
+            } else {
+              setupData = await setupServices.loadCommittee();
+            }
+
+            state = stateFromStr(storedStateName);
+            await changeState(state);
+          }
         }
         break;
       case CVStates.INITIALIZING_ELECTION:
@@ -91,8 +106,14 @@ class CampusVoteState extends ChangeNotifier with WidgetsBindingObserver {
           }
           // Campus Vote is loading ballot box data
           else if (boxDataFile != null && boxDataPassword != null) {
-            print('call loadBallotBox with: $boxDataPassword');
-            await setupServices.loadBallotBox(boxDataFile!, boxDataPassword!);
+            setupData = await setupServices.loadBallotBox(
+              boxDataFile!.files.single.path!,
+              boxDataPassword!,
+            );
+            await storage.write(
+              key: STORAGEKEY_BALLOTBOX_ENC_KEY,
+              value: boxDataPassword,
+            );
           }
         } catch (e) {
           await changeState(CVStates.AWAITING_SETUP);

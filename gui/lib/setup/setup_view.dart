@@ -4,6 +4,7 @@ import 'package:campus_vote/core/state/state_controller.dart';
 import 'package:campus_vote/core/state/state_utils.dart';
 import 'package:campus_vote/setup/widgets/popup_dialog.dart';
 import 'package:campus_vote/setup/widgets/setup_form.dart';
+import 'package:campus_vote/setup/widgets/setup_info.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
@@ -29,6 +30,7 @@ class SetupView extends StatelessWidget {
                   final boxDataPassword = await showDialog(
                     // ignore: use_build_context_synchronously
                     context: context,
+                    barrierDismissible: false,
                     builder: (_) => const PasswordDialog(),
                   );
                   if (campusVoteState.state == CVStates.AWAITING_SETUP) {
@@ -78,7 +80,7 @@ class SetupView extends StatelessWidget {
       case CVStates.AWAITING_SETUP:
         return SetupForm();
       default:
-        return const Placeholder();
+        return SetupInfo();
     }
   }
 }
