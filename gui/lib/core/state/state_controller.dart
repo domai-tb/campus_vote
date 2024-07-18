@@ -29,11 +29,11 @@ class CampusVoteState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   bool apiIsBussy() {
-    return state == CVStates.INITIALIZING_ELECTION;
+    return state != CVStates.ELECTION_STARTED;
   }
 
   bool apiIsStarted() {
-    return state == CVStates.READY_TO_START_ELECTION;
+    return state == CVStates.ELECTION_STARTED;
   }
 
   Future<void> changeState(
@@ -42,9 +42,9 @@ class CampusVoteState extends ChangeNotifier with WidgetsBindingObserver {
     FilePickerResult? boxDataFile,
     String? boxDataPassword,
   }) async {
-    this.setupData = setupData;
-    this.boxDataFile = boxDataFile;
-    this.boxDataPassword = boxDataPassword;
+    this.setupData = setupData ?? this.setupData;
+    this.boxDataFile = boxDataFile ?? this.boxDataFile;
+    this.boxDataPassword = boxDataPassword ?? this.boxDataPassword;
 
     state = newState;
 

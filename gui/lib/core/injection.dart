@@ -27,9 +27,12 @@ Future<void> initServices() async {
   serviceLocator.registerLazySingleton(
     () => CampusVoteState(
       storage: serviceLocator<FlutterSecureStorage>(),
-      setupServices: SetupServices(),
+      setupServices: serviceLocator<SetupServices>(),
     ),
   );
+
+  // Setup
+  serviceLocator.registerLazySingleton(SetupServices.new);
 
   // External
   serviceLocator.registerLazySingleton(FlutterSecureStorage.new);

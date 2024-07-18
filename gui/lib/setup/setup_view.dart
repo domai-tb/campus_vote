@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:campus_vote/core/crypto/crypto.dart';
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
 import 'package:campus_vote/core/state/state_utils.dart';
+import 'package:campus_vote/core/utils/path_utils.dart';
 import 'package:campus_vote/setup/widgets/popup_dialog.dart';
 import 'package:campus_vote/setup/widgets/setup_form.dart';
 import 'package:campus_vote/setup/widgets/setup_info.dart';
@@ -41,6 +44,14 @@ class SetupView extends StatelessWidget {
                         boxDataPassword: boxDataPassword,
                       );
                     } catch (e) {
+                      // TODO: Write more useful error message
+                      // final String msg;
+                      // switch (e) {
+                      //   default:
+                      //     msg =
+                      //         AppLocalizations.of(context)!.errMsgWrongPassword;
+                      //     break;
+                      // }
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Row(
@@ -64,6 +75,19 @@ class SetupView extends StatelessWidget {
                 color: Theme.of(context).colorScheme.tertiary,
               ),
               tooltip: AppLocalizations.of(context)!.tooltipLoadSetup,
+            ),
+          if (campusVoteState.state != CVStates.AWAITING_SETUP)
+            IconButton(
+              onPressed: () async {
+                await Directory(await getAppDirPath()).delete(recursive: true);
+                await crypto.storage.deleteAll();
+                await campusVoteState.changeState(CVStates.AWAITING_SETUP);
+              },
+              icon: Icon(
+                Icons.delete_forever_outlined,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              tooltip: AppLocalizations.of(context)!.tooltipDeleteSetup,
             ),
           const SizedBox(width: 20),
         ],

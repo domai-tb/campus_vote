@@ -165,7 +165,10 @@ class SetupServices {
     }
 
     // Encrypt ballotbox data
-    final bbPath = await crypto.decryptAndUnzipFile(filePath, appCVDir);
+    final bbPath = await crypto.decryptAndUnzipFile(
+      await getBallotBoxDataFilePath(),
+      appCVDir,
+    );
 
     final setupData =
         await loadSetupSettingsModelFromFile('$bbPath${PATHSEP}settings.json');
@@ -194,5 +197,29 @@ class SetupServices {
     } else {
       return bool.parse(boolStr); // in this case always true
     }
+  }
+
+  /// Get the ballot box by matching configured boxes
+  /// with available network interfaces. If no interface matchs the
+  /// configured data it will throw an exception (because it isn't a ballotbox).
+  Future<BallotBoxSetupModel> getBallotBoxSelf(
+      SetupSettingsModel setupData) async {
+    if (await isElectionCommittee()) {
+      throw Exception('this instances is the election commitee');
+    }
+
+    // check if any networking interface address ..
+    for (final interface in await NetworkInterface.list()) {
+      for (final box in setupData.ballotBoxes) {
+        // ... match any IP address of ballt boxes.
+        if (interface.addresses.contains(InternetAddress(box.ipAddr))) {
+          return box;
+        }
+      }
+    }
+
+    throw Exception(
+      'this instance is neither an election commitee nor a bllot box',
+    );
   }
 }

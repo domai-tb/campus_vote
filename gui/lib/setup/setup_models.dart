@@ -12,8 +12,8 @@ class BallotBoxSetupModel {
   final String ipAddr;
 
   const BallotBoxSetupModel({
-    required this.name,
-    required this.ipAddr,
+    this.name = '',
+    this.ipAddr = '',
   });
 
   Map<String, dynamic> toJson() => {

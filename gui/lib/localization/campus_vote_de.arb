@@ -13,5 +13,8 @@
   "votersTitle": "Wählervzeichnis",
   "chatTitle": "Chat",
   "errorEmptySetupData": "",
-  "tooltipLoadSetup": "Lade Einstellungen für eine Urne."
+  "tooltipLoadSetup": "Lade Einstellungen für eine Urne.",
+  "tooltipDeleteSetup": "Lösche alle Einstellungen der Wahl.",
+  "errMsgWrongPassword": "Falsches Passwort.",
+  "errMsgInvalidFile": "Keine Valide Campus Vote Datei."
 }

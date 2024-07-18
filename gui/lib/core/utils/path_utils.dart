@@ -9,11 +9,11 @@ String PATHSEP = Platform.pathSeparator;
 /// Get a random temp directory.
 Future<String> getTempDirPath() async {
   // use encryption key as random identifier
-  final tmpId = encrypt.Key.fromLength(32).base64;
+  final tmpId = encrypt.Key.fromLength(32).base16;
 
   // Store temporary files into a random tmp directory
   final tmpDir = await getTemporaryDirectory();
-  final tmpCVDir = '${tmpDir.path}.$tmpId';
+  final tmpCVDir = '${tmpDir.path}$PATHSEP.$tmpId';
 
   // Ensure the temp dir exists
   // ignore: avoid_slow_async_io
@@ -41,11 +41,11 @@ Future<String> getAppDirPath() async {
 /// Get path to encrypted ballot box data file.
 Future<String> getBallotBoxDataFilePath() async {
   final appCVDir = await getAppDirPath();
-  return '$appCVDir${PATHSEP}campusvote.bb';
+  return '${appCVDir}campusvote.bb';
 }
 
 /// Get path to encrypted ballot box data file.
 Future<String> getCommitteeDataFilePath() async {
   final appCVDir = await getAppDirPath();
-  return '$appCVDir${PATHSEP}campusvote.ec';
+  return '${appCVDir}campusvote.ec';
 }
