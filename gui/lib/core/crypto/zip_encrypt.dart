@@ -52,8 +52,6 @@ Future<void> encryptFile(
   String outputFilePath,
   encrypt.Key key,
 ) async {
-  print('encrypt with key: ${key.base64}');
-
   final inputFile = File(inputFilePath);
   final encryptedFile = File(outputFilePath);
 
@@ -68,8 +66,11 @@ Future<void> encryptFile(
   // Combine IV and encrypted data
   final combinedData = Uint8List(iv.bytes.length + encryptedData.bytes.length)
     ..setRange(0, iv.bytes.length, iv.bytes)
-    ..setRange(iv.bytes.length, iv.bytes.length + encryptedData.bytes.length,
-        encryptedData.bytes);
+    ..setRange(
+      iv.bytes.length,
+      iv.bytes.length + encryptedData.bytes.length,
+      encryptedData.bytes,
+    );
 
   // Write the combined data
   await encryptedFile.writeAsBytes(combinedData);

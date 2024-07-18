@@ -27,7 +27,7 @@ class CVButton extends StatelessWidget {
             if (Theme.of(context).primaryColor == darkTheme.primaryColor)
               Theme.of(context).colorScheme.secondary.withOpacity(0.25)
             else
-              Theme.of(context).canvasColor
+              Theme.of(context).canvasColor,
           ],
         ),
         boxShadow: [

@@ -58,7 +58,7 @@ class _BallotBoxFormState extends State<BallotBoxForm> {
               ),
             ),
             // just a placeholder that has the exact same size
-            IconButton(icon: Container(), onPressed: () {})
+            IconButton(icon: Container(), onPressed: () {}),
           ],
         ),
         ...fields,
@@ -91,7 +91,7 @@ class _BallotBoxFormState extends State<BallotBoxForm> {
                 },
               ),
             ),
-            IconButton(icon: Container(), onPressed: () {})
+            IconButton(icon: Container(), onPressed: () {}),
           ],
         ),
       ],

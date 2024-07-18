@@ -9,17 +9,17 @@ class ShowPasswordDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Your Password'),
+      title: const Text('Your Password'),
       content: TextField(
         controller: TextEditingController(text: password),
         readOnly: true,
         decoration: InputDecoration(
           suffixIcon: IconButton(
-            icon: Icon(Icons.copy),
+            icon: const Icon(Icons.copy),
             onPressed: () {
               Clipboard.setData(ClipboardData(text: password));
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text('Password copied to clipboard!'),
                 ),
               );
@@ -32,7 +32,7 @@ class ShowPasswordDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Close'),
+          child: const Text('Close'),
         ),
       ],
     );

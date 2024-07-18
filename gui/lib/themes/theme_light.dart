@@ -4,7 +4,7 @@ ThemeData lightTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.light,
   primaryColor: Colors.black,
-  canvasColor: Color.fromARGB(255, 174, 174, 211),
+  canvasColor: const Color.fromARGB(255, 174, 174, 211),
   cardColor: Colors.white,
   colorScheme: const ColorScheme(
     brightness: Brightness.light,

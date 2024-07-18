@@ -52,20 +52,22 @@ class SetupView extends StatelessWidget {
                       //         AppLocalizations.of(context)!.errMsgWrongPassword;
                       //     break;
                       // }
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Row(
-                            children: [
-                              const Icon(
-                                Icons.warning_outlined,
-                                color: Colors.red,
-                              ),
-                              const SizedBox(width: 20),
-                              Text(e.toString()),
-                            ],
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Row(
+                              children: [
+                                const Icon(
+                                  Icons.warning_outlined,
+                                  color: Colors.red,
+                                ),
+                                const SizedBox(width: 20),
+                                Text(e.toString()),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
                     }
                   }
                 }

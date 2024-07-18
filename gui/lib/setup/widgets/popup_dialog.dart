@@ -19,18 +19,18 @@ class PasswordDialogState extends State<PasswordDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Enter your password'),
+      title: const Text('Enter your password'),
       content: TextField(
         controller: _passwordController,
         obscureText: true,
-        decoration: InputDecoration(hintText: "Password"),
+        decoration: const InputDecoration(hintText: 'Password'),
       ),
       actions: <Widget>[
         TextButton(
           onPressed: () {
             Navigator.of(context).pop(_passwordController.text);
           },
-          child: Text('Submit'),
+          child: const Text('Submit'),
         ),
       ],
     );

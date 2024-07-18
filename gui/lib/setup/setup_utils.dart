@@ -29,7 +29,7 @@ final ballotBoxIPValidator = FormBuilderValidators.compose([
 final ballotBoxNameValidator = FormBuilderValidators.compose([
   FormBuilderValidators.required(),
   FormBuilderValidators.maxLength(63),
-  FormBuilderValidators.maxWordsCount(1)
+  FormBuilderValidators.maxWordsCount(1),
 ]);
 
 /// Creates a [SetupSettingsModel] based on validated form data by the

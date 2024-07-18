@@ -25,73 +25,74 @@ class MainFrameState extends State<MainFrame> {
     final theme = Theme.of(context);
 
     return ListenableBuilder(
-        listenable: widget.campusVoteState,
-        builder: (BuildContext context, Widget? child) {
-          return Row(
-            children: [
-              Expanded(
-                flex: 21,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Center(child: HeaderView()),
+      listenable: widget.campusVoteState,
+      builder: (BuildContext context, Widget? child) {
+        return Row(
+          children: [
+            Expanded(
+              flex: 21,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Center(child: HeaderView()),
+                  ),
+                  Expanded(
+                    flex: 6,
+                    child: AnimatedBuilder(
+                      animation: widget.controller,
+                      builder: (context, child) {
+                        switch (widget.controller.selectedIndex) {
+                          case 0:
+                            return Container(
+                              color: Colors.accents.first,
+                              child: Center(
+                                child: Text(
+                                  'Dashboard',
+                                  style: theme.textTheme.headlineSmall,
+                                ),
+                              ),
+                            );
+                          case 1:
+                            return Container(
+                              color: Colors.accents.first,
+                              child: Center(
+                                child: Text(
+                                  'Chat',
+                                  style: theme.textTheme.headlineSmall,
+                                ),
+                              ),
+                            );
+                          case 2:
+                            return SetupView();
+                          case 3:
+                            return SettingsView();
+                          default:
+                            return Container(
+                              color: Colors.red,
+                              child: Center(
+                                child: Text(
+                                  'Not found',
+                                  style: theme.textTheme.headlineSmall,
+                                ),
+                              ),
+                            );
+                        }
+                      },
                     ),
-                    Expanded(
-                      flex: 6,
-                      child: AnimatedBuilder(
-                        animation: widget.controller,
-                        builder: (context, child) {
-                          switch (widget.controller.selectedIndex) {
-                            case 0:
-                              return Container(
-                                color: Colors.accents.first,
-                                child: Center(
-                                  child: Text(
-                                    'Dashboard',
-                                    style: theme.textTheme.headlineSmall,
-                                  ),
-                                ),
-                              );
-                            case 1:
-                              return Container(
-                                color: Colors.accents.first,
-                                child: Center(
-                                  child: Text(
-                                    'Chat',
-                                    style: theme.textTheme.headlineSmall,
-                                  ),
-                                ),
-                              );
-                            case 2:
-                              return SetupView();
-                            case 3:
-                              return SettingsView();
-                            default:
-                              return Container(
-                                color: Colors.red,
-                                child: Center(
-                                  child: Text(
-                                    'Not found',
-                                    style: theme.textTheme.headlineSmall,
-                                  ),
-                                ),
-                              );
-                          }
-                        },
-                      ),
-                    ),
-                    const Expanded(
-                      flex: 2,
-                      child: Text('Hier soll der Log später stehen!!'),
-                    )
-                  ],
-                ),
+                  ),
+                  const Expanded(
+                    flex: 2,
+                    child: Text('Hier soll der Log später stehen!!'),
+                  ),
+                ],
               ),
-              // right space
-              Expanded(child: Container()),
-            ],
-          );
-        });
+            ),
+            // right space
+            Expanded(child: Container()),
+          ],
+        );
+      },
+    );
   }
 
   @override

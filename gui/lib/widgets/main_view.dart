@@ -45,14 +45,14 @@ class MainView extends StatelessWidget {
                         darkTheme.primaryColor)
                       Theme.of(context).colorScheme.secondary.withOpacity(0.25)
                     else
-                      Theme.of(context).canvasColor
+                      Theme.of(context).canvasColor,
                   ],
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.28),
                     blurRadius: 30,
-                  )
+                  ),
                 ],
               ),
               iconTheme: IconThemeData(

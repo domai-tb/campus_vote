@@ -62,7 +62,7 @@ class SetupFormState extends State<SetupForm> {
                       ),
                     ),
                     // just a placeholder that has the exact same size
-                    IconButton(icon: Container(), onPressed: () {})
+                    IconButton(icon: Container(), onPressed: () {}),
                   ],
                 ),
                 BallotBoxForm(setupForm: widget.setupForm),
@@ -94,11 +94,13 @@ class SetupFormState extends State<SetupForm> {
                       if (context.mounted) {
                         final encKey = await widget.crypto.getExportEncKey();
                         setState(() => encKeyToShow = encKey.base64);
+                      }
 
+                      if (context.mounted) {
                         await showDialog(
                           context: context,
                           builder: (BuildContext context) => ShowPasswordDialog(
-                            password: encKey.base64,
+                            password: encKeyToShow,
                           ),
                         );
                       }

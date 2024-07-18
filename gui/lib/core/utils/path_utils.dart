@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
-String PATHSEP = Platform.pathSeparator;
+String pathSep = Platform.pathSeparator;
 
 /// Get a random temp directory.
 Future<String> getTempDirPath() async {
@@ -13,7 +13,7 @@ Future<String> getTempDirPath() async {
 
   // Store temporary files into a random tmp directory
   final tmpDir = await getTemporaryDirectory();
-  final tmpCVDir = '${tmpDir.path}$PATHSEP.$tmpId';
+  final tmpCVDir = '${tmpDir.path}$pathSep.$tmpId';
 
   // Ensure the temp dir exists
   // ignore: avoid_slow_async_io
@@ -27,7 +27,7 @@ Future<String> getTempDirPath() async {
 /// Get path to a campusvote application directory.
 Future<String> getAppDirPath() async {
   final appDir = await getApplicationCacheDirectory();
-  final appCVDir = '${appDir.path}$PATHSEP';
+  final appCVDir = '${appDir.path}$pathSep';
 
   // Ensure the app dir exists
   // ignore: avoid_slow_async_io

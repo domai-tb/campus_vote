@@ -7,6 +7,7 @@ import 'package:campus_vote/setup/setup_utils.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SetupServices {
+  // ignore: non_constant_identifier_names
   late String _COCKROACH_BIN;
 
   final crypto = serviceLocator<Crypto>();
@@ -14,12 +15,12 @@ class SetupServices {
 
   SetupServices() {
     final exePath = Platform.resolvedExecutable;
-    final bundlePath = exePath.substring(0, exePath.lastIndexOf(PATHSEP));
+    final bundlePath = exePath.substring(0, exePath.lastIndexOf(pathSep));
 
     if (!Platform.isWindows) {
-      _COCKROACH_BIN = '$bundlePath${PATHSEP}bin${PATHSEP}cockroach';
+      _COCKROACH_BIN = '$bundlePath${pathSep}bin${pathSep}cockroach';
     } else {
-      _COCKROACH_BIN = '$bundlePath${PATHSEP}bin${PATHSEP}cockroach.exe';
+      _COCKROACH_BIN = '$bundlePath${pathSep}bin${pathSep}cockroach.exe';
     }
   }
 
@@ -49,7 +50,7 @@ class SetupServices {
         'cert',
         'create-ca',
         '--certs-dir=$tmpCVDir',
-        '--ca-key=$tmpCVDir${PATHSEP}ca.key',
+        '--ca-key=$tmpCVDir${pathSep}ca.key',
         '--key-size=4096',
         '--overwrite', // Certificate and key files are overwritten if they exist.
         //'--lifetime=365d' // Certificate will be valid for 10 years (default).
@@ -63,7 +64,7 @@ class SetupServices {
 
     for (final box in setupData.ballotBoxes) {
       // Create ballotbox specific tmp dir
-      final boxDir = await Directory('$tmpCVDir$PATHSEP${box.name}')
+      final boxDir = await Directory('$tmpCVDir$pathSep${box.name}')
           .create(recursive: true);
 
       // Generate a node certificate "<certs-dir>/node.crt" and key "<certs-dir>/node.key".
@@ -73,7 +74,7 @@ class SetupServices {
           'cert',
           'create-node',
           '--certs-dir=$tmpCVDir',
-          '--ca-key=$tmpCVDir${PATHSEP}ca.key',
+          '--ca-key=$tmpCVDir${pathSep}ca.key',
           '--key-size=4096',
           '--overwrite', // Certificate and key files are overwritten if they exist.
           //'--lifetime=365d' // Certificate will be valid for 10 years (default).
@@ -88,11 +89,11 @@ class SetupServices {
       }
 
       // Rename Node key and cert to ballotbox specific name
-      await File('$tmpCVDir${PATHSEP}node.key').rename(
-        '${boxDir.path}${PATHSEP}node.${box.name.toLowerCase()}.key',
+      await File('$tmpCVDir${pathSep}node.key').rename(
+        '${boxDir.path}${pathSep}node.${box.name.toLowerCase()}.key',
       );
-      await File('$tmpCVDir${PATHSEP}node.crt').rename(
-        '${boxDir.path}${PATHSEP}node.${box.name.toLowerCase()}.crt',
+      await File('$tmpCVDir${pathSep}node.crt').rename(
+        '${boxDir.path}${pathSep}node.${box.name.toLowerCase()}.crt',
       );
 
       // Generate a client certificate "<certs-dir>/client.crt" and key "<certs-dir>/node.key".
@@ -102,7 +103,7 @@ class SetupServices {
           'cert',
           'create-client',
           '--certs-dir=$tmpCVDir',
-          '--ca-key=$tmpCVDir${PATHSEP}ca.key',
+          '--ca-key=$tmpCVDir${pathSep}ca.key',
           '--key-size=4096',
           '--overwrite', // Certificate and key files are overwritten if they exist.
           //'--lifetime=365d' // Certificate will be valid for 10 years (default).
@@ -117,19 +118,19 @@ class SetupServices {
       }
 
       // Rename Node key and cert to ballotbox specific name
-      await File('$tmpCVDir${PATHSEP}client.${box.name.toLowerCase()}.key')
+      await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.key')
           .rename(
-        '${boxDir.path}${PATHSEP}client.${box.name.toLowerCase()}.key',
+        '${boxDir.path}${pathSep}client.${box.name.toLowerCase()}.key',
       );
-      await File('$tmpCVDir${PATHSEP}client.${box.name.toLowerCase()}.crt')
+      await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.crt')
           .rename(
-        '${boxDir.path}${PATHSEP}client.${box.name.toLowerCase()}.crt',
+        '${boxDir.path}${pathSep}client.${box.name.toLowerCase()}.crt',
       );
 
       // Store setup data to ballotbox specific config directory
       await saveSetupSettingsModelToFile(
         setupData,
-        '${boxDir.path}${PATHSEP}settings.json',
+        '${boxDir.path}${pathSep}settings.json',
       );
     }
 
@@ -137,7 +138,7 @@ class SetupServices {
     await crypto.zipAndEncryptDirectories(tmpCVDir, appCVDir);
 
     // Store and encrypt setup data config directory
-    final settingsPath = '$tmpCVDir${PATHSEP}settings.json';
+    final settingsPath = '$tmpCVDir${pathSep}settings.json';
     await saveSetupSettingsModelToFile(setupData, settingsPath);
     await crypto.encryptFile(settingsPath, await getCommitteeDataFilePath());
 
@@ -171,7 +172,7 @@ class SetupServices {
     );
 
     final setupData =
-        await loadSetupSettingsModelFromFile('$bbPath${PATHSEP}settings.json');
+        await loadSetupSettingsModelFromFile('$bbPath${pathSep}settings.json');
 
     return setupData;
   }
@@ -203,7 +204,8 @@ class SetupServices {
   /// with available network interfaces. If no interface matchs the
   /// configured data it will throw an exception (because it isn't a ballotbox).
   Future<BallotBoxSetupModel> getBallotBoxSelf(
-      SetupSettingsModel setupData) async {
+    SetupSettingsModel setupData,
+  ) async {
     if (await isElectionCommittee()) {
       throw Exception('this instances is the election commitee');
     }
