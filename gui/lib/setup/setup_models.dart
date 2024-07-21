@@ -36,15 +36,18 @@ class BallotBoxSetupModel {
 
 /// Settings to setup a new election
 class SetupSettingsModel {
+  final String committeeIpAddr;
   final DateTimeRange electionPeriod;
   final List<BallotBoxSetupModel> ballotBoxes;
 
   const SetupSettingsModel({
+    required this.committeeIpAddr,
     required this.electionPeriod,
     required this.ballotBoxes,
   });
 
   Map<String, dynamic> toJson() => {
+        MODEL_SET_COMMITTEE_IP: committeeIpAddr,
         MODEL_SET_PERIOD_KEY: {
           MODEL_SET_PERIOD_START_KEY: electionPeriod.start.toIso8601String(),
           MODEL_SET_PERIOD_END_KEY: electionPeriod.end.toIso8601String(),
@@ -54,6 +57,7 @@ class SetupSettingsModel {
 
   factory SetupSettingsModel.fromJson(Map<String, dynamic> json) {
     return SetupSettingsModel(
+      committeeIpAddr: json[MODEL_SET_COMMITTEE_IP],
       electionPeriod: DateTimeRange(
         start: DateTime.parse(
           json[MODEL_SET_PERIOD_KEY][MODEL_SET_PERIOD_START_KEY],

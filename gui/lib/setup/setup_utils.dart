@@ -2,20 +2,23 @@ import 'package:campus_vote/setup/setup_models.dart';
 import 'package:campus_vote/setup/setup_view.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
+const COCKRAOCH_CERTS_DIRNAME = 'cockroach-certs';
+
 const FORMKEY_ADD_BALLOTBOX = '_setupBallotBox';
 const FORMKEY_ADD_IP = '_ipAddr';
 const FORMKEY_ADD_NAME = '_name';
 const FORMKEY_BALLOTBOX_IP = 'setupBallotBox_ipAddr';
 const FORMKEY_BALLOTBOX_NAME = 'setupBallotBox_name';
+const FORMKEY_COMMITTEE_IP = 'setupBallotBox_electionCommitteeIPAddr';
 const FORMKEY_ELECTION_PERIOD = 'setupFormPeriod';
 
-const MODEL_BOX_NAME_KEY = 'name';
 const MODEL_BOX_IPADDR_KEY = 'ipAddr';
-
+const MODEL_BOX_NAME_KEY = 'name';
+const MODEL_SET_BOXES_KEY = 'ballotBoxes';
+const MODEL_SET_PERIOD_END_KEY = 'end';
 const MODEL_SET_PERIOD_KEY = 'electionPeriod';
 const MODEL_SET_PERIOD_START_KEY = 'start';
-const MODEL_SET_PERIOD_END_KEY = 'end';
-const MODEL_SET_BOXES_KEY = 'ballotBoxes';
+const MODEL_SET_COMMITTEE_IP = 'electionCommitteeIPAddr';
 
 const STORAGEKEY_COMMITTEE = 'isElectionCommittee';
 
@@ -53,6 +56,7 @@ SetupSettingsModel setupFormDataToModel(Map<String, dynamic> formData) {
 
   return SetupSettingsModel(
     ballotBoxes: boxes,
+    committeeIpAddr: formData[FORMKEY_COMMITTEE_IP],
     electionPeriod: formData[FORMKEY_ELECTION_PERIOD],
   );
 }

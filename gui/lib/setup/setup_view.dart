@@ -96,15 +96,15 @@ class SetupView extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: getStateWidget(),
+        child: getStateWidget(context),
       ),
     );
   }
 
-  Widget getStateWidget() {
+  Widget getStateWidget(BuildContext context) {
     switch (campusVoteState.state) {
       case CVStates.AWAITING_SETUP:
-        return SetupForm();
+        return SetupForm(setupPageContext: context);
       default:
         return SetupInfo();
     }

@@ -94,16 +94,4 @@ class MainFrameState extends State<MainFrame> {
       },
     );
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-    WidgetsBinding.instance.removeObserver(widget.campusVoteState);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(widget.campusVoteState);
-  }
 }

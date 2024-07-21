@@ -2,15 +2,17 @@ import 'dart:async';
 
 import 'package:campus_vote/core/state/state_utils.dart';
 import 'package:campus_vote/core/utils/path_utils.dart';
+import 'package:campus_vote/header/header_service.dart';
 import 'package:campus_vote/setup/setup_models.dart';
 import 'package:campus_vote/setup/setup_services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class CampusVoteState extends ChangeNotifier with WidgetsBindingObserver {
+class CampusVoteState extends ChangeNotifier {
   final FlutterSecureStorage storage;
   final SetupServices setupServices;
+  final HeaderServices headerServices;
 
   CVStates state;
   SetupSettingsModel? setupData;
@@ -20,6 +22,7 @@ class CampusVoteState extends ChangeNotifier with WidgetsBindingObserver {
   CampusVoteState({
     required this.storage,
     required this.setupServices,
+    required this.headerServices,
     this.state = CVStates.AWAITING_SETUP,
     this.setupData,
     this.boxDataFile,
@@ -47,32 +50,10 @@ class CampusVoteState extends ChangeNotifier with WidgetsBindingObserver {
     this.boxDataPassword = boxDataPassword ?? this.boxDataPassword;
 
     state = newState;
+    notifyListeners();
 
     await _handleState();
     notifyListeners();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-
-    switch (state) {
-      case AppLifecycleState.resumed:
-        print('AppLifecycleState.resumed');
-        break;
-      case AppLifecycleState.paused:
-        print('AppLifecycleState.paused');
-        break;
-      case AppLifecycleState.inactive:
-        print('AppLifecycleState.inactive');
-        break;
-      case AppLifecycleState.hidden:
-        print('AppLifecycleState.hidden');
-        break;
-      case AppLifecycleState.detached:
-        print('AppLifecycleState.detached');
-        break;
-    }
   }
 
   Future<void> _handleState() async {
@@ -126,7 +107,11 @@ class CampusVoteState extends ChangeNotifier with WidgetsBindingObserver {
         // TODO: Handle state
         break;
       case CVStates.ELECTION_STARTED:
-        // TODO: Handle state
+        if (setupData != null) {
+          final boxSelf = await setupServices.getBallotBoxSelf(setupData!);
+          await headerServices.startCockroachNode(setupData!, boxSelf);
+          await headerServices.startCampusVoteAPI();
+        }
         break;
       case CVStates.ELECTION_PAUSED:
         // TODO: Handle state

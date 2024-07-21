@@ -1,5 +1,6 @@
 import 'package:campus_vote/core/crypto/crypto.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
+import 'package:campus_vote/header/header_service.dart';
 import 'package:campus_vote/settings/settings_controller.dart';
 import 'package:campus_vote/setup/setup_services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -28,11 +29,15 @@ Future<void> initServices() async {
     () => CampusVoteState(
       storage: serviceLocator<FlutterSecureStorage>(),
       setupServices: serviceLocator<SetupServices>(),
+      headerServices: serviceLocator<HeaderServices>(),
     ),
   );
 
   // Setup
   serviceLocator.registerLazySingleton(SetupServices.new);
+
+  // Header
+  serviceLocator.registerLazySingleton(HeaderServices.new);
 
   // External
   serviceLocator.registerLazySingleton(FlutterSecureStorage.new);

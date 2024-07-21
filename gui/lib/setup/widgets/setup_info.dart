@@ -1,5 +1,6 @@
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
+import 'package:campus_vote/core/state/state_utils.dart';
 import 'package:campus_vote/setup/setup_models.dart';
 import 'package:campus_vote/setup/setup_services.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,8 @@ class SetupInfoState extends State<SetupInfo> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.campusVoteState.setupData == null) {
+    if (widget.campusVoteState.setupData == null ||
+        widget.campusVoteState.state == CVStates.INITIALIZING_ELECTION) {
       return const Center(child: CircularProgressIndicator());
     }
     loadBallotBoxData();

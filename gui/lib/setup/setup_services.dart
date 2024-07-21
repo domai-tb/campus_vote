@@ -1,28 +1,20 @@
 import 'dart:io';
+
 import 'package:campus_vote/core/crypto/crypto.dart';
 import 'package:campus_vote/core/injection.dart';
+import 'package:campus_vote/core/utils/file_utils.dart';
 import 'package:campus_vote/core/utils/path_utils.dart';
 import 'package:campus_vote/setup/setup_models.dart';
 import 'package:campus_vote/setup/setup_utils.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SetupServices {
-  // ignore: non_constant_identifier_names
-  late String _COCKROACH_BIN;
+  final String cockroachBin = getCockroachBinPath();
 
   final crypto = serviceLocator<Crypto>();
   final storage = serviceLocator<FlutterSecureStorage>();
 
-  SetupServices() {
-    final exePath = Platform.resolvedExecutable;
-    final bundlePath = exePath.substring(0, exePath.lastIndexOf(pathSep));
-
-    if (!Platform.isWindows) {
-      _COCKROACH_BIN = '$bundlePath${pathSep}bin${pathSep}cockroach';
-    } else {
-      _COCKROACH_BIN = '$bundlePath${pathSep}bin${pathSep}cockroach.exe';
-    }
-  }
+  SetupServices();
 
   /// Creates the election data that is required to use CockRoachDB.
   ///
@@ -36,7 +28,7 @@ class SetupServices {
   /// be imported to setup a ballotbox.
   Future<void> createElection(SetupSettingsModel setupData) async {
     final tmpCVDir = await getTempDirPath();
-    final appCVDir = await getAppDirPath();
+    final appCVDir = await getAppExportDirPath();
 
     // Store information that this instances created the note.
     // This node will not and cannot load any ballotbox data.
@@ -45,7 +37,7 @@ class SetupServices {
     // Generate a CA certificate "<certs-dir>/ca.crt" and CA key "<ca-key>".
     // The certs directory is created if it does not exist.
     final createCA = await Process.run(
-      _COCKROACH_BIN,
+      cockroachBin,
       [
         'cert',
         'create-ca',
@@ -64,12 +56,15 @@ class SetupServices {
 
     for (final box in setupData.ballotBoxes) {
       // Create ballotbox specific tmp dir
-      final boxDir = await Directory('$tmpCVDir$pathSep${box.name}')
+      final boxDir = await Directory('$tmpCVDir$pathSep${box.name}$pathSep')
           .create(recursive: true);
+      final certsDir =
+          await Directory('${boxDir.path}$pathSep$COCKRAOCH_CERTS_DIRNAME')
+              .create(recursive: true);
 
       // Generate a node certificate "<certs-dir>/node.crt" and key "<certs-dir>/node.key".
       final createNode = await Process.run(
-        _COCKROACH_BIN,
+        cockroachBin,
         [
           'cert',
           'create-node',
@@ -89,16 +84,14 @@ class SetupServices {
       }
 
       // Rename Node key and cert to ballotbox specific name
-      await File('$tmpCVDir${pathSep}node.key').rename(
-        '${boxDir.path}${pathSep}node.${box.name.toLowerCase()}.key',
-      );
-      await File('$tmpCVDir${pathSep}node.crt').rename(
-        '${boxDir.path}${pathSep}node.${box.name.toLowerCase()}.crt',
-      );
+      await File('$tmpCVDir${pathSep}node.key')
+          .rename('${certsDir.path}${pathSep}node.key');
+      await File('$tmpCVDir${pathSep}node.crt')
+          .rename('${certsDir.path}${pathSep}node.crt');
 
       // Generate a client certificate "<certs-dir>/client.crt" and key "<certs-dir>/node.key".
       final createClient = await Process.run(
-        _COCKROACH_BIN,
+        cockroachBin,
         [
           'cert',
           'create-client',
@@ -117,87 +110,97 @@ class SetupServices {
         print('Output: ${createClient.stdout}');
       }
 
-      // Rename Node key and cert to ballotbox specific name
+      // Rename client key and cert to ballotbox specific name
       await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.key')
           .rename(
-        '${boxDir.path}${pathSep}client.${box.name.toLowerCase()}.key',
+        '${certsDir.path}${pathSep}client.${box.name.toLowerCase()}.key',
       );
       await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.crt')
           .rename(
-        '${boxDir.path}${pathSep}client.${box.name.toLowerCase()}.crt',
+        '${certsDir.path}${pathSep}client.${box.name.toLowerCase()}.crt',
       );
+
+      // Store CA TLS certificate in ballot specific config directory
+      await File('$tmpCVDir${pathSep}ca.crt')
+          .copy('${certsDir.path}${pathSep}ca.crt');
 
       // Store setup data to ballotbox specific config directory
       await saveSetupSettingsModelToFile(
         setupData,
-        '${boxDir.path}${pathSep}settings.json',
+        '${boxDir.path}settings.json',
       );
     }
 
     // Encrypt ballotbox data and export
     await crypto.zipAndEncryptDirectories(tmpCVDir, appCVDir);
 
-    // Store and encrypt setup data config directory
-    final settingsPath = '$tmpCVDir${pathSep}settings.json';
-    await saveSetupSettingsModelToFile(setupData, settingsPath);
-    await crypto.encryptFile(settingsPath, await getCommitteeDataFilePath());
+    // Committe Node & Client
+    final ecCertsDir = await getCockroachCertsDir();
+
+    // Generate a node certificate "<certs-dir>/node.crt" and key "<certs-dir>/node.key".
+    final createNode = await Process.run(
+      cockroachBin,
+      [
+        'cert',
+        'create-node',
+        '--certs-dir=$tmpCVDir',
+        '--ca-key=$tmpCVDir${pathSep}ca.key',
+        '--key-size=4096',
+        '--overwrite', // Certificate and key files are overwritten if they exist.
+        //'--lifetime=365d' // Certificate will be valid for 10 years (default).
+        setupData.committeeIpAddr,
+      ],
+    );
+    if (createNode.exitCode != 0) {
+      print('Error running executable: ${createNode.stderr}');
+    } else {
+      print('Output: ${createNode.stdout}');
+    }
+
+    final createClient = await Process.run(
+      cockroachBin,
+      [
+        'cert',
+        'create-client',
+        '--certs-dir=$tmpCVDir',
+        '--ca-key=$tmpCVDir${pathSep}ca.key',
+        '--key-size=4096',
+        '--overwrite', // Certificate and key files are overwritten if they exist.
+        //'--lifetime=365d' // Certificate will be valid for 10 years (default).
+        'root',
+      ],
+    );
+    if (createClient.exitCode != 0) {
+      print('Error running executable: ${createClient.stderr}');
+    } else {
+      print('Output: ${createClient.stdout}');
+    }
+
+    // Rename Node key and cert to commiittee specific name
+    await File('$tmpCVDir${pathSep}node.key')
+        .copy('$ecCertsDir${pathSep}node.key');
+    await File('$tmpCVDir${pathSep}node.crt')
+        .copy('$ecCertsDir${pathSep}node.crt');
+    await File('$tmpCVDir${pathSep}client.root.key')
+        .copy('$ecCertsDir${pathSep}client.root.key');
+    await File('$tmpCVDir${pathSep}client.root.crt')
+        .copy('$ecCertsDir${pathSep}client.root.crt');
+
+    await File('$tmpCVDir${pathSep}ca.crt').copy('$ecCertsDir${pathSep}ca.crt');
+
+    await saveSetupSettingsModelToFile(
+        setupData, '${await getCVDataDir()}${pathSep}settings.json');
+
+    // Encrypt ballotbox data and export
+    await crypto.zipAndEncryptDirectories(
+      await getAppDirPath(),
+      await getAppDirPath(),
+    );
+    File('${await getCVDataDir()}.zip.enc')
+        .renameSync(await getCommitteeDataFilePath());
 
     // Delete temporary directory
     Directory(tmpCVDir).deleteSync(recursive: true);
-  }
-
-  /// Load ballotbox configuration from encrypted config file.
-  /// The config files are generated on initially creation of
-  /// election setup by the election committee.
-  Future<SetupSettingsModel> loadBallotBox(
-    String filePath,
-    String boxDataPassword,
-  ) async {
-    final appCVDir = await getAppDirPath();
-
-    // Store decryption password
-    await crypto.storeExportEncKey(boxDataPassword);
-
-    // Copy encrypted file to application dir
-    if (filePath != await getBallotBoxDataFilePath()) {
-      await File(await getBallotBoxDataFilePath()).writeAsBytes(
-        await File(filePath).readAsBytes(),
-      );
-    }
-
-    // Encrypt ballotbox data
-    final bbPath = await crypto.decryptAndUnzipFile(
-      await getBallotBoxDataFilePath(),
-      appCVDir,
-    );
-
-    final setupData =
-        await loadSetupSettingsModelFromFile('$bbPath${pathSep}settings.json');
-
-    return setupData;
-  }
-
-  /// Return [SetupSettingsModel] from encrypted storage.
-  Future<SetupSettingsModel> loadCommittee() async {
-    final tmpFile = '${await getTempDirPath()}/settings.json';
-    final ecFilePath = await getCommitteeDataFilePath();
-
-    // decrypt and load setup settings
-    await crypto.decryptFile(ecFilePath, tmpFile);
-    final settings = await loadSetupSettingsModelFromFile(tmpFile);
-
-    return settings;
-  }
-
-  /// Get the information if the this nodes created the election.
-  /// If true, this node is the election committee.
-  Future<bool> isElectionCommittee() async {
-    final boolStr = await storage.read(key: STORAGEKEY_COMMITTEE);
-    if (boolStr == null) {
-      return false; // election was not created on this node
-    } else {
-      return bool.parse(boolStr); // in this case always true
-    }
   }
 
   /// Get the ballot box by matching configured boxes
@@ -223,5 +226,76 @@ class SetupServices {
     throw Exception(
       'this instance is neither an election commitee nor a bllot box',
     );
+  }
+
+  /// Get the information if the this nodes created the election.
+  /// If true, this node is the election committee.
+  Future<bool> isElectionCommittee() async {
+    final boolStr = await storage.read(key: STORAGEKEY_COMMITTEE);
+    if (boolStr == null) {
+      return false; // election was not created on this node
+    } else {
+      return bool.parse(boolStr); // in this case always true
+    }
+  }
+
+  /// Load ballotbox configuration from encrypted config file.
+  /// The config files are generated on initially creation of
+  /// election setup by the election committee.
+  Future<SetupSettingsModel> loadBallotBox(
+    String filePath,
+    String boxDataPassword,
+  ) async {
+    final appCVDir = await getAppDirPath();
+    final bbDir = await getCVDataDir();
+    final ballotboxFile = await getBallotBoxDataFilePath();
+
+    // Store decryption password
+    await crypto.storeExportEncKey(boxDataPassword);
+
+    // Copy encrypted file to application dir
+    if (filePath != ballotboxFile) {
+      await File(ballotboxFile).writeAsBytes(
+        await File(filePath).readAsBytes(),
+      );
+    }
+
+    // Encrypt ballotbox data
+    final bbPath = await crypto.decryptAndUnzipFile(ballotboxFile, appCVDir);
+
+    // Rename output directory to "ballotbox"
+    try {
+      Directory(bbPath).renameSync(bbDir);
+    } catch (e) {
+      // Directory.rename will throw an excpetion on
+      // non empty directory at deletion time. Do it manually.
+      Directory(bbPath).deleteSync(recursive: true);
+    }
+
+    // Set file permissions for keys correctly
+    await changeAllFilePermissions(await getAppDirPath(), '600');
+
+    final setupData =
+        await loadSetupSettingsModelFromFile('$bbDir${pathSep}settings.json');
+
+    return setupData;
+  }
+
+  /// Return [SetupSettingsModel] from encrypted storage.
+  Future<SetupSettingsModel> loadCommittee() async {
+    final appCVDir = await getAppDirPath();
+    final ecDir = await getCVDataDir();
+    final ecFile = await getCommitteeDataFilePath();
+
+    // Decrypt ballotbox data
+    await crypto.decryptAndUnzipFile(ecFile, appCVDir);
+
+    // Set file permissions for keys correctly
+    await changeAllFilePermissions(await getAppDirPath(), '600');
+
+    final setupData =
+        await loadSetupSettingsModelFromFile('$ecDir${pathSep}settings.json');
+
+    return setupData;
   }
 }
