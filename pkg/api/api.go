@@ -2,7 +2,6 @@ package api
 
 import (
 	context "context"
-	"log"
 	"net"
 
 	"google.golang.org/grpc"
@@ -13,9 +12,9 @@ import (
 
 // TODO: Do not use plain files. Use keychain / credential manager instead
 const (
-	serverCertFile = "certs/api-server.crt"
-	serverKeyFile  = "certs/api-server.key"
-	rootCACertFile = "certs/api-ca.crt"
+	serverCertFile = "/home/domai/Coding/campus_vote/certs/api-server.crt"
+	serverKeyFile  = "/home/domai/Coding/campus_vote/certs/api-server.key"
+	rootCACertFile = "/home/domai/Coding/campus_vote/certs/api-ca.crt"
 )
 
 type CampusVoteAPI struct {
@@ -24,14 +23,14 @@ type CampusVoteAPI struct {
 }
 
 func New(cvdb storage.CampusVoteStorage) {
-	lis, err := net.Listen("tcp", ":21797")
+	lis, err := net.Listen("tcp", "127.0.0.1:21797")
 	if err != nil {
-		log.Fatalf("cannot listen on port 21797: %s", err)
+		panic(err)
 	}
 
 	tlsCred, err := loadTLSCredentials()
 	if err != nil {
-		log.Fatalf("cannot load TLS credentials: %s", err)
+		panic(err)
 	}
 
 	gRPCServer := grpc.NewServer(
@@ -41,7 +40,7 @@ func New(cvdb storage.CampusVoteStorage) {
 
 	RegisterCampusVoteServer(gRPCServer, campusVoteService)
 	if err = gRPCServer.Serve(lis); err != nil {
-		log.Fatalf("cannot serve gRPC server: %s", err)
+		panic(err)
 	}
 }
 

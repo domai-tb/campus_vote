@@ -28,7 +28,9 @@ class HeaderView extends StatelessWidget {
                   ? 'Shutdown Campus Vote'
                   : 'Start API',
               onPressed: () {
-                campusVoteState.changeState(CVStates.ELECTION_STARTED);
+                if (!campusVoteState.apiIsStarted()) {
+                  campusVoteState.changeState(CVStates.ELECTION_STARTED);
+                }
               },
             ),
           ),

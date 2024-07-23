@@ -108,9 +108,17 @@ class CampusVoteState extends ChangeNotifier {
         break;
       case CVStates.ELECTION_STARTED:
         if (setupData != null) {
-          final boxSelf = await setupServices.getBallotBoxSelf(setupData!);
+          final BallotBoxSetupModel? boxSelf;
+          if (!await setupServices.isElectionCommittee()) {
+            boxSelf = await setupServices.getBallotBoxSelf(setupData!);
+          } else {
+            boxSelf = null; // there no box data if node is election committee
+          }
+
           await headerServices.startCockroachNode(setupData!, boxSelf);
-          await headerServices.startCampusVoteAPI();
+          // await headerServices.startCampusVoteAPI();
+        } else {
+          await changeState(CVStates.READY_TO_START_ELECTION);
         }
         break;
       case CVStates.ELECTION_PAUSED:
