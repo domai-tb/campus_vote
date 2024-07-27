@@ -77,6 +77,11 @@ app.*.map.json
 /certs
 
 #
-#   Campus Vote Dev data
+#   Campus Vote
 #
+
+# Dev data
 /campusvote
+
+# CLI release
+!/gui/**/campus_vote/**

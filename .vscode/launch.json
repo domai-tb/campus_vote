@@ -9,7 +9,7 @@
       "type": "go",
       "request": "launch",
       "mode": "debug",
-      "program": "cmd/committee/main.go"
+      "program": "cmd/campus_vote/main.go"
     },
     {
       "name": "GUI (debug)",

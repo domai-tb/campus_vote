@@ -149,3 +149,8 @@ endif()
 install(PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/cockroach/cockroach"
         DESTINATION "${INSTALL_BUNDLE_BIN_DIR}"
         PERMISSIONS OWNER_EXECUTE OWNER_READ)
+
+# Install the Campus Vote CLI into application bundle
+install(PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/campus_vote/campusvote"
+        DESTINATION "${INSTALL_BUNDLE_BIN_DIR}"
+        PERMISSIONS OWNER_EXECUTE OWNER_READ)

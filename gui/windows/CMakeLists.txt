@@ -112,3 +112,8 @@ install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}"
 install(PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/cockroach/cockroach.exe"
         DESTINATION "${INSTALL_BUNDLE_BIN_DIR}"
         PERMISSIONS OWNER_EXECUTE OWNER_READ)
+
+# Install the Campus Vote CLI into application bundle
+install(PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/campus_vote/campusvote.exe"
+        DESTINATION "${INSTALL_BUNDLE_BIN_DIR}"
+        PERMISSIONS OWNER_EXECUTE OWNER_READ)
