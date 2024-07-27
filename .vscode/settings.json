@@ -1,0 +1,31 @@
+{
+  "debug.openDebug": "openOnDebugBreak",
+  "files.autoSave": "onFocusChange",
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmDelete": false,
+  "editor.suggestSelection": "first",
+  "editor.autoIndent": "full",
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
+  "editor.formatOnSave": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "editor.tabCompletion": "onlySnippets",
+  "editor.wordBasedSuggestions": "off",
+  "editor.selectionHighlight": false,
+
+  "[go]": {
+    "editor.insertSpaces": true,
+    "editor.defaultFormatter": "golang.go",
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 120,
+    "editor.tabSize": 4,
+    "editor.rulers": [100, 120]
+  },
+
+  "[dart]": {
+    "editor.tabSize": 2,
+    "editor.rulers": [120, 140],
+    "editor.wordWrapColumn": 140,
+    "editor.defaultFormatter": "Dart-Code.dart-code"
+  }
+}
