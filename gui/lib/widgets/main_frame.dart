@@ -1,5 +1,6 @@
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
+import 'package:campus_vote/dashboard/dashboard_view.dart';
 import 'package:campus_vote/header/header_view.dart';
 import 'package:campus_vote/settings/settings_view.dart';
 import 'package:campus_vote/setup/setup_view.dart';
@@ -43,15 +44,7 @@ class MainFrameState extends State<MainFrame> {
                       builder: (context, child) {
                         switch (widget.controller.selectedIndex) {
                           case 0:
-                            return Container(
-                              color: Colors.accents.first,
-                              child: Center(
-                                child: Text(
-                                  'Dashboard',
-                                  style: theme.textTheme.headlineSmall,
-                                ),
-                              ),
-                            );
+                            return DashboardView();
                           case 1:
                             return Container(
                               color: Colors.accents.first,

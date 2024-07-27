@@ -29,7 +29,7 @@ class HeaderView extends StatelessWidget {
                   : 'Start API',
               onPressed: () {
                 if (!campusVoteState.apiIsStarted()) {
-                  campusVoteState.changeState(CVStates.ELECTION_STARTED);
+                  campusVoteState.changeState(CVStates.STARTING_ELECTION);
                 }
               },
             ),

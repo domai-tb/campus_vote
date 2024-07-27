@@ -3,29 +3,11 @@ import 'dart:io';
 
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/setup/setup_services.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 
 String pathSep = Platform.pathSeparator;
-
-/// Get a random temp directory.
-Future<String> getTempDirPath() async {
-  // use encryption key as random identifier
-  final tmpId = encrypt.Key.fromLength(16).base16;
-
-  // Store temporary files into a random tmp directory
-  final tmpDir = await getTemporaryDirectory();
-  final tmpCVDir = '${tmpDir.path}$pathSep.$tmpId';
-
-  // Ensure the temp dir exists
-  // ignore: avoid_slow_async_io
-  if (!await Directory(tmpCVDir).exists()) {
-    await Directory(tmpCVDir).create(recursive: true);
-  }
-
-  return tmpCVDir;
-}
 
 /// Get path to a campusvote application directory.
 Future<String> getAppDirPath() async {
@@ -61,10 +43,24 @@ Future<String> getBallotBoxDataFilePath() async {
   return '${appCVDir}campusvote.bb';
 }
 
-/// Get path to encrypted ballot box data file.
-Future<String> getCommitteeDataFilePath() async {
-  final appCVDir = await getAppDirPath();
-  return '${appCVDir}campusvote.ec';
+/// Get the path to CockRoach executable.
+String getCampusVoteBinPath() {
+  late String retVal;
+
+  final exePath = Platform.resolvedExecutable;
+  final bundlePath = exePath.substring(0, exePath.lastIndexOf(pathSep));
+
+  if (!Platform.isWindows) {
+    retVal = '$bundlePath${pathSep}bin${pathSep}campusvote';
+  } else {
+    retVal = '$bundlePath${pathSep}bin${pathSep}campusvote.exe';
+  }
+
+  if (File(retVal).existsSync()) {
+    return retVal;
+  }
+
+  throw Exception('$retVal is not a valid file');
 }
 
 /// Get the path to CockRoach executable.
@@ -87,23 +83,6 @@ String getCockroachBinPath() {
   throw Exception('$retVal is not a valid file');
 }
 
-/// Get data directory of ballotbox
-Future<String> getCVDataDir() async {
-  late String retVal;
-
-  final appCVDir = await getAppDirPath();
-  final setupServices = serviceLocator<SetupServices>();
-
-  if (await setupServices.isElectionCommittee()) {
-    retVal = path.join(appCVDir, '.committee');
-  } else {
-    retVal = path.join(appCVDir, '.ballotbox');
-  }
-
-  Directory(retVal).createSync(recursive: true);
-  return retVal;
-}
-
 /// Get data directory of cockroach certs
 Future<String> getCockroachCertsDir() async {
   final appCVDir = await getCVDataDir();
@@ -121,4 +100,45 @@ Future<String> getCockroachNodeDir() async {
   Directory(nodeDir).createSync();
 
   return nodeDir;
+}
+
+/// Get path to encrypted ballot box data file.
+Future<String> getCommitteeDataFilePath() async {
+  final appCVDir = await getAppDirPath();
+  return '${appCVDir}campusvote.ec';
+}
+
+/// Get data directory of ballotbox
+Future<String> getCVDataDir() async {
+  late String retVal;
+
+  final appCVDir = await getAppDirPath();
+  final setupServices = serviceLocator<SetupServices>();
+
+  if (await setupServices.isElectionCommittee()) {
+    retVal = path.join(appCVDir, '.committee');
+  } else {
+    retVal = path.join(appCVDir, '.ballotbox');
+  }
+
+  Directory(retVal).createSync(recursive: true);
+  return retVal;
+}
+
+/// Get a random temp directory.
+Future<String> getTempDirPath() async {
+  // use encryption key as random identifier
+  final tmpId = encrypt.Key.fromLength(16).base16;
+
+  // Store temporary files into a random tmp directory
+  final tmpDir = await getTemporaryDirectory();
+  final tmpCVDir = '${tmpDir.path}$pathSep.$tmpId';
+
+  // Ensure the temp dir exists
+  // ignore: avoid_slow_async_io
+  if (!await Directory(tmpCVDir).exists()) {
+    await Directory(tmpCVDir).create(recursive: true);
+  }
+
+  return tmpCVDir;
 }

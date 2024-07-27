@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:campus_vote/core/state/state_service.dart';
 import 'package:campus_vote/core/state/state_utils.dart';
 import 'package:campus_vote/core/utils/path_utils.dart';
 import 'package:campus_vote/header/header_service.dart';
@@ -13,6 +14,7 @@ class CampusVoteState extends ChangeNotifier {
   final FlutterSecureStorage storage;
   final SetupServices setupServices;
   final HeaderServices headerServices;
+  final CampusVoteStateServices stateServices;
 
   CVStates state;
   SetupSettingsModel? setupData;
@@ -23,6 +25,7 @@ class CampusVoteState extends ChangeNotifier {
     required this.storage,
     required this.setupServices,
     required this.headerServices,
+    required this.stateServices,
     this.state = CVStates.AWAITING_SETUP,
     this.setupData,
     this.boxDataFile,
@@ -106,19 +109,21 @@ class CampusVoteState extends ChangeNotifier {
       case CVStates.READY_TO_START_ELECTION:
         // TODO: Handle state
         break;
-      case CVStates.ELECTION_STARTED:
+      case CVStates.STARTING_ELECTION:
         if (setupData != null) {
-          final BallotBoxSetupModel? boxSelf;
-          if (!await setupServices.isElectionCommittee()) {
-            boxSelf = await setupServices.getBallotBoxSelf(setupData!);
-          } else {
-            boxSelf = null; // there no box data if node is election committee
-          }
-
-          await headerServices.startCockroachNode(setupData!, boxSelf);
-          // await headerServices.startCampusVoteAPI();
+          await stateServices.startingElection(setupData!);
         } else {
           await changeState(CVStates.READY_TO_START_ELECTION);
+        }
+        await changeState(CVStates.ELECTION_STARTED);
+        break;
+      case CVStates.ELECTION_STARTED:
+        try {
+          await stateServices.startingElection(setupData!);
+        } catch (e) {
+          // should return an error when services already started
+          // => currently after re-start
+          print(e);
         }
         break;
       case CVStates.ELECTION_PAUSED:

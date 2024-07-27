@@ -7,15 +7,23 @@ import 'package:grpc/grpc.dart';
 class CampusVoteAPIClient {
   late CampusVoteClient client;
 
-  CampusVoteAPIClient() {
+  final String rootCert;
+  final String clientCert;
+  final String clientKey;
+
+  CampusVoteAPIClient({
+    required this.rootCert,
+    required this.clientCert,
+    required this.clientKey,
+  }) {
     final channel = ClientChannel(
       '127.0.0.1',
       port: 21797,
       options: ChannelOptions(
         credentials: CVAPIChannelCredentials(
-          trustedRoots: File('../certs/api-ca.crt').readAsBytesSync(),
-          certificateChain: File('../certs/api-client.crt').readAsBytesSync(),
-          privateKey: File('../certs/api-client.key').readAsBytesSync(),
+          trustedRoots: File(rootCert).readAsBytesSync(),
+          certificateChain: File(clientCert).readAsBytesSync(),
+          privateKey: File(clientKey).readAsBytesSync(),
           authority: '127.0.0.1',
         ),
       ),

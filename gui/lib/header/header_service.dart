@@ -6,27 +6,50 @@ import 'package:campus_vote/header/header_utils.dart';
 import 'package:campus_vote/setup/setup_models.dart';
 import 'package:campus_vote/setup/setup_services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:path/path.dart' as path;
 
 class HeaderServices {
   final String cockroachBin = getCockroachBinPath();
+  final String campusVoteBin = getCampusVoteBinPath();
   final storage = serviceLocator<FlutterSecureStorage>();
   final setupServices = serviceLocator<SetupServices>();
 
   /// Starts the Campus Vote API.
   ///
   /// Will throw an error if required TLS certificates or key-pair is not readable.
-  Future<void> startCampusVoteAPI() async {
-    // Start the cockroach node.
-    final startAPI = await Process.run(
-      '',
-      [],
-    );
-
-    if (await startAPI.exitCode != 0) {
-      print('Error running executable: ${startAPI.stderr}');
-    } else {
-      print('Output: ${startAPI.stdout}');
+  Future<void> startCampusVoteAPI(
+    SetupSettingsModel setupDate, [
+    BallotBoxSetupModel? boxSelf,
+  ]) async {
+    // ballot box names as comma seperated list
+    String ballotboxFlag = '';
+    for (final box in setupDate.ballotBoxes) {
+      final buf = '${box.name},$ballotboxFlag';
+      ballotboxFlag = buf;
     }
+
+    // ballotbox vs. committee
+    final String username, host;
+    if (boxSelf == null) {
+      username = 'root';
+      host = setupDate.committeeIpAddr;
+    } else {
+      username = boxSelf.name.toLowerCase();
+      host = boxSelf.ipAddr;
+    }
+
+    // Start the cockroach node.
+    await Process.start(
+      campusVoteBin,
+      [
+        '-b=$ballotboxFlag',
+        '-c=${path.join(await getCockroachCertsDir(), 'client.$username.crt')}',
+        '-k=${path.join(await getCockroachCertsDir(), 'client.$username.key')}',
+        '-a=$host',
+        '-r=${path.join(await getCockroachCertsDir(), 'ca.crt')}',
+        '-u=$username',
+      ],
+    );
   }
 
   /// Starts the Cockroach node.
@@ -62,6 +85,7 @@ class HeaderServices {
         '--background',
       ],
     );
+    await awaitCockRoachNode(listenAddr: listenAddr);
 
     final isInitialized =
         await storage.read(key: STORAGEKEY_INITIALIZED_COCKROACH_NODE);
@@ -80,6 +104,10 @@ class HeaderServices {
         print('Error running executable: ${initCluster.stderr}');
       } else {
         print('Output: ${initCluster.stdout}');
+        await storage.write(
+          key: STORAGEKEY_INITIALIZED_COCKROACH_NODE,
+          value: 'true',
+        );
       }
     }
   }
