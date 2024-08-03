@@ -26,6 +26,8 @@
     "editor.tabSize": 2,
     "editor.rulers": [120, 140],
     "editor.wordWrapColumn": 140,
+    "editor.wordWrap": "wordWrapColumn",
     "editor.defaultFormatter": "Dart-Code.dart-code"
-  }
+  },
+  "dart.lineLength": 140
 }

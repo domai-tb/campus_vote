@@ -56,11 +56,8 @@ class SetupServices {
 
     for (final box in setupData.ballotBoxes) {
       // Create ballotbox specific tmp dir
-      final boxDir = await Directory('$tmpCVDir$pathSep${box.name}$pathSep')
-          .create(recursive: true);
-      final certsDir =
-          await Directory('${boxDir.path}$pathSep$COCKRAOCH_CERTS_DIRNAME')
-              .create(recursive: true);
+      final boxDir = await Directory('$tmpCVDir$pathSep${box.name}$pathSep').create(recursive: true);
+      final certsDir = await Directory('${boxDir.path}$pathSep$COCKRAOCH_CERTS_DIRNAME').create(recursive: true);
 
       // Generate a node certificate "<certs-dir>/node.crt" and key "<certs-dir>/node.key".
       final createNode = await Process.run(
@@ -84,10 +81,8 @@ class SetupServices {
       }
 
       // Rename Node key and cert to ballotbox specific name
-      await File('$tmpCVDir${pathSep}node.key')
-          .rename('${certsDir.path}${pathSep}node.key');
-      await File('$tmpCVDir${pathSep}node.crt')
-          .rename('${certsDir.path}${pathSep}node.crt');
+      await File('$tmpCVDir${pathSep}node.key').rename('${certsDir.path}${pathSep}node.key');
+      await File('$tmpCVDir${pathSep}node.crt').rename('${certsDir.path}${pathSep}node.crt');
 
       // Generate a client certificate "<certs-dir>/client.crt" and key "<certs-dir>/node.key".
       final createClient = await Process.run(
@@ -111,18 +106,15 @@ class SetupServices {
       }
 
       // Rename client key and cert to ballotbox specific name
-      await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.key')
-          .rename(
+      await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.key').rename(
         '${certsDir.path}${pathSep}client.${box.name.toLowerCase()}.key',
       );
-      await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.crt')
-          .rename(
+      await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.crt').rename(
         '${certsDir.path}${pathSep}client.${box.name.toLowerCase()}.crt',
       );
 
       // Store CA TLS certificate in ballot specific config directory
-      await File('$tmpCVDir${pathSep}ca.crt')
-          .copy('${certsDir.path}${pathSep}ca.crt');
+      await File('$tmpCVDir${pathSep}ca.crt').copy('${certsDir.path}${pathSep}ca.crt');
 
       // Store setup data to ballotbox specific config directory
       await saveSetupSettingsModelToFile(
@@ -177,27 +169,22 @@ class SetupServices {
     }
 
     // Rename Node key and cert to commiittee specific name
-    await File('$tmpCVDir${pathSep}node.key')
-        .copy('$ecCertsDir${pathSep}node.key');
-    await File('$tmpCVDir${pathSep}node.crt')
-        .copy('$ecCertsDir${pathSep}node.crt');
-    await File('$tmpCVDir${pathSep}client.root.key')
-        .copy('$ecCertsDir${pathSep}client.root.key');
-    await File('$tmpCVDir${pathSep}client.root.crt')
-        .copy('$ecCertsDir${pathSep}client.root.crt');
+    await File('$tmpCVDir${pathSep}node.key').copy('$ecCertsDir${pathSep}node.key');
+    await File('$tmpCVDir${pathSep}node.crt').copy('$ecCertsDir${pathSep}node.crt');
+    await File('$tmpCVDir${pathSep}client.root.key').copy('$ecCertsDir${pathSep}client.root.key');
+    await File('$tmpCVDir${pathSep}client.root.crt').copy('$ecCertsDir${pathSep}client.root.crt');
 
     await File('$tmpCVDir${pathSep}ca.crt').copy('$ecCertsDir${pathSep}ca.crt');
 
-    await saveSetupSettingsModelToFile(
-        setupData, '${await getCVDataDir()}${pathSep}settings.json');
+    await saveSetupSettingsModelToFile(setupData, '${await getCVDataDir()}${pathSep}settings.json');
 
     // Encrypt ballotbox data and export
     await crypto.zipAndEncryptDirectories(
       await getAppDirPath(),
       await getAppDirPath(),
+      overwriteKey: false,
     );
-    File('${await getCVDataDir()}.zip.enc')
-        .renameSync(await getCommitteeDataFilePath());
+    File('${await getCVDataDir()}.zip.enc').renameSync(await getCommitteeDataFilePath());
 
     // Delete temporary directory
     Directory(tmpCVDir).deleteSync(recursive: true);
@@ -275,8 +262,7 @@ class SetupServices {
     // Set file permissions for keys correctly
     await changeAllFilePermissions(await getAppDirPath(), '600');
 
-    final setupData =
-        await loadSetupSettingsModelFromFile('$bbDir${pathSep}settings.json');
+    final setupData = await loadSetupSettingsModelFromFile('$bbDir${pathSep}settings.json');
 
     return setupData;
   }
@@ -293,8 +279,7 @@ class SetupServices {
     // Set file permissions for keys correctly
     await changeAllFilePermissions(await getAppDirPath(), '600');
 
-    final setupData =
-        await loadSetupSettingsModelFromFile('$ecDir${pathSep}settings.json');
+    final setupData = await loadSetupSettingsModelFromFile('$ecDir${pathSep}settings.json');
 
     return setupData;
   }

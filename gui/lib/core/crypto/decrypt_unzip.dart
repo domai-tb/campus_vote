@@ -86,12 +86,13 @@ Future<void> decryptFile(
   final iv = encrypt.IV(combinedData.sublist(0, 16));
 
   // Extract the encrypted data
-  final encryptedData = combinedData.sublist(16);
+  final encryptedData = encrypt.Encrypted(combinedData.sublist(16));
 
   // Decrypt the data
-  final encrypter = encrypt.Encrypter(encrypt.AES(key));
-  final decryptedData =
-      encrypter.decryptBytes(encrypt.Encrypted(encryptedData), iv: iv);
+  final encrypter = encrypt.Encrypter(
+    encrypt.AES(key, mode: encrypt.AESMode.gcm, padding: null),
+  );
+  final decryptedData = encrypter.decryptBytes(encryptedData, iv: iv);
 
   // Write the decrypted data
   await decryptedFile.writeAsBytes(decryptedData);

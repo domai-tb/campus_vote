@@ -45,15 +45,11 @@ class SetupForm extends StatelessWidget {
                         Expanded(
                           child: FormBuilderDateRangePicker(
                             name: FORMKEY_ELECTION_PERIOD,
-                            locale: Locale(
-                                AppLocalizations.of(context)!.localeName),
+                            locale: Locale(AppLocalizations.of(context)!.localeName),
                             decoration: InputDecoration(
                               label: Text(
                                 AppLocalizations.of(context)!.setupFormPeriod,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelSmall!
-                                    .copyWith(fontWeight: FontWeight.w100),
+                                style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w100),
                               ),
                             ),
                             validator: FormBuilderValidators.required(),
@@ -81,10 +77,7 @@ class SetupForm extends StatelessWidget {
                             decoration: InputDecoration(
                               label: Text(
                                 AppLocalizations.of(context)!.setupFormBoxIP,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelSmall!
-                                    .copyWith(fontWeight: FontWeight.w100),
+                                style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w100),
                               ),
                             ),
                           ),
@@ -110,23 +103,20 @@ class SetupForm extends StatelessWidget {
                           final setupModel = setupFormDataToModel(
                             setupForm.currentState!.value,
                           );
-                          if (campusVoteState.state ==
-                              CVStates.AWAITING_SETUP) {
-                            await campusVoteState.changeState(
+                          if (campusVoteState.state == CVStates.AWAITING_SETUP) {
+                            await campusVoteState
+                                .changeState(
                               CVStates.INITIALIZING_ELECTION,
                               setupData: setupModel,
-                            );
+                            )
+                                .then((_) async {
+                              final encKey = crypto.getExportEncKey();
+                              await showDialog(
+                                context: setupPageContext,
+                                builder: (BuildContext context) => ShowPasswordDialog(password: encKey.base64),
+                              );
+                            });
                           }
-
-                          await crypto.getExportEncKey().then((encKey) {
-                            showDialog(
-                              context: setupPageContext,
-                              builder: (BuildContext context) =>
-                                  ShowPasswordDialog(
-                                password: encKey.base64,
-                              ),
-                            );
-                          });
                         }
                       },
                       labelText: 'Validate',

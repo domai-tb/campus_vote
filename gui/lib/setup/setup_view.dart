@@ -36,38 +36,37 @@ class SetupView extends StatelessWidget {
                     barrierDismissible: false,
                     builder: (_) => const PasswordDialog(),
                   );
-                  if (campusVoteState.state == CVStates.AWAITING_SETUP) {
-                    try {
-                      await campusVoteState.changeState(
-                        CVStates.INITIALIZING_ELECTION,
-                        boxDataFile: boxDataFile,
-                        boxDataPassword: boxDataPassword,
-                      );
-                    } catch (e) {
-                      // TODO: Write more useful error message
-                      // final String msg;
-                      // switch (e) {
-                      //   default:
-                      //     msg =
-                      //         AppLocalizations.of(context)!.errMsgWrongPassword;
-                      //     break;
-                      // }
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Row(
-                              children: [
-                                const Icon(
-                                  Icons.warning_outlined,
-                                  color: Colors.red,
-                                ),
-                                const SizedBox(width: 20),
-                                Text(e.toString()),
-                              ],
-                            ),
+
+                  try {
+                    await campusVoteState.changeState(
+                      CVStates.INITIALIZING_ELECTION,
+                      boxDataFile: boxDataFile,
+                      boxDataPassword: boxDataPassword,
+                    );
+                  } catch (e) {
+                    // TODO: Write more useful error message
+                    // final String msg;
+                    // switch (e) {
+                    //   default:
+                    //     msg =
+                    //         AppLocalizations.of(context)!.errMsgWrongPassword;
+                    //     break;
+                    // }
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Row(
+                            children: [
+                              const Icon(
+                                Icons.warning_outlined,
+                                color: Colors.red,
+                              ),
+                              const SizedBox(width: 20),
+                              Text(e.toString()),
+                            ],
                           ),
-                        );
-                      }
+                        ),
+                      );
                     }
                   }
                 }
