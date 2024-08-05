@@ -21,8 +21,7 @@ Future<void> decryptAndUnzipDirectories(
   // Iterate through each encrypted zip file
   await for (final file in inputDir.list()) {
     if (file is File && path.extension(file.path) == '.enc') {
-      final zipFilePath =
-          path.join(outputDir.path, path.basenameWithoutExtension(file.path));
+      final zipFilePath = path.join(outputDir.path, path.basenameWithoutExtension(file.path));
       final decryptedFilePath = '$zipFilePath.zip';
 
       // Decrypt the file
@@ -90,7 +89,7 @@ Future<void> decryptFile(
 
   // Decrypt the data
   final encrypter = encrypt.Encrypter(
-    encrypt.AES(key, mode: encrypt.AESMode.gcm, padding: null),
+    encrypt.AES(key, mode: encrypt.AESMode.gcm),
   );
   final decryptedData = encrypter.decryptBytes(encryptedData, iv: iv);
 

@@ -11,14 +11,13 @@ class Crypto {
 
   /// Reads the encryption key from [FlutterSecureStorage] or generates a new one.
   /// If a new key is generated, it will be stored within [FlutterSecureStorage].
-  encrypt.Key getExportEncKey({bool overwriteKey = false}) {
-    String? storedKey;
-    storage.read(key: EXPORT_ENCKEY_KEY).then((encKey) => storedKey = encKey);
+  Future<encrypt.Key> getExportEncKey({bool overwriteKey = false}) async {
+    final String? storedKey = await storage.read(key: EXPORT_ENCKEY_KEY);
 
     encrypt.Key encKey;
     if (storedKey == null || overwriteKey) {
       encKey = encrypt.Key.fromLength(32);
-      storage.write(key: EXPORT_ENCKEY_KEY, value: encKey.base64);
+      await storage.write(key: EXPORT_ENCKEY_KEY, value: encKey.base64);
     } else {
       try {
         encKey = encrypt.Key.fromBase64(storedKey!);
@@ -39,10 +38,9 @@ class Crypto {
   /// encrypted zips to [outputDirPath].
   Future<void> zipAndEncryptDirectories(
     String inputDirPath,
-    String outputDirPath, {
-    bool overwriteKey = true,
-  }) async {
-    final encKey = getExportEncKey(overwriteKey: overwriteKey);
+    String outputDirPath,
+  ) async {
+    final encKey = await getExportEncKey();
     return enc.zipAndEncryptDirectories(inputDirPath, outputDirPath, encKey);
   }
 

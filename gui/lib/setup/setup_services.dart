@@ -123,6 +123,9 @@ class SetupServices {
       );
     }
 
+    // Generate a new key if nessarry
+    await crypto.getExportEncKey(overwriteKey: true);
+
     // Encrypt ballotbox data and export
     await crypto.zipAndEncryptDirectories(tmpCVDir, appCVDir);
 
@@ -182,7 +185,6 @@ class SetupServices {
     await crypto.zipAndEncryptDirectories(
       await getAppDirPath(),
       await getAppDirPath(),
-      overwriteKey: false,
     );
     File('${await getCVDataDir()}.zip.enc').renameSync(await getCommitteeDataFilePath());
 

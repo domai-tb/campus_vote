@@ -23,8 +23,7 @@ Future<void> zipAndEncryptDirectories(
   await for (final subDir in inputDir.list()) {
     if (subDir is Directory) {
       // Zip the sub-directory
-      final zipFilePath =
-          path.join(outputDir.path, '${path.basename(subDir.path)}.zip');
+      final zipFilePath = path.join(outputDir.path, '${path.basename(subDir.path)}.zip');
       await zipDirectory(subDir, zipFilePath);
 
       // Encrypt the zip file
@@ -60,7 +59,7 @@ Future<void> encryptFile(
   // Encrypt the data
   final iv = encrypt.IV.fromLength(16);
   final encrypter = encrypt.Encrypter(
-    encrypt.AES(key, mode: encrypt.AESMode.gcm, padding: null),
+    encrypt.AES(key, mode: encrypt.AESMode.gcm),
   );
   final encryptedData = encrypter.encryptBytes(inputData, iv: iv);
 

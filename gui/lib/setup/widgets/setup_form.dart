@@ -110,11 +110,12 @@ class SetupForm extends StatelessWidget {
                               setupData: setupModel,
                             )
                                 .then((_) async {
-                              final encKey = crypto.getExportEncKey();
-                              await showDialog(
-                                context: setupPageContext,
-                                builder: (BuildContext context) => ShowPasswordDialog(password: encKey.base64),
-                              );
+                              await crypto.getExportEncKey().then((encKey) async {
+                                await showDialog(
+                                  context: setupPageContext,
+                                  builder: (BuildContext context) => ShowPasswordDialog(password: encKey.base64),
+                                );
+                              });
                             });
                           }
                         }
