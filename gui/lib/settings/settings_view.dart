@@ -8,8 +8,7 @@ import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
 /// When a user changes a setting, the SettingsController is updated and
 /// Widgets that listen to the SettingsController are rebuilt.
 class SettingsView extends StatelessWidget {
-  final SettingsController _settingsController =
-      serviceLocator<SettingsController>();
+  final SettingsController _settingsController = serviceLocator<SettingsController>();
 
   SettingsView({super.key});
 

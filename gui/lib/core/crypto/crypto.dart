@@ -20,7 +20,7 @@ class Crypto {
       await storage.write(key: EXPORT_ENCKEY_KEY, value: encKey.base64);
     } else {
       try {
-        encKey = encrypt.Key.fromBase64(storedKey!);
+        encKey = encrypt.Key.fromBase64(storedKey);
       } catch (_) {
         throw Exception('encryption password is not valid base64 encoded');
       }

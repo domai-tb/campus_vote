@@ -36,7 +36,7 @@ class SetupServices {
 
     // Generate a CA certificate "<certs-dir>/ca.crt" and CA key "<ca-key>".
     // The certs directory is created if it does not exist.
-    final createCA = await Process.run(
+    final createCA = Process.runSync(
       cockroachBin,
       [
         'cert',
@@ -60,7 +60,7 @@ class SetupServices {
       final certsDir = await Directory('${boxDir.path}$pathSep$COCKRAOCH_CERTS_DIRNAME').create(recursive: true);
 
       // Generate a node certificate "<certs-dir>/node.crt" and key "<certs-dir>/node.key".
-      final createNode = await Process.run(
+      final createNode = Process.runSync(
         cockroachBin,
         [
           'cert',
@@ -85,7 +85,7 @@ class SetupServices {
       await File('$tmpCVDir${pathSep}node.crt').rename('${certsDir.path}${pathSep}node.crt');
 
       // Generate a client certificate "<certs-dir>/client.crt" and key "<certs-dir>/node.key".
-      final createClient = await Process.run(
+      final createClient = Process.runSync(
         cockroachBin,
         [
           'cert',
@@ -133,7 +133,7 @@ class SetupServices {
     final ecCertsDir = await getCockroachCertsDir();
 
     // Generate a node certificate "<certs-dir>/node.crt" and key "<certs-dir>/node.key".
-    final createNode = await Process.run(
+    final createNode = Process.runSync(
       cockroachBin,
       [
         'cert',
@@ -152,7 +152,7 @@ class SetupServices {
       print('Output: ${createNode.stdout}');
     }
 
-    final createClient = await Process.run(
+    final createClient = Process.runSync(
       cockroachBin,
       [
         'cert',

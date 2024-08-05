@@ -76,7 +76,7 @@ class SetupForm extends StatelessWidget {
                             validator: ballotBoxIPValidator,
                             decoration: InputDecoration(
                               label: Text(
-                                AppLocalizations.of(context)!.setupFormBoxIP,
+                                AppLocalizations.of(context)!.setupFormCommitteeIP,
                                 style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w100),
                               ),
                             ),

@@ -23,7 +23,7 @@ Future<void> awaitCockRoachNode({
   while (attempts < retries) {
     attempts++;
     try {
-      final result = await Process.run(
+      final result = await Process.runSync(
         cockroachBin,
         [
           'node',
@@ -40,7 +40,8 @@ Future<void> awaitCockRoachNode({
       } else {
         // Command failed, log the error
         print(
-            'Command failed with exit code ${result.exitCode}: ${result.stderr}');
+          'Command failed with exit code ${result.exitCode}: ${result.stderr}',
+        );
       }
     } catch (e) {
       print('Command execution failed: $e');

@@ -21,3 +21,7 @@ rust-init:
 localization:
 	@cd ../gui/ && \
 	flutter gen-l10n --format
+
+run:
+	@cd ../gui/ && \
+	flutter run

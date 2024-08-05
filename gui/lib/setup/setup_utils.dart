@@ -47,8 +47,7 @@ SetupSettingsModel setupFormDataToModel(Map<String, dynamic> formData) {
       boxes.add(
         BallotBoxSetupModel(
           name: formValue,
-          ipAddr:
-              formData['${formKeyParts[0]}_${formKeyParts[1]}$FORMKEY_ADD_IP'],
+          ipAddr: formData['${formKeyParts[0]}_${formKeyParts[1]}$FORMKEY_ADD_IP'],
         ),
       );
     }

@@ -42,8 +42,7 @@ class SettingsController with ChangeNotifier {
     return Settings(
       themeMode: strToTm(prefs.getString(PREFS_THEMEMODE) ?? 'system'),
       useSystemTextScaling: prefs.getBool(PREFS_TEXTSCALING) ?? false,
-      latestVersion:
-          prefs.getString(PREFS_LATESTVERSION) ?? packageInfo.version,
+      latestVersion: prefs.getString(PREFS_LATESTVERSION) ?? packageInfo.version,
       language: Locale(prefs.getString(PREFS_LANGUAGE) ?? 'en'),
     );
   }

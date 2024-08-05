@@ -9,6 +9,7 @@
   "setupFormAddBox": "Neue Urne",
   "setupFormBoxName": "Urnenstandort",
   "setupFormBoxIP": "IP der Urne",
+  "setupFormCommitteeIP": "IP des Wahlausschusses",
   "settingsTitle": "Einstellungen",
   "votersTitle": "Wählervzeichnis",
   "chatTitle": "Chat",

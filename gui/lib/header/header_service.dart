@@ -68,9 +68,7 @@ class HeaderServices {
     }
 
     // boxSelf == null <=> isElectionCommittee == true
-    final listenAddr = boxSelf != null
-        ? '${boxSelf.ipAddr}:26257'
-        : '${setupDate.committeeIpAddr}:26257';
+    final listenAddr = boxSelf != null ? '${boxSelf.ipAddr}:26257' : '${setupDate.committeeIpAddr}:26257';
 
     // Start the cockroach node.
     await Process.start(
@@ -87,10 +85,9 @@ class HeaderServices {
     );
     await awaitCockRoachNode(listenAddr: listenAddr);
 
-    final isInitialized =
-        await storage.read(key: STORAGEKEY_INITIALIZED_COCKROACH_NODE);
+    final isInitialized = await storage.read(key: STORAGEKEY_INITIALIZED_COCKROACH_NODE);
     if (isInitialized == null && await setupServices.isElectionCommittee()) {
-      final initCluster = await Process.run(
+      final initCluster = Process.runSync(
         cockroachBin,
         [
           'init',
@@ -100,7 +97,7 @@ class HeaderServices {
         ],
       );
 
-      if (await initCluster.exitCode != 0) {
+      if (initCluster.exitCode != 0) {
         print('Error running executable: ${initCluster.stderr}');
       } else {
         print('Output: ${initCluster.stdout}');
@@ -109,6 +106,8 @@ class HeaderServices {
           value: 'true',
         );
       }
+
+      //TODO: Create clients and SQL tables
     }
   }
 }

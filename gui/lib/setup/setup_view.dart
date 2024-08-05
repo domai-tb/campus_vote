@@ -27,8 +27,7 @@ class SetupView extends StatelessWidget {
           if (campusVoteState.state == CVStates.AWAITING_SETUP)
             IconButton(
               onPressed: () async {
-                final FilePickerResult? boxDataFile =
-                    await FilePicker.platform.pickFiles();
+                final FilePickerResult? boxDataFile = await FilePicker.platform.pickFiles();
                 if (boxDataFile != null) {
                   final boxDataPassword = await showDialog(
                     // ignore: use_build_context_synchronously

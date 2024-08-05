@@ -20,8 +20,7 @@ class SetupInfoState extends State<SetupInfo> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.campusVoteState.setupData == null ||
-        widget.campusVoteState.state == CVStates.INITIALIZING_ELECTION) {
+    if (widget.campusVoteState.setupData == null || widget.campusVoteState.state == CVStates.INITIALIZING_ELECTION) {
       return const Center(child: CircularProgressIndicator());
     }
     loadBallotBoxData();
@@ -29,8 +28,7 @@ class SetupInfoState extends State<SetupInfo> {
     final data = widget.campusVoteState.setupData!;
     final electionStart = data.electionPeriod.start;
     final electionEnd = data.electionPeriod.end;
-    final electionPeriod =
-        '${electionStart.day}.${electionStart.month}. - ${electionEnd.day}.${electionEnd.month}.${electionEnd.year}';
+    final electionPeriod = '${electionStart.day}.${electionStart.month}. - ${electionEnd.day}.${electionEnd.month}.${electionEnd.year}';
 
     final column = <Widget>[
       Row(
@@ -50,9 +48,7 @@ class SetupInfoState extends State<SetupInfo> {
               child: Text(
                 box.name,
                 style: TextStyle(
-                  color: box.name == boxSelf.name
-                      ? Theme.of(context).colorScheme.tertiary
-                      : null,
+                  color: box.name == boxSelf.name ? Theme.of(context).colorScheme.tertiary : null,
                 ),
               ),
             ),
@@ -61,9 +57,7 @@ class SetupInfoState extends State<SetupInfo> {
               child: Text(
                 box.ipAddr,
                 style: TextStyle(
-                  color: box.name == boxSelf.name
-                      ? Theme.of(context).colorScheme.tertiary
-                      : null,
+                  color: box.name == boxSelf.name ? Theme.of(context).colorScheme.tertiary : null,
                 ),
               ),
             ),
