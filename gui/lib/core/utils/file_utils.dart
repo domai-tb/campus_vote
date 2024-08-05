@@ -7,20 +7,19 @@ Future<void> changeAllFilePermissions(
   for (final file in Directory(dirPath).listSync(recursive: true)) {
     final type = FileSystemEntity.typeSync(file.path);
     if (type == FileSystemEntityType.file) {
-      await changeFilePermissions(file.path, permissions);
+      changeFilePermissions(file.path, permissions);
     }
   }
 }
 
-Future<void> changeFilePermissions(String filePath, String permissions) async {
+void changeFilePermissions(String filePath, String permissions) {
   try {
     if (Platform.isLinux || Platform.isMacOS) {
-      await Process.run('chmod', [permissions, filePath]);
+      Process.runSync('chmod', [permissions, filePath]);
     } else if (Platform.isWindows) {
       // For Windows, convert Linux-like permissions to ACLs
-      final String aclPermissions =
-          _convertLinuxToWindowsPermissions(permissions);
-      await Process.run('icacls', [filePath, '/grant', aclPermissions]);
+      final String aclPermissions = _convertLinuxToWindowsPermissions(permissions);
+      Process.runSync('icacls', [filePath, '/grant', aclPermissions]);
     } else {
       throw UnsupportedError('Unsupported platform');
     }

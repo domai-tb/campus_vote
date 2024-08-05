@@ -66,8 +66,7 @@ class CampusVoteState extends ChangeNotifier {
         final storedStateName = await storage.read(key: STORAGEKEY_STATE);
         if (storedStateName != null) {
           if (stateFromStr(storedStateName) != CVStates.AWAITING_SETUP) {
-            boxDataPassword =
-                await storage.read(key: STORAGEKEY_BALLOTBOX_ENC_KEY);
+            boxDataPassword = await storage.read(key: STORAGEKEY_BALLOTBOX_ENC_KEY);
             if (!await setupServices.isElectionCommittee()) {
               setupData = await setupServices.loadBallotBox(
                 await getBallotBoxDataFilePath(),
@@ -111,11 +110,17 @@ class CampusVoteState extends ChangeNotifier {
         break;
       case CVStates.STARTING_ELECTION:
         if (setupData != null) {
-          await stateServices.startingElection(setupData!);
+          try {
+            await stateServices.startingElection(setupData!);
+            await changeState(CVStates.ELECTION_STARTED);
+          } catch (e) {
+            print(e);
+            await changeState(CVStates.READY_TO_START_ELECTION);
+          }
+          await changeState(CVStates.ELECTION_STARTED);
         } else {
-          await changeState(CVStates.READY_TO_START_ELECTION);
+          await changeState(CVStates.AWAITING_SETUP);
         }
-        await changeState(CVStates.ELECTION_STARTED);
         break;
       case CVStates.ELECTION_STARTED:
         try {

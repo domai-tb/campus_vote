@@ -41,8 +41,7 @@ class MainView extends StatelessWidget {
                 gradient: LinearGradient(
                   colors: [
                     Theme.of(context).canvasColor,
-                    if (Theme.of(context).primaryColor ==
-                        darkTheme.primaryColor)
+                    if (Theme.of(context).primaryColor == darkTheme.primaryColor)
                       Theme.of(context).colorScheme.secondary.withOpacity(0.25)
                     else
                       Theme.of(context).canvasColor,

@@ -21,12 +21,8 @@ class HeaderView extends StatelessWidget {
           ),
           Expanded(
             child: CVButton(
-              icon: campusVoteState.apiIsStarted()
-                  ? const Icon(Icons.pause_outlined)
-                  : const Icon(Icons.play_arrow_outlined),
-              labelText: campusVoteState.apiIsStarted()
-                  ? 'Shutdown Campus Vote'
-                  : 'Start API',
+              icon: campusVoteState.apiIsStarted() ? const Icon(Icons.pause_outlined) : const Icon(Icons.play_arrow_outlined),
+              labelText: campusVoteState.apiIsStarted() ? 'Shutdown Campus Vote' : 'Start API',
               onPressed: () {
                 if (!campusVoteState.apiIsStarted()) {
                   campusVoteState.changeState(CVStates.STARTING_ELECTION);

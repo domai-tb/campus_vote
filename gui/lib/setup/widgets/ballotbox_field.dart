@@ -26,10 +26,7 @@ class NewBallotBoxField extends StatelessWidget {
               decoration: InputDecoration(
                 label: Text(
                   AppLocalizations.of(context)!.setupFormBoxName,
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelSmall!
-                      .copyWith(fontWeight: FontWeight.w100),
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w100),
                 ),
               ),
             ),
@@ -43,10 +40,7 @@ class NewBallotBoxField extends StatelessWidget {
               decoration: InputDecoration(
                 label: Text(
                   AppLocalizations.of(context)!.setupFormBoxIP,
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelSmall!
-                      .copyWith(fontWeight: FontWeight.w100),
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w100),
                 ),
               ),
             ),

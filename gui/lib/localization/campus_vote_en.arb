@@ -9,6 +9,7 @@
   "setupFormAddBox": "Add Ballot Box",
   "setupFormBoxName": "Ballot Box",
   "setupFormBoxIP": "IP of ballot box system",
+  "setupFormCommitteeIP": "IP of election committee",
   "settingsTitle": "Settings",
   "votersTitle": "Voters",
   "chatTitle": "Chat",

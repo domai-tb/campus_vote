@@ -41,8 +41,7 @@ class CampusVote extends StatelessWidget {
             Locale('de'),
           ],
           locale: settingsController.language,
-          onGenerateTitle: (BuildContext context) =>
-              AppLocalizations.of(context)!.appTitle,
+          onGenerateTitle: (BuildContext context) => AppLocalizations.of(context)!.appTitle,
           theme: lightTheme,
           darkTheme: darkTheme,
           themeMode: settingsController.themeMode,

@@ -25,8 +25,7 @@ class _DashboardViewState extends State<DashboardView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    if (widget.campusVoteState.apiIsStarted() &&
-        serviceLocator.isRegistered<CampusVoteAPIClient>()) {
+    if (widget.campusVoteState.apiIsStarted() && serviceLocator.isRegistered<CampusVoteAPIClient>()) {
       client = serviceLocator<CampusVoteAPIClient>();
       return FutureBuilder(
         future: updateStats(),
@@ -61,7 +60,7 @@ class _DashboardViewState extends State<DashboardView> {
           TableCell(child: Text('Thursday')),
           TableCell(child: Text('Friday')),
         ],
-      )
+      ),
     ];
 
     if (stats == null) {

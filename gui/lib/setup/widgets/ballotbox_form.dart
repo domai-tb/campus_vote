@@ -33,10 +33,7 @@ class _BallotBoxFormState extends State<BallotBoxForm> {
                 decoration: InputDecoration(
                   label: Text(
                     AppLocalizations.of(context)!.setupFormBoxName,
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelSmall!
-                        .copyWith(fontWeight: FontWeight.w100),
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w100),
                   ),
                 ),
               ),
@@ -49,10 +46,7 @@ class _BallotBoxFormState extends State<BallotBoxForm> {
                 decoration: InputDecoration(
                   label: Text(
                     AppLocalizations.of(context)!.setupFormBoxIP,
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelSmall!
-                        .copyWith(fontWeight: FontWeight.w100),
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w100),
                   ),
                 ),
               ),
@@ -72,8 +66,7 @@ class _BallotBoxFormState extends State<BallotBoxForm> {
                 icon: const Icon(Icons.add_box_outlined),
                 labelText: AppLocalizations.of(context)!.setupFormAddBox,
                 onPressed: () {
-                  final newTextFieldName =
-                      '${_newTextFieldId++}$FORMKEY_ADD_BALLOTBOX';
+                  final newTextFieldName = '${_newTextFieldId++}$FORMKEY_ADD_BALLOTBOX';
                   final newTextFieldKey = ValueKey(_newTextFieldId);
                   setState(() {
                     fields.add(
