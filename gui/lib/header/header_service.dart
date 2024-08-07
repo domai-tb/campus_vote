@@ -23,9 +23,13 @@ class HeaderServices {
   ]) async {
     // ballot box names as comma seperated list
     String ballotboxFlag = '';
-    for (final box in setupDate.ballotBoxes) {
-      final buf = '${box.name},$ballotboxFlag';
-      ballotboxFlag = buf;
+    if (setupDate.ballotBoxes.length != 1) {
+      for (final box in setupDate.ballotBoxes) {
+        final buf = '${box.name},$ballotboxFlag';
+        ballotboxFlag = buf;
+      }
+    } else {
+      ballotboxFlag = setupDate.ballotBoxes.first.name;
     }
 
     // ballotbox vs. committee
@@ -83,11 +87,10 @@ class HeaderServices {
         '--background',
       ],
     );
-    await awaitCockRoachNode(listenAddr: listenAddr);
 
     final isInitialized = await storage.read(key: STORAGEKEY_INITIALIZED_COCKROACH_NODE);
     if (isInitialized == null && await setupServices.isElectionCommittee()) {
-      final initCluster = Process.runSync(
+      final initCluster = await Process.run(
         cockroachBin,
         [
           'init',
@@ -106,6 +109,8 @@ class HeaderServices {
           value: 'true',
         );
       }
+
+      await awaitCockRoachNode(listenAddr: listenAddr);
 
       //TODO: Create clients and SQL tables
     }
