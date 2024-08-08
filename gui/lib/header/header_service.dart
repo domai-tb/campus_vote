@@ -27,6 +27,8 @@ class HeaderServices {
       final buf = '${box.name},$ballotboxFlag';
       ballotboxFlag = buf;
     }
+    // strip last comma
+    ballotboxFlag = ballotboxFlag.substring(0, ballotboxFlag.length - 1);
 
     // ballotbox vs. committee
     final String username, host;
@@ -109,5 +111,7 @@ class HeaderServices {
 
       //TODO: Create clients and SQL tables
     }
+
+    await awaitCockRoachNode(listenAddr: listenAddr);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
 import 'package:campus_vote/dashboard/dashboard_view.dart';
+import 'package:campus_vote/dashboard/widgets/voter_form.dart';
 import 'package:campus_vote/header/header_view.dart';
 import 'package:campus_vote/settings/settings_view.dart';
 import 'package:campus_vote/setup/setup_view.dart';
@@ -73,9 +74,9 @@ class MainFrameState extends State<MainFrame> {
                       },
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     flex: 2,
-                    child: Text('Hier soll der Log später stehen!!'),
+                    child: VoterForm(),
                   ),
                 ],
               ),

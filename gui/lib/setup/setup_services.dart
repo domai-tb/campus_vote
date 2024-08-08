@@ -249,7 +249,7 @@ class SetupServices {
       );
     }
 
-    // Encrypt ballotbox data
+    // decrypt and unpack ballotbox data
     final bbPath = await crypto.decryptAndUnzipFile(ballotboxFile, appCVDir);
 
     // Rename output directory to "ballotbox"
