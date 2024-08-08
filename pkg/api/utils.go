@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/domai-tb/campus_vote/pkg/storage"
 	"google.golang.org/grpc/credentials"
+
+	"github.com/domai-tb/campus_vote/pkg/storage"
 )
 
 func strgVtrToAPIVtr(v storage.Voter) Voter {
@@ -69,11 +70,24 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 		return nil, err
 	}
 
+	// Load root CA
+	rootCABytes, err := os.ReadFile(rootCACertFile)
+	if err != nil {
+		return nil, err
+	}
+
+	rootCAPool := x509.NewCertPool()
+	if !rootCAPool.AppendCertsFromPEM(rootCABytes) {
+		return nil, fmt.Errorf("failed to load root CA certificate")
+	}
+
 	// Create the credentials and return it
 	config := &tls.Config{
 		Certificates: []tls.Certificate{serverCert},
 		ClientAuth:   tls.RequireAndVerifyClientCert,
 		ClientCAs:    certPool,
+		RootCAs:      rootCAPool,
+		MinVersion:   3,
 	}
 
 	return credentials.NewTLS(config), nil
