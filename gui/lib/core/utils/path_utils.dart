@@ -26,7 +26,7 @@ Future<String> getAppDirPath() async {
 /// Get path to a campusvote application directory.
 Future<String> getAppExportDirPath() async {
   final appDir = await getApplicationDocumentsDirectory();
-  final appCVDir = '${appDir.path}campus_vote';
+  final appCVDir = '${appDir.path}${pathSep}campus_vote';
 
   // Ensure the app dir exists
   // ignore: avoid_slow_async_io

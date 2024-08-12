@@ -6,7 +6,7 @@ import 'package:sidebarx/sidebarx.dart';
 
 class MainView extends StatelessWidget {
   final sideBarController = SidebarXController(
-    selectedIndex: 0,
+    selectedIndex: 2,
     extended: true,
   );
 

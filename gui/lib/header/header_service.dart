@@ -85,7 +85,6 @@ class HeaderServices {
         '--background',
       ],
     );
-    await awaitCockRoachNode(listenAddr: listenAddr);
 
     final isInitialized = await storage.read(key: STORAGEKEY_INITIALIZED_COCKROACH_NODE);
     if (isInitialized == null && await setupServices.isElectionCommittee()) {

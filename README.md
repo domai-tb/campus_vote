@@ -95,3 +95,18 @@ flowchart LR
 
     API <--> GUI
 ```
+
+### ToDo's
+
+- NTP
+- Student ID -> Prüfsumme
+- CVS Student IDs 1080 steht nicht drinnen
+- PM / AM -> manuell zws. Nachmittag und Vormittag
+  - aktuell fix auf 12 Uhr mittags
+- SHK Wahlkreise -> Patrick schickt mir die
+- Abfragen ob Wahlberechtigt vs. Abhacken im Wahlverzeichnis
+  - einfach ein Button für "nur" abfragen ob noch Wahlberechtigt
+- Log von Wahlvorgängen: Ampel
+  - rot: nicht wahlberechtigt
+  - gelb: hat stimmzettel
+  - grün: hat gewähöt
