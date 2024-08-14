@@ -5,6 +5,8 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/peer"
 
 	"github.com/domai-tb/campus_vote/pkg/core"
 	"github.com/domai-tb/campus_vote/pkg/storage"
@@ -82,7 +84,20 @@ func (cvapi *CampusVoteAPI) GetVoterByStudentId(c context.Context, id *StudentId
 }
 
 func (cvapi *CampusVoteAPI) SetVoterAsVoted(c context.Context, id *StudentId) (*StatusCode, error) {
-	err := cvapi.cvdb.SetVoterAsVotedByStudentId(int(id.Num))
+
+	// Get client that calls the gRPC
+	client, ok := peer.FromContext(c)
+	if !ok {
+		errMsg := "failed to add client CA's certificate"
+		return statusUnexpectedError(errMsg), core.UnexpectedError(errMsg)
+	}
+
+	// Get ballotbox name from TLS certificate of mTLS connection
+	// https://github.com/grpc/grpc-go/issues/111#issuecomment-275820771
+	tlsInfo := client.AuthInfo.(credentials.TLSInfo)
+	boxName := tlsInfo.State.VerifiedChains[0][0].Subject.CommonName
+
+	err := cvapi.cvdb.SetVoterAsVotedByStudentId(int(id.Num), boxName)
 
 	if err == nil {
 		return statusOk(), nil

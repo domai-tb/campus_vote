@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/domai-tb/campus_vote/pkg/storage"
 	"google.golang.org/grpc/credentials"
+
+	"github.com/domai-tb/campus_vote/pkg/storage"
 )
 
 func strgVtrToAPIVtr(v storage.Voter) Voter {
@@ -74,6 +75,7 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 		Certificates: []tls.Certificate{serverCert},
 		ClientAuth:   tls.RequireAndVerifyClientCert,
 		ClientCAs:    certPool,
+		MinVersion:   tls.VersionTLS13,
 	}
 
 	return credentials.NewTLS(config), nil
