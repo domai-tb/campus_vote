@@ -1,12 +1,15 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:campus_vote/core/api/generated/api.pbgrpc.dart';
+import 'package:campus_vote/core/api/generated/chat.pbgrpc.dart';
+import 'package:campus_vote/core/api/generated/common.pb.dart';
+import 'package:campus_vote/core/api/generated/vote.pbgrpc.dart';
 import 'package:grpc/grpc.dart';
 import 'package:protobuf/protobuf.dart';
 
 class CampusVoteAPIClient {
-  late CampusVoteClient client;
+  late VoteClient voteClient;
+  late ChatClient chatClient;
 
   final String rootCert;
   final String clientCert;
@@ -30,16 +33,17 @@ class CampusVoteAPIClient {
       ),
     );
 
-    client = CampusVoteClient(channel);
+    voteClient = VoteClient(channel);
+    chatClient = ChatClient(channel);
   }
 
   Future<String> countVote(String studentId) async {
-    final status = await client.setVoterAsVoted(StudentId(num: parseLongInt(studentId)));
+    final status = await voteClient.setVoterAsVoted(StudentId(num: parseLongInt(studentId)));
     return status.msg;
   }
 
   Future<ElectionStats> getElectionStats() async {
-    return await client.getElectionStats(Void());
+    return await voteClient.getElectionStats(Void());
   }
 }
 

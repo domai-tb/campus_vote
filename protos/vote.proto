@@ -1,0 +1,42 @@
+syntax = "proto3";
+package CampusVote;
+
+option go_package = "pkg/api";
+
+import "common.proto";
+
+message StudentId { int64 num = 1; }
+
+message Voter {
+  string firstname = 1;
+  string lastname = 2;
+  StudentId studentId = 3;
+  string ballotBox = 4;
+  string faculity = 5;
+}
+
+message VotingDayStats {
+  int64 totalVotes = 1;
+  int64 morningVotes = 2;
+  int64 afternoonVotes = 3;
+}
+
+message BallotBoxStats {
+  string name = 1;
+  int64 totalVotes = 2;
+  repeated VotingDayStats votesPerDay = 3;
+}
+
+message ElectionStats {
+  int32 electionYear = 1;
+  int64 totalVotes = 2;
+  repeated BallotBoxStats ballotBoxes = 3;
+}
+
+service Vote {
+  rpc CreateVoter(Voter) returns (StatusCode);
+  rpc GetVoterByStudentId(StudentId) returns (Voter);
+  rpc SetVoterAsVoted(StudentId) returns (StatusCode);
+  rpc CheckVoterStatus(StudentId) returns (StatusCode);
+  rpc GetElectionStats(Void) returns (ElectionStats);
+}

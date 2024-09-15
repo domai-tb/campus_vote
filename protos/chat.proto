@@ -1,0 +1,20 @@
+syntax = "proto3";
+package CampusVote;
+
+option go_package = "pkg/api";
+
+import "common.proto";
+import "google/protobuf/timestamp.proto";
+
+message ChatMessage {
+  string Message = 1; // the message to send into chat
+  string Sender = 2;  // ballotbox that was sending the message
+  google.protobuf.Timestamp SendAt = 3; // when was the message sent?
+}
+
+message ChatHistory { repeated ChatMessage Chat = 1; }
+
+service Chat {
+  rpc SendChatMessage(ChatMessage) returns (StatusCode);
+  rpc ReadChatHistory(Void) returns (ChatHistory);
+}

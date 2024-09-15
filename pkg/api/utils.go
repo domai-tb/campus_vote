@@ -1,12 +1,14 @@
 package api
 
 import (
+	context "context"
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
 	"os"
 
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/peer"
 
 	"github.com/domai-tb/campus_vote/pkg/storage"
 )
@@ -49,6 +51,10 @@ func statusStudentNotFound() *StatusCode {
 
 func statusStudentAllreadyVoted() *StatusCode {
 	return &StatusCode{Status: 3, Msg: "student allready voted"}
+}
+
+func statusFailedToSendChatMessage() *StatusCode {
+	return &StatusCode{Status: 5, Msg: "failed to send chat message"}
 }
 
 func loadTLSCredentials() (credentials.TransportCredentials, error) {
@@ -107,4 +113,19 @@ func storageStatsToElectionStats(s storage.ElectionStats) *ElectionStats {
 		TotalVotes:   int64(s.TotalVotes),
 		BallotBoxes:  boxStats,
 	}
+}
+
+func getBoxNameFromTLSCert(c context.Context) (string, error) {
+	// Get client that calls the gRPC
+	client, ok := peer.FromContext(c)
+	if !ok {
+		return "", fmt.Errorf("failed to read clients TLS certificate")
+	}
+
+	// Get ballotbox name from TLS certificate of mTLS connection
+	// https://github.com/grpc/grpc-go/issues/111#issuecomment-275820771
+	tlsInfo := client.AuthInfo.(credentials.TLSInfo)
+	boxName := tlsInfo.State.VerifiedChains[0][0].Subject.CommonName
+
+	return boxName, nil
 }

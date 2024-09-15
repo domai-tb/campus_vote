@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:campus_vote/core/api/client.dart';
-import 'package:campus_vote/core/api/generated/api.pb.dart';
+import 'package:campus_vote/core/api/generated/vote.pbgrpc.dart';
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
 import 'package:flutter/material.dart';

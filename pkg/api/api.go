@@ -3,10 +3,10 @@ package api
 import (
 	context "context"
 	"net"
+	"time"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/peer"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/domai-tb/campus_vote/pkg/core"
 	"github.com/domai-tb/campus_vote/pkg/storage"
@@ -21,7 +21,8 @@ const (
 
 type CampusVoteAPI struct {
 	cvdb storage.CampusVoteStorage
-	UnimplementedCampusVoteServer
+	UnimplementedVoteServer
+	UnimplementedChatServer
 }
 
 func New(cvdb storage.CampusVoteStorage) {
@@ -38,9 +39,14 @@ func New(cvdb storage.CampusVoteStorage) {
 	gRPCServer := grpc.NewServer(
 		grpc.Creds(tlsCred),
 	)
+
 	campusVoteService := &CampusVoteAPI{cvdb: cvdb}
 
-	RegisterCampusVoteServer(gRPCServer, campusVoteService)
+	// Register gRPC services
+	RegisterVoteServer(gRPCServer, campusVoteService)
+	RegisterChatServer(gRPCServer, campusVoteService)
+
+	// Start CampusVote API server on port 21797
 	if err = gRPCServer.Serve(lis); err != nil {
 		panic(err)
 	}
@@ -86,19 +92,12 @@ func (cvapi *CampusVoteAPI) GetVoterByStudentId(c context.Context, id *StudentId
 func (cvapi *CampusVoteAPI) SetVoterAsVoted(c context.Context, id *StudentId) (*StatusCode, error) {
 
 	// Get client that calls the gRPC
-	client, ok := peer.FromContext(c)
-	if !ok {
-		errMsg := "failed to add client CA's certificate"
-		return statusUnexpectedError(errMsg), core.UnexpectedError(errMsg)
+	boxName, err := getBoxNameFromTLSCert(c)
+	if err != nil {
+		return statusUnexpectedError(err.Error()), core.UnexpectedError(err.Error())
 	}
 
-	// Get ballotbox name from TLS certificate of mTLS connection
-	// https://github.com/grpc/grpc-go/issues/111#issuecomment-275820771
-	tlsInfo := client.AuthInfo.(credentials.TLSInfo)
-	boxName := tlsInfo.State.VerifiedChains[0][0].Subject.CommonName
-
-	err := cvapi.cvdb.SetVoterAsVotedByStudentId(int(id.Num), boxName)
-
+	err = cvapi.cvdb.SetVoterAsVotedByStudentId(int(id.Num), boxName)
 	if err == nil {
 		return statusOk(), nil
 	}
@@ -128,4 +127,43 @@ func (cvapi *CampusVoteAPI) CheckVoterStatus(c context.Context, id *StudentId) (
 func (cvapi *CampusVoteAPI) GetElectionStats(context.Context, *Void) (*ElectionStats, error) {
 	stats := cvapi.cvdb.GetElectionStats()
 	return storageStatsToElectionStats(stats), nil
+}
+
+func (cvapi *CampusVoteAPI) SendChatMessage(c context.Context, msg *ChatMessage) (*StatusCode, error) {
+	// Get client that calls the gRPC
+	boxName, err := getBoxNameFromTLSCert(c)
+	if err != nil {
+		return statusUnexpectedError(err.Error()), core.UnexpectedError(err.Error())
+	}
+
+	err = cvapi.cvdb.SendChatMessage(storage.ChatMessage{
+		SendAt:        time.Now(),
+		BallotBoxName: boxName,
+		Message:       msg.GetMessage(),
+	})
+
+	if err != nil {
+		return statusFailedToSendChatMessage(), core.FailedToSendChatMessageError()
+	}
+
+	return statusOk(), nil
+}
+
+func (cvapi *CampusVoteAPI) ReadChatHistory(context.Context, *Void) (*ChatHistory, error) {
+	var chatHistory []*ChatMessage
+
+	chat, err := cvapi.cvdb.ReadChat()
+	if err != nil {
+		return nil, core.FailedToReadChatHistoryError()
+	}
+
+	for _, msg := range chat {
+		chatHistory = append(chatHistory, &ChatMessage{
+			Message: msg.Message,
+			Sender:  msg.BallotBoxName,
+			SendAt:  timestamppb.New(msg.SendAt),
+		})
+	}
+
+	return &ChatHistory{Chat: chatHistory}, nil
 }

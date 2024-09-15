@@ -75,6 +75,8 @@ app.*.map.json
 #   gRPC mTLS API
 #
 /certs
+# Protobuf Timestamp
+/google.golang.org
 
 #
 #   Campus Vote

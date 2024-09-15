@@ -10,6 +10,7 @@ type CampusVoteError struct {
 	// 2  => student not found
 	// 3  => student allready voted
 	// 4  => ballotboy doesn't exist
+	// 5  => failed to send chat message
 	StatusCode int32
 }
 
@@ -35,4 +36,12 @@ func StudentAllreadyVotedError() error {
 
 func BallotBoxDoesNotExistError() error {
 	return &CampusVoteError{StatusCode: 4, ErrorMsg: "ballotbox does not exist"}
+}
+
+func FailedToSendChatMessageError() error {
+	return &CampusVoteError{StatusCode: 5, ErrorMsg: "failed to send chat message"}
+}
+
+func FailedToReadChatHistoryError() error {
+	return &CampusVoteError{StatusCode: 5, ErrorMsg: "failed to read chat history"}
 }

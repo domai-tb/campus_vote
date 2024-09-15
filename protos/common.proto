@@ -1,0 +1,18 @@
+syntax = "proto3";
+package CampusVote;
+
+option go_package = "pkg/api";
+
+message Void {}
+
+message StatusCode {
+  // -1 => something unexpected
+  // 0  => no error
+  // 1  => student allready exists
+  // 2  => student not found
+  // 3  => student allready voted
+  // 4  => ballotbox not found
+  // 5  => failed to send chat message
+  int32 status = 1;
+  string msg = 2;
+}

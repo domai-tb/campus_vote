@@ -4,6 +4,7 @@ import (
 	"crypto/cipher"
 	"crypto/sha256"
 	"slices"
+	"sort"
 	"strconv"
 
 	"github.com/domai-tb/campus_vote/pkg/core"
@@ -20,7 +21,7 @@ func New(conf core.CampusVoteConf, password string) *CampusVoteStorage {
 
 	// init database
 	db := conf.GetCockroachDB()
-	db.AutoMigrate(&EncVoter{}, &EncVoterStatus{}, &ElectionStats{}) // election
+	db.AutoMigrate(&EncVoter{}, &EncVoterStatus{}, &ElectionStats{}, &EncChatMessage{}) // election
 
 	db.Create(newStats(conf.ElectionYear, conf.BallotBoxes))
 
@@ -38,8 +39,8 @@ func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error {
 		return core.BallotBoxDoesNotExistError()
 	}
 
-	envVoter := cvdb.encryptVoter(voter)
-	db.Create(envVoter)
+	encVoter := cvdb.encryptVoter(voter)
+	db.Create(encVoter)
 
 	return nil
 }
@@ -130,4 +131,42 @@ func (cvdb *CampusVoteStorage) CheckVoterStatusByStudentId(id int) (bool, error)
 	}
 
 	return cvdb.CheckVoterStatus(voter), nil
+}
+
+func (cvdb *CampusVoteStorage) SendChatMessage(msg ChatMessage) error {
+	db := cvdb.conf.GetCockroachDB()
+
+	encMsg := cvdb.encryptChatMessage(msg)
+	db.Create(encMsg)
+
+	return nil
+}
+
+func (cvdb *CampusVoteStorage) ReadChat() ([]ChatMessage, error) {
+	db := cvdb.conf.GetCockroachDB()
+
+	var encChat []EncChatMessage
+	var chat chatMessageSlice // check out chat.go
+
+	// SELECT * FROM ChatMessages;
+	result := db.Find(&encChat)
+
+	for _, msg := range encChat {
+		decMsg, err := cvdb.decryptChatMessage(msg)
+		if err != nil {
+			// Append a error message on decryption error
+			chat = append(chat, ChatMessage{
+				SendAt:        msg.SendAt,
+				BallotBoxName: "",
+				Message:       "Message failed to decrypt",
+			})
+		}
+
+		chat = append(chat, decMsg)
+	}
+
+	// chatMessageClice implements the required interface
+	sort.Sort(chat)
+
+	return chat, result.Error
 }

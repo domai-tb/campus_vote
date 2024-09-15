@@ -18,18 +18,20 @@ N = \033[0m		# No Color
 
 proto:
 	@echo -e "$PCompiling API's ProtoBuf$N"
-	protoc $(PROTO_OPTS) api.proto
+	protoc $(PROTO_OPTS) common.proto vote.proto chat.proto google/protobuf/timestamp.proto
 
 certs:
 	@echo -e "$PGenerate TLS certificates for mTLS connection$N"
 	./gen_certs.sh
 
 client:
-	evans \
-		--proto $(PROTO_DIR)/api.proto \
-		--host 127.0.0.1 \
-		--port 21797 \
+	@evans repl \
 		--tls \
+		--port 21797 \
+		--host 127.0.0.1 \
+		--path ..,$(PROTO_DIR) \
+		--proto $(PROTO_DIR)/vote.proto \
+		--proto $(PROTO_DIR)/chat.proto \
 		--cacert $(CERTS_DIR)/api-ca.crt \
 		--cert $(CERTS_DIR)/api-client.crt \
 		--certkey $(CERTS_DIR)/api-client.key

@@ -6,29 +6,29 @@ import (
 )
 
 type Voter struct {
-	Firstname string
-	Lastname  string
-	StudentId int `gorm:"primaryKey;type:bytes"`
-	BallotBox string
-	Faculity  string
+	Firstname string `gorm:"<-:create"`
+	Lastname  string `gorm:"<-:create"`
+	StudentId int    `gorm:"primaryKey;type:bytes;<-:create"`
+	BallotBox string `gorm:"<-:create"`
+	Faculity  string `gorm:"<-:create"`
 }
 
 type EncVoter struct {
-	Firstname []byte `gorm:"type:bytes"`
-	Lastname  []byte `gorm:"type:bytes"`
-	StudentId []byte `gorm:"primaryKey;type:bytes"`
-	BallotBox []byte `gorm:"type:bytes"`
-	Faculity  []byte `gorm:"type:bytes"`
+	Firstname []byte `gorm:"type:bytes;<-:create"`
+	Lastname  []byte `gorm:"type:bytes;<-:create"`
+	StudentId []byte `gorm:"primaryKey;type:bytes;<-:create"`
+	BallotBox []byte `gorm:"type:bytes;<-:create"`
+	Faculity  []byte `gorm:"type:bytes;<-:create"`
 }
 
 type VoterStatus struct {
-	StudentId int  `gorm:"primaryKey;->;<-:create"`
-	Status    bool `gorm:"->;<-:create"`
+	StudentId int  `gorm:"primaryKey;<-:create"`
+	Status    bool `gorm:"<-:create"`
 }
 
 type EncVoterStatus struct {
-	StudentId []byte `gorm:"primaryKey;->;<-:create;type:bytes"`
-	Status    []byte `gorm:"->;<-:create;type:bytes"`
+	StudentId []byte `gorm:"primaryKey;<-:create;type:bytes"`
+	Status    []byte `gorm:"<-:create;type:bytes"`
 }
 
 func (cvdb *CampusVoteStorage) encryptVoter(v Voter) EncVoter {
