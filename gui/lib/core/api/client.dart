@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:campus_vote/core/api/generated/chat.pbgrpc.dart';
-import 'package:campus_vote/core/api/generated/common.pb.dart';
+import 'package:campus_vote/core/api/generated/common.pb.dart' as common;
 import 'package:campus_vote/core/api/generated/vote.pbgrpc.dart';
 import 'package:grpc/grpc.dart';
 import 'package:protobuf/protobuf.dart';
@@ -43,7 +43,17 @@ class CampusVoteAPIClient {
   }
 
   Future<ElectionStats> getElectionStats() async {
-    return await voteClient.getElectionStats(Void());
+    return await voteClient.getElectionStats(common.Void());
+  }
+
+  Future<common.StatusCode> sendChatMessage(String message) async {
+    return await chatClient.sendChatMessage(
+      ChatMessage(message: message), // sender and timestamp is sent in backend
+    );
+  }
+
+  Future<ChatHistory> getChatHistory() async {
+    return await chatClient.readChatHistory(common.Void());
   }
 }
 

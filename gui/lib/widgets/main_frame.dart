@@ -1,3 +1,4 @@
+import 'package:campus_vote/chat/chat_view.dart';
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
 import 'package:campus_vote/dashboard/dashboard_view.dart';
@@ -32,7 +33,7 @@ class MainFrameState extends State<MainFrame> {
         return Row(
           children: [
             Expanded(
-              flex: 21,
+              flex: 3,
               child: Column(
                 children: [
                   Expanded(
@@ -46,19 +47,11 @@ class MainFrameState extends State<MainFrame> {
                         switch (widget.controller.selectedIndex) {
                           case 0:
                             return DashboardView();
+                          // case 1:
+                          //   return ChatView();
                           case 1:
-                            return Container(
-                              color: Colors.accents.first,
-                              child: Center(
-                                child: Text(
-                                  'Chat',
-                                  style: theme.textTheme.headlineSmall,
-                                ),
-                              ),
-                            );
-                          case 2:
                             return SetupView();
-                          case 3:
+                          case 2:
                             return SettingsView();
                           default:
                             return Container(
@@ -81,8 +74,12 @@ class MainFrameState extends State<MainFrame> {
                 ],
               ),
             ),
-            // right space
-            Expanded(child: Container()),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(25),
+                child: ChatView(),
+              ),
+            ),
           ],
         );
       },

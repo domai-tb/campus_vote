@@ -17,5 +17,9 @@
   "tooltipLoadSetup": "Load ballotbox settings.",
   "tooltipDeleteSetup": "Delete election data.",
   "errMsgWrongPassword":"Wrong encryption password.",
-  "errMsgInvalidFile": "No valid Campus Vote file."
+  "errMsgInvalidFile": "No valid Campus Vote file.",
+  "chatSendAMessage": "Send a message:",
+  "chatNeedMoreBallots": "Need more ballots!",
+  "chatHaveAProblem": "Problem at our balllot box. Please come to us election committee.",
+  "chatEmptyPlaceholder": "No Messages"
 }

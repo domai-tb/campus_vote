@@ -15,45 +15,48 @@ class CVButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Theme.of(context).canvasColor,
-        ),
-        gradient: LinearGradient(
-          colors: [
-            Theme.of(context).canvasColor,
-            if (Theme.of(context).primaryColor == darkTheme.primaryColor)
-              Theme.of(context).colorScheme.secondary.withOpacity(0.25)
-            else
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Theme.of(context).canvasColor,
+          ),
+          gradient: LinearGradient(
+            colors: [
               Theme.of(context).canvasColor,
+              if (Theme.of(context).primaryColor == darkTheme.primaryColor)
+                Theme.of(context).colorScheme.secondary.withOpacity(0.25)
+              else
+                Theme.of(context).canvasColor,
+            ],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.28),
+              blurRadius: 30,
+            ),
           ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.28),
-            blurRadius: 30,
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(2.5),
-        child: MaterialButton(
-          onPressed: onPressed,
-          child: Row(
-            children: [
-              if (icon != null) icon!,
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Center(
-                  child: Text(
-                    labelText,
-                    style: Theme.of(context).textTheme.labelSmall,
+        child: Padding(
+          padding: const EdgeInsets.all(2.5),
+          child: MaterialButton(
+            onPressed: onPressed,
+            child: Row(
+              children: [
+                if (icon != null) icon!,
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Center(
+                    child: Text(
+                      labelText,
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

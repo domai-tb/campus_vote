@@ -102,7 +102,10 @@ class _DashboardViewState extends State<DashboardView> {
     if (serviceLocator.isRegistered<CampusVoteAPIClient>()) {
       client = serviceLocator<CampusVoteAPIClient>();
       final newStats = await client.getElectionStats();
-      setState(() => stats = newStats);
+
+      if (newStats != stats) {
+        setState(() => stats = newStats);
+      }
     }
   }
 }

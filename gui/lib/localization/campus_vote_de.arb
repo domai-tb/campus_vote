@@ -17,5 +17,9 @@
   "tooltipLoadSetup": "Lade Einstellungen für eine Urne.",
   "tooltipDeleteSetup": "Lösche alle Einstellungen der Wahl.",
   "errMsgWrongPassword": "Falsches Passwort.",
-  "errMsgInvalidFile": "Keine Valide Campus Vote Datei."
+  "errMsgInvalidFile": "Keine Valide Campus Vote Datei.",
+  "chatSendAMessage": "Sende einen Nachricht:",
+  "chatNeedMoreBallots": "Benötigen mehr Wahlzettel!",
+  "chatHaveAProblem": "Es gibt probleme an unserer Urne. Wahlausschuss bitte melden.",
+  "chatEmptyPlaceholder": "Keine Nachrichten"
 }

@@ -6,7 +6,7 @@ import 'package:sidebarx/sidebarx.dart';
 
 class MainView extends StatelessWidget {
   final sideBarController = SidebarXController(
-    selectedIndex: 2,
+    selectedIndex: 0,
     extended: true,
   );
 
@@ -84,10 +84,10 @@ class MainView extends StatelessWidget {
                 icon: Icons.home_outlined,
                 label: AppLocalizations.of(context)!.dashboardTitle,
               ),
-              SidebarXItem(
-                icon: Icons.chat_outlined,
-                label: AppLocalizations.of(context)!.chatTitle,
-              ),
+              // SidebarXItem(
+              //   icon: Icons.chat_outlined,
+              //   label: AppLocalizations.of(context)!.chatTitle,
+              // ),
               SidebarXItem(
                 icon: Icons.create_outlined,
                 label: AppLocalizations.of(context)!.setupTitle,

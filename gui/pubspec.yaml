@@ -15,6 +15,8 @@ dependencies:
   file_picker: ^8.0.6
   flutter:
     sdk: flutter
+  flutter_chat_types: ^3.6.2
+  flutter_chat_ui: ^1.6.15
   flutter_form_builder: ^9.3.0
   flutter_localizations:
     sdk: flutter
