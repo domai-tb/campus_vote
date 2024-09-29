@@ -394,6 +394,72 @@ class ElectionStats extends $pb.GeneratedMessage {
   $core.List<BallotBoxStats> get ballotBoxes => $_getList(2);
 }
 
+class VoteReq extends $pb.GeneratedMessage {
+  factory VoteReq({
+    StudentId? studentId,
+    $core.bool? isAfternoon,
+  }) {
+    final $result = create();
+    if (studentId != null) {
+      $result.studentId = studentId;
+    }
+    if (isAfternoon != null) {
+      $result.isAfternoon = isAfternoon;
+    }
+    return $result;
+  }
+  VoteReq._() : super();
+  factory VoteReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory VoteReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'VoteReq', package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
+    ..aOM<StudentId>(1, _omitFieldNames ? '' : 'studentId', protoName: 'studentId', subBuilder: StudentId.create)
+    ..aOB(2, _omitFieldNames ? '' : 'isAfternoon', protoName: 'isAfternoon')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  VoteReq clone() => VoteReq()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  VoteReq copyWith(void Function(VoteReq) updates) => super.copyWith((message) => updates(message as VoteReq)) as VoteReq;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static VoteReq create() => VoteReq._();
+  VoteReq createEmptyInstance() => create();
+  static $pb.PbList<VoteReq> createRepeated() => $pb.PbList<VoteReq>();
+  @$core.pragma('dart2js:noInline')
+  static VoteReq getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<VoteReq>(create);
+  static VoteReq? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  StudentId get studentId => $_getN(0);
+  @$pb.TagNumber(1)
+  set studentId(StudentId v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasStudentId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearStudentId() => clearField(1);
+  @$pb.TagNumber(1)
+  StudentId ensureStudentId() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $core.bool get isAfternoon => $_getBF(1);
+  @$pb.TagNumber(2)
+  set isAfternoon($core.bool v) { $_setBool(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasIsAfternoon() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearIsAfternoon() => clearField(2);
+}
+
 
 const _omitFieldNames = $core.bool.fromEnvironment('protobuf.omit_field_names');
 const _omitMessageNames = $core.bool.fromEnvironment('protobuf.omit_message_names');

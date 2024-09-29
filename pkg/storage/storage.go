@@ -41,6 +41,7 @@ func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error {
 
 	encVoter := cvdb.encryptVoter(voter)
 	db.Create(encVoter)
+	cvdb.countVoter()
 
 	return nil
 }
@@ -64,7 +65,7 @@ func (cvdb *CampusVoteStorage) GetVoterByStudentId(id int) (Voter, error) {
 	return Voter{}, core.StudentNotFoundError()
 }
 
-func (cvdb *CampusVoteStorage) SetVoterAsVoted(v Voter, box string) error {
+func (cvdb *CampusVoteStorage) SetVoterAsVoted(v Voter, box string, isAfternoon bool) error {
 	db := cvdb.conf.GetCockroachDB()
 
 	status := cvdb.CheckVoterStatus(v)
@@ -74,12 +75,13 @@ func (cvdb *CampusVoteStorage) SetVoterAsVoted(v Voter, box string) error {
 	}
 
 	db.Create(cvdb.encryptVoterStatus(v))
-	cvdb.countVote(box)
+
+	cvdb.countVote(box, isAfternoon)
 
 	return nil
 }
 
-func (cvdb *CampusVoteStorage) SetVoterAsVotedByStudentId(id int, box string) error {
+func (cvdb *CampusVoteStorage) SetVoterAsVotedByStudentId(id int, box string, isAfternoon bool) error {
 
 	// Check if ballot box exists
 	if !BoxInList(box, cvdb.conf.BallotBoxes) {
@@ -100,7 +102,7 @@ func (cvdb *CampusVoteStorage) SetVoterAsVotedByStudentId(id int, box string) er
 	}
 
 	// Set voter as voted
-	return cvdb.SetVoterAsVoted(voter, box)
+	return cvdb.SetVoterAsVoted(voter, box, isAfternoon)
 }
 
 func (cvdb *CampusVoteStorage) CheckVoterStatus(v Voter) bool {

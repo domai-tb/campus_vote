@@ -92,3 +92,17 @@ final $typed_data.Uint8List electionStatsDescriptor = $convert.base64Decode(
     'RvdGFsVm90ZXMYAiABKANSCnRvdGFsVm90ZXMSPAoLYmFsbG90Qm94ZXMYAyADKAsyGi5DYW1w'
     'dXNWb3RlLkJhbGxvdEJveFN0YXRzUgtiYWxsb3RCb3hlcw==');
 
+@$core.Deprecated('Use voteReqDescriptor instead')
+const VoteReq$json = {
+  '1': 'VoteReq',
+  '2': [
+    {'1': 'studentId', '3': 1, '4': 1, '5': 11, '6': '.CampusVote.StudentId', '10': 'studentId'},
+    {'1': 'isAfternoon', '3': 2, '4': 1, '5': 8, '10': 'isAfternoon'},
+  ],
+};
+
+/// Descriptor for `VoteReq`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List voteReqDescriptor = $convert.base64Decode(
+    'CgdWb3RlUmVxEjMKCXN0dWRlbnRJZBgBIAEoCzIVLkNhbXB1c1ZvdGUuU3R1ZGVudElkUglzdH'
+    'VkZW50SWQSIAoLaXNBZnRlcm5vb24YAiABKAhSC2lzQWZ0ZXJub29u');
+

@@ -30,9 +30,9 @@ class VoteClient extends $grpc.Client {
       '/CampusVote.Vote/GetVoterByStudentId',
       ($0.StudentId value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.Voter.fromBuffer(value));
-  static final _$setVoterAsVoted = $grpc.ClientMethod<$0.StudentId, $1.StatusCode>(
-      '/CampusVote.Vote/SetVoterAsVoted',
-      ($0.StudentId value) => value.writeToBuffer(),
+  static final _$registerVote = $grpc.ClientMethod<$0.VoteReq, $1.StatusCode>(
+      '/CampusVote.Vote/RegisterVote',
+      ($0.VoteReq value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $1.StatusCode.fromBuffer(value));
   static final _$checkVoterStatus = $grpc.ClientMethod<$0.StudentId, $1.StatusCode>(
       '/CampusVote.Vote/CheckVoterStatus',
@@ -57,8 +57,8 @@ class VoteClient extends $grpc.Client {
     return $createUnaryCall(_$getVoterByStudentId, request, options: options);
   }
 
-  $grpc.ResponseFuture<$1.StatusCode> setVoterAsVoted($0.StudentId request, {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$setVoterAsVoted, request, options: options);
+  $grpc.ResponseFuture<$1.StatusCode> registerVote($0.VoteReq request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$registerVote, request, options: options);
   }
 
   $grpc.ResponseFuture<$1.StatusCode> checkVoterStatus($0.StudentId request, {$grpc.CallOptions? options}) {
@@ -89,12 +89,12 @@ abstract class VoteServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.StudentId.fromBuffer(value),
         ($0.Voter value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.StudentId, $1.StatusCode>(
-        'SetVoterAsVoted',
-        setVoterAsVoted_Pre,
+    $addMethod($grpc.ServiceMethod<$0.VoteReq, $1.StatusCode>(
+        'RegisterVote',
+        registerVote_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $0.StudentId.fromBuffer(value),
+        ($core.List<$core.int> value) => $0.VoteReq.fromBuffer(value),
         ($1.StatusCode value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.StudentId, $1.StatusCode>(
         'CheckVoterStatus',
@@ -120,8 +120,8 @@ abstract class VoteServiceBase extends $grpc.Service {
     return getVoterByStudentId(call, await request);
   }
 
-  $async.Future<$1.StatusCode> setVoterAsVoted_Pre($grpc.ServiceCall call, $async.Future<$0.StudentId> request) async {
-    return setVoterAsVoted(call, await request);
+  $async.Future<$1.StatusCode> registerVote_Pre($grpc.ServiceCall call, $async.Future<$0.VoteReq> request) async {
+    return registerVote(call, await request);
   }
 
   $async.Future<$1.StatusCode> checkVoterStatus_Pre($grpc.ServiceCall call, $async.Future<$0.StudentId> request) async {
@@ -134,7 +134,7 @@ abstract class VoteServiceBase extends $grpc.Service {
 
   $async.Future<$1.StatusCode> createVoter($grpc.ServiceCall call, $0.Voter request);
   $async.Future<$0.Voter> getVoterByStudentId($grpc.ServiceCall call, $0.StudentId request);
-  $async.Future<$1.StatusCode> setVoterAsVoted($grpc.ServiceCall call, $0.StudentId request);
+  $async.Future<$1.StatusCode> registerVote($grpc.ServiceCall call, $0.VoteReq request);
   $async.Future<$1.StatusCode> checkVoterStatus($grpc.ServiceCall call, $0.StudentId request);
   $async.Future<$0.ElectionStats> getElectionStats($grpc.ServiceCall call, $1.Void request);
 }

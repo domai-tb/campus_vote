@@ -89,7 +89,7 @@ func (cvapi *CampusVoteAPI) GetVoterByStudentId(c context.Context, id *StudentId
 	return nil, err
 }
 
-func (cvapi *CampusVoteAPI) SetVoterAsVoted(c context.Context, id *StudentId) (*StatusCode, error) {
+func (cvapi *CampusVoteAPI) RegisterVote(c context.Context, req *VoteReq) (*StatusCode, error) {
 
 	// Get client that calls the gRPC
 	boxName, err := getBoxNameFromTLSCert(c)
@@ -97,7 +97,7 @@ func (cvapi *CampusVoteAPI) SetVoterAsVoted(c context.Context, id *StudentId) (*
 		return statusUnexpectedError(err.Error()), core.UnexpectedError(err.Error())
 	}
 
-	err = cvapi.cvdb.SetVoterAsVotedByStudentId(int(id.Num), boxName)
+	err = cvapi.cvdb.SetVoterAsVotedByStudentId(int(req.GetStudentId().GetNum()), boxName, req.GetIsAfternoon())
 	if err == nil {
 		return statusOk(), nil
 	}

@@ -19,6 +19,7 @@ type BallotBox struct {
 type ElectionStats struct {
 	ElectionYear int `gorm:"primaryKey"`
 	TotalVotes   int
+	TotalVoters  int
 	BallotBoxs   []BallotBox `gorm:"type:bytes;serializer:json"`
 }
 
@@ -62,6 +63,7 @@ func newStats(year int, ballotboxes []string) *ElectionStats {
 	return &ElectionStats{
 		ElectionYear: year,
 		TotalVotes:   0,
+		TotalVoters:  0,
 		BallotBoxs:   boxes,
 	}
 }
@@ -75,7 +77,18 @@ func (cvdb *CampusVoteStorage) GetElectionStats() ElectionStats {
 	return stats
 }
 
-func (cvdb *CampusVoteStorage) countVote(ballotbox string) {
+func (cvdb *CampusVoteStorage) countVoter() {
+	db := cvdb.conf.GetCockroachDB()
+
+	var stats ElectionStats
+	db.First(&stats)
+
+	stats.TotalVoters += 1
+
+	db.Save(stats)
+}
+
+func (cvdb *CampusVoteStorage) countVote(ballotbox string, isAfternoon bool) {
 	db := cvdb.conf.GetCockroachDB()
 
 	var stats ElectionStats
@@ -96,7 +109,7 @@ func (cvdb *CampusVoteStorage) countVote(ballotbox string) {
 	stats.BallotBoxs[indexOfBoxToCount].TotalVotes += 1
 	stats.BallotBoxs[indexOfBoxToCount].VotesPerDay[currentDay].Total += 1
 
-	if morOrAft := currentTime.Hour(); morOrAft <= 12 {
+	if !isAfternoon {
 		stats.BallotBoxs[indexOfBoxToCount].VotesPerDay[currentDay].Morning += 1
 	} else {
 		stats.BallotBoxs[indexOfBoxToCount].VotesPerDay[currentDay].Afternoon += 1

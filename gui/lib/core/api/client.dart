@@ -37,8 +37,13 @@ class CampusVoteAPIClient {
     chatClient = ChatClient(channel);
   }
 
-  Future<String> countVote(String studentId) async {
-    final status = await voteClient.setVoterAsVoted(StudentId(num: parseLongInt(studentId)));
+  Future<String> countVote(String studentId, {bool? isAfternoon = false}) async {
+    final status = await voteClient.registerVote(
+      VoteReq(
+        studentId: StudentId(num: parseLongInt(studentId)),
+        isAfternoon: isAfternoon,
+      ),
+    );
     return status.msg;
   }
 
