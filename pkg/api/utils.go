@@ -57,7 +57,7 @@ func statusFailedToSendChatMessage() *StatusCode {
 	return &StatusCode{Status: 5, Msg: "failed to send chat message"}
 }
 
-func loadTLSCredentials() (credentials.TransportCredentials, error) {
+func loadTLSCredentials(rootCACertFile, serverCertFile, serverKeyFile string) (credentials.TransportCredentials, error) {
 	// Load certificate of the CA who signed client's certificate
 	rootCA, err := os.ReadFile(rootCACertFile)
 	if err != nil {
@@ -70,7 +70,6 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 	}
 
 	// Load server's certificate and private key
-	// TODO: Load from keychain / credential manager via  tls.X509KeyPair([]bytes, []bytes)
 	serverCert, err := tls.LoadX509KeyPair(serverCertFile, serverKeyFile)
 	if err != nil {
 		return nil, err

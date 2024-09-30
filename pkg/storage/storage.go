@@ -172,3 +172,7 @@ func (cvdb *CampusVoteStorage) ReadChat() ([]ChatMessage, error) {
 
 	return chat, result.Error
 }
+
+func (cvdb *CampusVoteStorage) GetConfig() core.CampusVoteConf {
+	return cvdb.conf
+}

@@ -45,16 +45,20 @@ class HeaderServices {
       host = boxSelf.ipAddr;
     }
 
-    // Start the cockroach node.
+    // Start the campusvote api.
     await Process.start(
       campusVoteBin,
       [
+        'start',
         '-b=$ballotboxFlag',
         '-c=${path.join(await getCockroachCertsDir(), 'client.$username.crt')}',
         '-k=${path.join(await getCockroachCertsDir(), 'client.$username.key')}',
         '-a=$host',
         '-r=${path.join(await getCockroachCertsDir(), 'ca.crt')}',
         '-u=$username',
+        '-m=${path.join(await getAPICertsDir(), 'api-ca.crt')}',
+        '-s=${path.join(await getAPICertsDir(), 'api-server.crt')}',
+        '-o=${path.join(await getAPICertsDir(), 'api-server.key')}',
       ],
     );
   }

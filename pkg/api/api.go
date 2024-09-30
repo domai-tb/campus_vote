@@ -12,13 +12,6 @@ import (
 	"github.com/domai-tb/campus_vote/pkg/storage"
 )
 
-// TODO: Do not use plain files. Use keychain / credential manager instead
-const (
-	serverCertFile = "/home/domai/Coding/campus_vote/certs/api-server.crt"
-	serverKeyFile  = "/home/domai/Coding/campus_vote/certs/api-server.key"
-	rootCACertFile = "/home/domai/Coding/campus_vote/certs/api-ca.crt"
-)
-
 type CampusVoteAPI struct {
 	cvdb storage.CampusVoteStorage
 	UnimplementedVoteServer
@@ -31,7 +24,9 @@ func New(cvdb storage.CampusVoteStorage) {
 		panic(err)
 	}
 
-	tlsCred, err := loadTLSCredentials()
+	config := cvdb.GetConfig()
+
+	tlsCred, err := loadTLSCredentials(config.APIRootCert, config.ServerCert, config.ServerKey)
 	if err != nil {
 		panic(err)
 	}

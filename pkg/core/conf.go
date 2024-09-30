@@ -21,6 +21,9 @@ type CampusVoteConf struct {
 	RootCert     string
 	ClientCert   string
 	ClientKey    string
+	APIRootCert  string
+	ServerCert   string
+	ServerKey    string
 	ElectionYear int
 	BallotBoxes  []string
 }

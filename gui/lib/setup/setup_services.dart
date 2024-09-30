@@ -12,6 +12,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SetupServices {
   final String cockroachBin = getCockroachBinPath();
+  final String campusvoteBin = getCampusVoteBinPath();
 
   final crypto = serviceLocator<Crypto>();
   final storage = serviceLocator<FlutterSecureStorage>();
@@ -59,6 +60,34 @@ class SetupServices {
     } else {
       print('Output: ${createCA.stdout}');
     }
+
+    // Will be committee because this function is only called in the
+    // setup process. Only committee setups new elections.
+    final committeCertsDir = await getAPICertsDir();
+
+    await Isolate.run(() async {
+      BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
+
+      // ballot box names as comma seperated list
+      String ballotboxFlag = '';
+      for (final box in setupData.ballotBoxes) {
+        final buf = '${box.name},$ballotboxFlag';
+        ballotboxFlag = buf;
+      }
+      // strip last comma
+      ballotboxFlag = ballotboxFlag.substring(0, ballotboxFlag.length - 1);
+
+      await Process.run(
+        campusvoteBin,
+        [
+          'gen',
+          'tls',
+          '-b=$ballotboxFlag',
+          '-d=$tmpCVDir',
+          '-c=$committeCertsDir',
+        ],
+      );
+    });
 
     final futureList = <Future>[];
     for (final box in setupData.ballotBoxes) {
