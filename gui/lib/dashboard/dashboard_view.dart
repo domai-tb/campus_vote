@@ -37,13 +37,10 @@ class _DashboardViewState extends State<DashboardView> {
         },
       );
     } else {
-      return Container(
-        color: Colors.accents.first,
-        child: Center(
-          child: Text(
-            'Dashboard',
-            style: theme.textTheme.headlineSmall,
-          ),
+      return Center(
+        child: Text(
+          'Please setup an election first!',
+          style: theme.textTheme.headlineMedium,
         ),
       );
     }

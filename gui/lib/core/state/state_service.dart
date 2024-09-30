@@ -1,4 +1,5 @@
 import 'package:campus_vote/core/api/client.dart';
+import 'package:campus_vote/core/failures.dart';
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/header/header_service.dart';
 import 'package:campus_vote/setup/setup_models.dart';
@@ -24,13 +25,17 @@ class CampusVoteStateServices {
     await headerServices.startCockroachNode(setupData, boxSelf);
     await headerServices.startCampusVoteAPI(setupData, boxSelf);
 
-    // This client will be accessable by all classes and is a singleton.
-    serviceLocator.registerSingleton(
-      CampusVoteAPIClient(
-        rootCert: '/home/domai/Coding/campus_vote/certs/api-ca.crt',
-        clientCert: '/home/domai/Coding/campus_vote/certs/api-client.crt',
-        clientKey: '/home/domai/Coding/campus_vote/certs/api-client.key',
-      ),
-    );
+    try {
+      // This client will be accessable by all classes and is a singleton.
+      serviceLocator.registerSingleton(
+        CampusVoteAPIClient(
+          rootCert: '/home/domai/Coding/campus_vote/certs/api-ca.crt',
+          clientCert: '/home/domai/Coding/campus_vote/certs/api-client.crt',
+          clientKey: '/home/domai/Coding/campus_vote/certs/api-client.key',
+        ),
+      );
+    } catch (_) {
+      throw APIClientAlreadyRegistered();
+    }
   }
 }

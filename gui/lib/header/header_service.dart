@@ -1,18 +1,23 @@
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/utils/path_utils.dart';
 import 'package:campus_vote/header/header_utils.dart';
 import 'package:campus_vote/setup/setup_models.dart';
 import 'package:campus_vote/setup/setup_services.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart' as path;
 
 class HeaderServices {
   final String cockroachBin = getCockroachBinPath();
   final String campusVoteBin = getCampusVoteBinPath();
+
   final storage = serviceLocator<FlutterSecureStorage>();
   final setupServices = serviceLocator<SetupServices>();
+
+  final rootIsolateToken = RootIsolateToken.instance!; // Isolate root identifier for multi threading
 
   /// Starts the Campus Vote API.
   ///
@@ -72,13 +77,16 @@ class HeaderServices {
     // boxSelf == null <=> isElectionCommittee == true
     final listenAddr = boxSelf != null ? '${boxSelf.ipAddr}:26257' : '${setupDate.committeeIpAddr}:26257';
 
+    final cockraochCertsDir = await getCockroachCertsDir();
+    final cockroachNodeDir = await getCockroachNodeDir();
+
     // Start the cockroach node.
     await Process.start(
       cockroachBin,
       [
         'start',
-        '--certs-dir=${await getCockroachCertsDir()}',
-        '--store=${await getCockroachNodeDir()}',
+        '--certs-dir=$cockraochCertsDir',
+        '--store=$cockroachNodeDir',
         '--listen-addr=$listenAddr',
         '--cluster-name=stupa-bochum',
         '--join=$ballotboxJoins',
@@ -88,14 +96,19 @@ class HeaderServices {
 
     final isInitialized = await storage.read(key: STORAGEKEY_INITIALIZED_COCKROACH_NODE);
     if (isInitialized == null && await setupServices.isElectionCommittee()) {
-      final initCluster = Process.runSync(
-        cockroachBin,
-        [
-          'init',
-          '--certs-dir=${await getCockroachCertsDir()}',
-          '--host=$listenAddr',
-          '--cluster-name=stupa-bochum',
-        ],
+      final initCluster = await Isolate.run(
+        () async {
+          BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
+          return Process.runSync(
+            cockroachBin,
+            [
+              'init',
+              '--certs-dir=$cockraochCertsDir',
+              '--host=$listenAddr',
+              '--cluster-name=stupa-bochum',
+            ],
+          );
+        },
       );
 
       if (initCluster.exitCode != 0) {
@@ -111,6 +124,9 @@ class HeaderServices {
       //TODO: Create clients and SQL tables
     }
 
-    await awaitCockRoachNode(listenAddr: listenAddr);
+    await Isolate.run(() {
+      BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
+      awaitCockRoachNode(listenAddr: listenAddr);
+    });
   }
 }

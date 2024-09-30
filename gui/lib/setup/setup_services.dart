@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:campus_vote/core/crypto/crypto.dart';
 import 'package:campus_vote/core/injection.dart';
@@ -6,6 +7,7 @@ import 'package:campus_vote/core/utils/file_utils.dart';
 import 'package:campus_vote/core/utils/path_utils.dart';
 import 'package:campus_vote/setup/setup_models.dart';
 import 'package:campus_vote/setup/setup_utils.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SetupServices {
@@ -14,7 +16,7 @@ class SetupServices {
   final crypto = serviceLocator<Crypto>();
   final storage = serviceLocator<FlutterSecureStorage>();
 
-  SetupServices();
+  final rootIsolateToken = RootIsolateToken.instance!; // Isolate root identifier for multi threading
 
   /// Creates the election data that is required to use CockRoachDB.
   ///
@@ -36,92 +38,93 @@ class SetupServices {
 
     // Generate a CA certificate "<certs-dir>/ca.crt" and CA key "<ca-key>".
     // The certs directory is created if it does not exist.
-    final createCA = await Process.run(
-      cockroachBin,
-      [
-        'cert',
-        'create-ca',
-        '--certs-dir=$tmpCVDir',
-        '--ca-key=$tmpCVDir${pathSep}ca.key',
-        '--key-size=4096',
-        '--overwrite', // Certificate and key files are overwritten if they exist.
-        //'--lifetime=365d' // Certificate will be valid for 10 years (default).
-      ],
-    );
+    final createCA = await Isolate.run(() {
+      BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
+      return Process.runSync(
+        cockroachBin,
+        [
+          'cert',
+          'create-ca',
+          '--certs-dir=$tmpCVDir',
+          '--ca-key=$tmpCVDir${pathSep}ca.key',
+          '--key-size=4096',
+          '--overwrite', // Certificate and key files are overwritten if they exist.
+          //'--lifetime=365d' // Certificate will be valid for 10 years (default).
+        ],
+      );
+    });
+
     if (createCA.exitCode != 0) {
       print('Error running executable: ${createCA.stderr}');
     } else {
       print('Output: ${createCA.stdout}');
     }
 
+    final futureList = <Future>[];
     for (final box in setupData.ballotBoxes) {
       // Create ballotbox specific tmp dir
       final boxDir = await Directory('$tmpCVDir$pathSep${box.name}$pathSep').create(recursive: true);
       final certsDir = await Directory('${boxDir.path}$pathSep$COCKRAOCH_CERTS_DIRNAME').create(recursive: true);
 
       // Generate a node certificate "<certs-dir>/node.crt" and key "<certs-dir>/node.key".
-      final createNode = await Process.run(
-        cockroachBin,
-        [
-          'cert',
-          'create-node',
-          '--certs-dir=$tmpCVDir',
-          '--ca-key=$tmpCVDir${pathSep}ca.key',
-          '--key-size=4096',
-          '--overwrite', // Certificate and key files are overwritten if they exist.
-          //'--lifetime=365d' // Certificate will be valid for 10 years (default).
-          box.ipAddr,
-        ],
-      );
+      final bbIsolate = Isolate.run(() async {
+        BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
+        await Process.run(
+          cockroachBin,
+          [
+            'cert',
+            'create-node',
+            '--certs-dir=$tmpCVDir',
+            '--ca-key=$tmpCVDir${pathSep}ca.key',
+            '--key-size=4096',
+            '--overwrite', // Certificate and key files are overwritten if they exist.
+            //'--lifetime=365d' // Certificate will be valid for 10 years (default).
+            box.ipAddr,
+          ],
+        );
 
-      if (createNode.exitCode != 0) {
-        print('Error running executable: ${createNode.stderr}');
-      } else {
-        print('Output: ${createNode.stdout}');
-      }
+        // Rename Node key and cert to ballotbox specific name
+        await File('$tmpCVDir${pathSep}node.key').rename('${certsDir.path}${pathSep}node.key');
+        await File('$tmpCVDir${pathSep}node.crt').rename('${certsDir.path}${pathSep}node.crt');
 
-      // Rename Node key and cert to ballotbox specific name
-      await File('$tmpCVDir${pathSep}node.key').rename('${certsDir.path}${pathSep}node.key');
-      await File('$tmpCVDir${pathSep}node.crt').rename('${certsDir.path}${pathSep}node.crt');
+        // Generate a client certificate "<certs-dir>/client.crt" and key "<certs-dir>/node.key".
+        await Process.run(
+          cockroachBin,
+          [
+            'cert',
+            'create-client',
+            '--certs-dir=$tmpCVDir',
+            '--ca-key=$tmpCVDir${pathSep}ca.key',
+            '--key-size=4096',
+            '--overwrite', // Certificate and key files are overwritten if they exist.
+            //'--lifetime=365d' // Certificate will be valid for 10 years (default).
+            box.name,
+          ],
+        );
 
-      // Generate a client certificate "<certs-dir>/client.crt" and key "<certs-dir>/node.key".
-      final createClient = await Process.run(
-        cockroachBin,
-        [
-          'cert',
-          'create-client',
-          '--certs-dir=$tmpCVDir',
-          '--ca-key=$tmpCVDir${pathSep}ca.key',
-          '--key-size=4096',
-          '--overwrite', // Certificate and key files are overwritten if they exist.
-          //'--lifetime=365d' // Certificate will be valid for 10 years (default).
-          box.name,
-        ],
-      );
+        // Rename client key and cert to ballotbox specific name
+        await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.key').rename(
+          '${certsDir.path}${pathSep}client.${box.name.toLowerCase()}.key',
+        );
+        await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.crt').rename(
+          '${certsDir.path}${pathSep}client.${box.name.toLowerCase()}.crt',
+        );
 
-      if (createClient.exitCode != 0) {
-        print('Error running executable: ${createClient.stderr}');
-      } else {
-        print('Output: ${createClient.stdout}');
-      }
+        // Store CA TLS certificate in ballot specific config directory
+        await File('$tmpCVDir${pathSep}ca.crt').copy('${certsDir.path}${pathSep}ca.crt');
 
-      // Rename client key and cert to ballotbox specific name
-      await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.key').rename(
-        '${certsDir.path}${pathSep}client.${box.name.toLowerCase()}.key',
-      );
-      await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.crt').rename(
-        '${certsDir.path}${pathSep}client.${box.name.toLowerCase()}.crt',
-      );
+        // Store setup data to ballotbox specific config directory
+        await saveSetupSettingsModelToFile(
+          setupData,
+          '${boxDir.path}settings.json',
+        );
+      });
 
-      // Store CA TLS certificate in ballot specific config directory
-      await File('$tmpCVDir${pathSep}ca.crt').copy('${certsDir.path}${pathSep}ca.crt');
-
-      // Store setup data to ballotbox specific config directory
-      await saveSetupSettingsModelToFile(
-        setupData,
-        '${boxDir.path}settings.json',
-      );
+      futureList.add(bbIsolate);
     }
+
+    // await all ballot box threads
+    await Future.wait(futureList);
 
     // Generate a new key if nessarry
     await crypto.getExportEncKey(overwriteKey: true);
@@ -133,7 +136,7 @@ class SetupServices {
     final ecCertsDir = await getCockroachCertsDir();
 
     // Generate a node certificate "<certs-dir>/node.crt" and key "<certs-dir>/node.key".
-    final createNode = await Process.run(
+    await Process.run(
       cockroachBin,
       [
         'cert',
@@ -146,13 +149,8 @@ class SetupServices {
         setupData.committeeIpAddr,
       ],
     );
-    if (createNode.exitCode != 0) {
-      print('Error running executable: ${createNode.stderr}');
-    } else {
-      print('Output: ${createNode.stdout}');
-    }
 
-    final createClient = await Process.run(
+    await Process.run(
       cockroachBin,
       [
         'cert',
@@ -165,11 +163,6 @@ class SetupServices {
         'root',
       ],
     );
-    if (createClient.exitCode != 0) {
-      print('Error running executable: ${createClient.stderr}');
-    } else {
-      print('Output: ${createClient.stdout}');
-    }
 
     // Rename Node key and cert to commiittee specific name
     await File('$tmpCVDir${pathSep}node.key').copy('$ecCertsDir${pathSep}node.key');
@@ -186,10 +179,14 @@ class SetupServices {
       await getAppDirPath(),
       await getAppDirPath(),
     );
+
     File('${await getCVDataDir()}.zip.enc').renameSync(await getCommitteeDataFilePath());
 
     // Delete temporary directory
-    Directory(tmpCVDir).deleteSync(recursive: true);
+    await Isolate.run(() {
+      BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
+      Directory(tmpCVDir).deleteSync(recursive: true);
+    });
   }
 
   /// Get the ballot box by matching configured boxes

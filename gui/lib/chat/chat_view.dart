@@ -132,6 +132,23 @@ class _ChatViewState extends State<ChatView> {
       client = serviceLocator<CampusVoteAPIClient>();
       client.sendChatMessage(message);
       updateMessages();
+    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Row(
+              children: [
+                Icon(
+                  Icons.warning_outlined,
+                  color: Colors.red,
+                ),
+                SizedBox(width: 20),
+                Text('Currently not connected with API. Cannot send messages.'),
+              ],
+            ),
+          ),
+        );
+      }
     }
   }
 

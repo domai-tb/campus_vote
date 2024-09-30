@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:campus_vote/core/failures.dart';
 import 'package:campus_vote/core/state/state_service.dart';
 import 'package:campus_vote/core/state/state_utils.dart';
 import 'package:campus_vote/core/utils/path_utils.dart';
@@ -128,7 +129,10 @@ class CampusVoteState extends ChangeNotifier {
         } catch (e) {
           // should return an error when services already started
           // => currently after re-start
-          print(e);
+          if (e is! APIClientAlreadyRegistered) {
+            // this case is any other kind of error
+            await changeState(CVStates.READY_TO_START_ELECTION);
+          }
         }
         break;
       case CVStates.ELECTION_PAUSED:

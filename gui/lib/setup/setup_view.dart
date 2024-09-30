@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:campus_vote/core/api/client.dart';
 import 'package:campus_vote/core/crypto/crypto.dart';
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
@@ -79,9 +80,12 @@ class SetupView extends StatelessWidget {
           if (campusVoteState.state != CVStates.AWAITING_SETUP)
             IconButton(
               onPressed: () async {
-                await Directory(await getAppDirPath()).delete(recursive: true);
-                await crypto.storage.deleteAll();
-                await campusVoteState.changeState(CVStates.AWAITING_SETUP);
+                serviceLocator.unregister<CampusVoteAPIClient>();
+                await Future.wait([
+                  Directory(await getAppDirPath()).delete(recursive: true),
+                  crypto.storage.deleteAll(),
+                  campusVoteState.changeState(CVStates.AWAITING_SETUP),
+                ]);
               },
               icon: Icon(
                 Icons.delete_forever_outlined,
@@ -103,6 +107,8 @@ class SetupView extends StatelessWidget {
     switch (campusVoteState.state) {
       case CVStates.AWAITING_SETUP:
         return SetupForm(setupPageContext: context);
+      case CVStates.INITIALIZING_ELECTION:
+        return const Center(child: CircularProgressIndicator());
       default:
         return SetupInfo();
     }

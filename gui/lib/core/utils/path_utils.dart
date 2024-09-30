@@ -9,6 +9,14 @@ import 'package:path_provider/path_provider.dart';
 
 String pathSep = Platform.pathSeparator;
 
+/// Get data directory of cockroach certs
+Future<String> getAPICertsDir() async {
+  final appCVDir = await getCVDataDir();
+  final retVal = path.join(appCVDir, 'campusvote-certs');
+  Directory(retVal).createSync(recursive: true);
+  return retVal;
+}
+
 /// Get path to a campusvote application directory.
 Future<String> getAppDirPath() async {
   final appDir = await getApplicationCacheDirectory();
