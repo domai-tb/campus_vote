@@ -13,6 +13,7 @@ message StatusCode {
   // 3  => student allready voted
   // 4  => ballotbox not found
   // 5  => failed to send chat message
+  // 6  => student allready got a ballot
   int32 status = 1;
   string msg = 2;
 }

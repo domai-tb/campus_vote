@@ -44,7 +44,7 @@ class VoterForm extends StatelessWidget {
 
                           // TODO: Call register vote
                           final client = serviceLocator<CampusVoteAPIClient>();
-                          await client.countVote(voterForm.currentState!.value[FORMKEY_STUDENTID]).then((msg) {
+                          await client.votingStep(voterForm.currentState!.value[FORMKEY_STUDENTID]).then((msg) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(msg)),
                             );

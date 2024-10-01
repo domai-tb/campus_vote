@@ -53,6 +53,10 @@ func statusStudentAllreadyVoted() *StatusCode {
 	return &StatusCode{Status: 3, Msg: "student allready voted"}
 }
 
+func statusStudentAllreadyBallot() *StatusCode {
+	return &StatusCode{Status: 6, Msg: "student allready got a ballot"}
+}
+
 func statusFailedToSendChatMessage() *StatusCode {
 	return &StatusCode{Status: 5, Msg: "failed to send chat message"}
 }

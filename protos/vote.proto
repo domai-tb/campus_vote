@@ -41,7 +41,7 @@ message VoteReq {
 service Vote {
   rpc CreateVoter(Voter) returns (StatusCode);
   rpc GetVoterByStudentId(StudentId) returns (Voter);
-  rpc RegisterVote(VoteReq) returns (StatusCode);
+  rpc RegisterVotingStep(VoteReq) returns (StatusCode);
   rpc CheckVoterStatus(StudentId) returns (StatusCode);
   rpc GetElectionStats(Void) returns (ElectionStats);
 }

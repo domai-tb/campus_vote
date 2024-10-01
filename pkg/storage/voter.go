@@ -22,8 +22,11 @@ type EncVoter struct {
 }
 
 type VoterStatus struct {
-	StudentId int  `gorm:"primaryKey;<-:create"`
-	Status    bool `gorm:"<-:create"`
+	StudentId int `gorm:"primaryKey;<-:create"`
+	// 0 = student hasn't voted yet
+	// 1 = student got a ballot
+	// 2 = student has voted
+	Status int `gorm:"<-:create"`
 }
 
 type EncVoterStatus struct {
@@ -82,10 +85,10 @@ func (cvdb *CampusVoteStorage) decryptVoter(v EncVoter) (Voter, error) {
 	}, nil
 }
 
-func (cvdb *CampusVoteStorage) encryptVoterStatus(v Voter) EncVoterStatus {
+func (cvdb *CampusVoteStorage) encryptVoterStatus(v VoterStatus) EncVoterStatus {
 	return EncVoterStatus{
 		StudentId: cvdb.encryptWithoutNonce(strconv.Itoa(v.StudentId)),
-		Status:    cvdb.encrypt("true"),
+		Status:    cvdb.encrypt(strconv.Itoa(v.Status)),
 	}
 }
 
@@ -106,7 +109,7 @@ func (cvdb *CampusVoteStorage) decryptVoterStatus(v EncVoterStatus) (VoterStatus
 		return VoterStatus{}, fmt.Errorf("failed to decrypt voter status: %w", err)
 	}
 
-	status, err := strconv.ParseBool(strStatus)
+	status, err := strconv.Atoi(strStatus)
 	if err != nil {
 		return VoterStatus{}, fmt.Errorf("failed to decode voter status: %w", err)
 	}

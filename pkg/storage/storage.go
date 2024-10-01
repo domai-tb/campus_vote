@@ -65,18 +65,23 @@ func (cvdb *CampusVoteStorage) GetVoterByStudentId(id int) (Voter, error) {
 	return Voter{}, core.StudentNotFoundError()
 }
 
-func (cvdb *CampusVoteStorage) SetVoterAsVoted(v Voter, box string, isAfternoon bool) error {
+func (cvdb *CampusVoteStorage) RegisterVotingStep(v Voter, box string, isAfternoon bool) error {
 	db := cvdb.conf.GetCockroachDB()
 
 	status := cvdb.CheckVoterStatus(v)
 
-	if status {
+	switch status {
+	case 2:
+		// allready votes
 		return core.StudentAllreadyVotedError()
+	case 1:
+		// allready got ballot
+		db.Where("student_id = ?", cvdb.encryptWithoutNonce(strconv.Itoa(v.StudentId))).Delete(&EncVoterStatus{})
+		db.Create(cvdb.encryptVoterStatus(VoterStatus{StudentId: v.StudentId, Status: 2}))
+		cvdb.countVote(box, isAfternoon)
+	case 0:
+		db.Create(cvdb.encryptVoterStatus(VoterStatus{StudentId: v.StudentId, Status: 1}))
 	}
-
-	db.Create(cvdb.encryptVoterStatus(v))
-
-	cvdb.countVote(box, isAfternoon)
 
 	return nil
 }
@@ -102,10 +107,10 @@ func (cvdb *CampusVoteStorage) SetVoterAsVotedByStudentId(id int, box string, is
 	}
 
 	// Set voter as voted
-	return cvdb.SetVoterAsVoted(voter, box, isAfternoon)
+	return cvdb.RegisterVotingStep(voter, box, isAfternoon)
 }
 
-func (cvdb *CampusVoteStorage) CheckVoterStatus(v Voter) bool {
+func (cvdb *CampusVoteStorage) CheckVoterStatus(v Voter) int {
 	db := cvdb.conf.GetCockroachDB()
 
 	var tmp EncVoterStatus
@@ -113,22 +118,22 @@ func (cvdb *CampusVoteStorage) CheckVoterStatus(v Voter) bool {
 
 	vstatus, err := cvdb.decryptVoterStatus(tmp)
 	if err != nil {
-		return false
+		// cannot decrypt because student didn't voted yet
+		return 0
 	}
 
-	// should always true
 	return vstatus.Status
 }
 
-func (cvdb *CampusVoteStorage) CheckVoterStatusByStudentId(id int) (bool, error) {
+func (cvdb *CampusVoteStorage) CheckVoterStatusByStudentId(id int) (int, error) {
 	voter, err := cvdb.GetVoterByStudentId(id)
 
 	if err != nil {
 		cvErr, ok := err.(*core.CampusVoteError)
 		if ok {
-			return false, cvErr
+			return 0, cvErr
 		} else {
-			return false, core.UnexpectedError(err.Error())
+			return 0, core.UnexpectedError(err.Error())
 		}
 	}
 

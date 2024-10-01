@@ -2,6 +2,7 @@ package api
 
 import (
 	context "context"
+	"fmt"
 	"net"
 	"time"
 
@@ -84,7 +85,7 @@ func (cvapi *CampusVoteAPI) GetVoterByStudentId(c context.Context, id *StudentId
 	return nil, err
 }
 
-func (cvapi *CampusVoteAPI) RegisterVote(c context.Context, req *VoteReq) (*StatusCode, error) {
+func (cvapi *CampusVoteAPI) RegisterVotingStep(c context.Context, req *VoteReq) (*StatusCode, error) {
 
 	// Get client that calls the gRPC
 	boxName, err := getBoxNameFromTLSCert(c)
@@ -112,11 +113,16 @@ func (cvapi *CampusVoteAPI) CheckVoterStatus(c context.Context, id *StudentId) (
 		return statusStudentNotFound(), nil
 	}
 
-	if status {
+	switch status {
+	case 2:
 		return statusStudentAllreadyVoted(), nil
+	case 1:
+		return statusStudentAllreadyBallot(), nil
+	case 0:
+		return statusOk(), nil
 	}
 
-	return statusOk(), nil
+	return statusUnexpectedError(fmt.Sprintf("received undefinied voter status: %d", status)), nil
 }
 
 func (cvapi *CampusVoteAPI) GetElectionStats(context.Context, *Void) (*ElectionStats, error) {

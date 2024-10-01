@@ -86,7 +86,7 @@ func main() {
 	for i, voter := range LIST_OF_VOTERS {
 		if i%2 != 0 {
 			// Ever second student votes!! <3 ( and surprisingly in the morning on its home ballotbox :D )
-			if err := electionStorage.SetVoterAsVoted(voter, voter.BallotBox, false); err != nil {
+			if err := electionStorage.RegisterVotingStep(voter, voter.BallotBox, false); err != nil {
 				fmt.Println(err) // voter already voted
 			} else {
 				fmt.Printf("%s %s (%d) votes!\n", voter.Firstname, voter.Lastname, voter.StudentId)
@@ -98,7 +98,7 @@ func main() {
 	fmt.Printf("\n === election: student already voted? === \n")
 	for _, voter := range LIST_OF_VOTERS {
 		// CheckVoterStatus will always return a status; on error it will be false
-		if electionStorage.CheckVoterStatus(voter) {
+		if electionStorage.CheckVoterStatus(voter) == 2 {
 			fmt.Printf("%s %s (%d): voted :)\n", voter.Firstname, voter.Lastname, voter.StudentId)
 		} else {
 			fmt.Printf("%s %s (%d): not voted :(\n", voter.Firstname, voter.Lastname, voter.StudentId)
