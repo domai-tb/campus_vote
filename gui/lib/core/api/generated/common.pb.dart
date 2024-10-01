@@ -98,6 +98,8 @@ class StatusCode extends $pb.GeneratedMessage {
   /// 4  => ballotbox not found
   /// 5  => failed to send chat message
   /// 6  => student allready got a ballot
+  /// 7  => failed to read chat history
+  /// 8  => failed to create voter
   @$pb.TagNumber(1)
   $core.int get status => $_getIZ(0);
   @$pb.TagNumber(1)

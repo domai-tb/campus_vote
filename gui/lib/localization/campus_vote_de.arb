@@ -21,5 +21,17 @@
   "chatSendAMessage": "Sende einen Nachricht:",
   "chatNeedMoreBallots": "Benötigen mehr Wahlzettel!",
   "chatHaveAProblem": "Es gibt probleme an unserer Urne. Wahlausschuss bitte melden.",
-  "chatEmptyPlaceholder": "Keine Nachrichten"
+  "chatEmptyPlaceholder": "Keine Nachrichten",
+  "voterInfoLastname": "Nachname",
+  "voterInfoFirstname": "Vorname",
+  "voterInfoStudentId": "Martrikelnummer",
+  "voterInfoVoterStatus": "Status",
+  "voterInfoVoterTitle": "Studierender",
+  "voterStatusGreen": "Wahlberechtigt",
+  "voterStatusAmber": "Hat bereits einen Wahlzettel bekommen!",
+  "voterStatusRed": "Hat bereits gewählt.",
+  "voterStatusGrey": "Fehler!",
+  "errMsgVoterNotFound": "Kein Eintrag mit dieser Martrikelnummer gefunden.",
+  "btnTxtClose": "Schließen",
+  "btnTxtGiveBallot": "Wahlzettel aushändigen"
 }

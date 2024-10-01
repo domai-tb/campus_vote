@@ -21,5 +21,17 @@
   "chatSendAMessage": "Send a message:",
   "chatNeedMoreBallots": "Need more ballots!",
   "chatHaveAProblem": "Problem at our balllot box. Please come to us election committee.",
-  "chatEmptyPlaceholder": "No Messages"
+  "chatEmptyPlaceholder": "No Messages",
+  "voterInfoLastname": "Lastname",
+  "voterInfoFirstname": "Firstname",
+  "voterInfoStudentId": "Student-ID",
+  "voterInfoVoterStatus": "Status",
+  "voterInfoVoterTitle": "Student",
+  "voterStatusGreen": "Allowed to vote",
+  "voterStatusAmber": "Allready got a ballot!",
+  "voterStatusRed": "Allready voted",
+  "voterStatusGrey": "Error!",
+  "errMsgVoterNotFound": "No student found with this ID",
+  "btnTxtClose": "Close",
+  "btnTxtGiveBallot": "Handing out ballot"
 }

@@ -60,6 +60,10 @@ class CampusVoteAPIClient {
   Future<ChatHistory> getChatHistory() async {
     return await chatClient.readChatHistory(common.Void());
   }
+
+  Future<Voter> getVoterByStudentID(String studentId) async {
+    return await voteClient.getVoterByStudentId(StudentId(num: parseLongInt(studentId)));
+  }
 }
 
 class CVAPIChannelCredentials extends ChannelCredentials {

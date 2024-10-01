@@ -71,6 +71,7 @@ class Voter extends $pb.GeneratedMessage {
     StudentId? studentId,
     $core.String? ballotBox,
     $core.String? faculity,
+    $core.int? status,
   }) {
     final $result = create();
     if (firstname != null) {
@@ -88,6 +89,9 @@ class Voter extends $pb.GeneratedMessage {
     if (faculity != null) {
       $result.faculity = faculity;
     }
+    if (status != null) {
+      $result.status = status;
+    }
     return $result;
   }
   Voter._() : super();
@@ -100,6 +104,7 @@ class Voter extends $pb.GeneratedMessage {
     ..aOM<StudentId>(3, _omitFieldNames ? '' : 'studentId', protoName: 'studentId', subBuilder: StudentId.create)
     ..aOS(4, _omitFieldNames ? '' : 'ballotBox', protoName: 'ballotBox')
     ..aOS(5, _omitFieldNames ? '' : 'faculity')
+    ..a<$core.int>(6, _omitFieldNames ? '' : 'status', $pb.PbFieldType.OU3)
     ..hasRequiredFields = false
   ;
 
@@ -170,6 +175,18 @@ class Voter extends $pb.GeneratedMessage {
   $core.bool hasFaculity() => $_has(4);
   @$pb.TagNumber(5)
   void clearFaculity() => clearField(5);
+
+  /// 0 => not voted
+  /// 1 => got ballot
+  /// 2 => voted
+  @$pb.TagNumber(6)
+  $core.int get status => $_getIZ(5);
+  @$pb.TagNumber(6)
+  set status($core.int v) { $_setUnsignedInt32(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasStatus() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearStatus() => clearField(6);
 }
 
 class VotingDayStats extends $pb.GeneratedMessage {

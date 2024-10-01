@@ -23,7 +23,7 @@ Future<void> awaitCockRoachNode({
   while (attempts < retries) {
     attempts++;
     try {
-      final result = await Process.runSync(
+      final result = Process.runSync(
         cockroachBin,
         [
           'node',

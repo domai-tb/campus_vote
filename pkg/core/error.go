@@ -43,5 +43,9 @@ func FailedToSendChatMessageError() error {
 }
 
 func FailedToReadChatHistoryError() error {
-	return &CampusVoteError{StatusCode: 5, ErrorMsg: "failed to read chat history"}
+	return &CampusVoteError{StatusCode: 7, ErrorMsg: "failed to read chat history"}
+}
+
+func FailedToCreateVoterError(msg string) error {
+	return &CampusVoteError{StatusCode: 8, ErrorMsg: fmt.Sprintf("failed to create voter: %s", msg)}
 }

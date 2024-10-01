@@ -71,6 +71,8 @@ type StatusCode struct {
 	// 4  => ballotbox not found
 	// 5  => failed to send chat message
 	// 6  => student allready got a ballot
+	// 7  => failed to read chat history
+	// 8  => failed to create voter
 	Status int32  `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
 	Msg    string `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
 }

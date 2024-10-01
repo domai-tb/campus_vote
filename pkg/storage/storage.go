@@ -69,9 +69,13 @@ func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error {
 	}
 
 	encVoter := cvdb.encryptVoter(voter)
-	db.Create(encVoter)
-	cvdb.countVoter()
+	result := db.Create(encVoter)
 
+	if result.Error != nil {
+		return core.FailedToCreateVoterError(result.Error.Error())
+	}
+
+	cvdb.countVoter()
 	return nil
 }
 
