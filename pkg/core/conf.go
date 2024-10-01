@@ -50,7 +50,6 @@ func DefaultCampusVoteConf() *CampusVoteConf {
 }
 
 func (conf *CampusVoteConf) GetCockroachDB() *gorm.DB {
-	// TODO: Replace with keychain / credential storage
 	certPEMBlock, _ := os.ReadFile(conf.ClientCert)
 	keyPEMBlock, _ := os.ReadFile(conf.ClientKey)
 	rootCA, _ := os.ReadFile(conf.RootCert)

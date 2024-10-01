@@ -1,5 +1,5 @@
 PROTO_DIR = ../protos
-CERTS_DIR = ../certs
+CERTS_DIR =  ~/.cache/de.stupabochum.campus_vote/.committee/campusvote-certs
 PROTO_OPTS = \
 	--go_out=.. --go-grpc_out=.. \
 	--proto_path=$(PROTO_DIR) \

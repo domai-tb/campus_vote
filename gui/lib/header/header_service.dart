@@ -54,6 +54,7 @@ class HeaderServices {
         '-c=${path.join(await getCockroachCertsDir(), 'client.$username.crt')}',
         '-k=${path.join(await getCockroachCertsDir(), 'client.$username.key')}',
         '-a=$host',
+        '-p=26258',
         '-r=${path.join(await getCockroachCertsDir(), 'ca.crt')}',
         '-u=$username',
         '-m=${path.join(await getAPICertsDir(), 'api-ca.crt')}',
@@ -80,6 +81,7 @@ class HeaderServices {
 
     // boxSelf == null <=> isElectionCommittee == true
     final listenAddr = boxSelf != null ? '${boxSelf.ipAddr}:26257' : '${setupDate.committeeIpAddr}:26257';
+    final sqlAddr = boxSelf != null ? '${boxSelf.ipAddr}:26258' : '${setupDate.committeeIpAddr}:26258';
 
     final cockraochCertsDir = await getCockroachCertsDir();
     final cockroachNodeDir = await getCockroachNodeDir();
@@ -92,8 +94,11 @@ class HeaderServices {
         '--certs-dir=$cockraochCertsDir',
         '--store=$cockroachNodeDir',
         '--listen-addr=$listenAddr',
+        '--sql-addr=$sqlAddr',
         '--cluster-name=stupa-bochum',
         '--join=$ballotboxJoins',
+        '--advertise-addr=$listenAddr',
+        '--advertise-sql-addr=$sqlAddr',
         '--background',
       ],
     );
@@ -124,8 +129,6 @@ class HeaderServices {
           value: 'true',
         );
       }
-
-      //TODO: Create clients and SQL tables
     }
 
     await Isolate.run(() {

@@ -53,7 +53,6 @@ func main() {
 				ServerCert:   serverCert,
 				ServerKey:    serverKey,
 			}
-			fmt.Println("Configuration:", config)
 
 			cvdb := storage.New(config, "123456")
 			api.New(*cvdb)

@@ -3,6 +3,7 @@ package storage
 import (
 	"crypto/cipher"
 	"crypto/sha256"
+	"fmt"
 	"slices"
 	"sort"
 	"strconv"
@@ -24,6 +25,34 @@ func New(conf core.CampusVoteConf, password string) *CampusVoteStorage {
 	db.AutoMigrate(&EncVoter{}, &EncVoterStatus{}, &ElectionStats{}, &EncChatMessage{}) // election
 
 	db.Create(newStats(conf.ElectionYear, conf.BallotBoxes))
+
+	// Create Ballotbox users and grant rights
+	for _, box := range conf.BallotBoxes {
+		// password "NULL" enforce certticate-based authentication
+		db.Exec(fmt.Sprintf("CREATE USER %s WITH PASSWORD NULL", box))
+
+		// Enable auditing for the table
+		db.Exec("ALTER TABLE defaultdb.enc_chat_messages EXPERIMENTAL_AUDIT SET READ WRITE")
+		db.Exec("ALTER TABLE defaultdb.enc_voter_statuses EXPERIMENTAL_AUDIT SET READ WRITE")
+		db.Exec("ALTER TABLE defaultdb.enc_voters EXPERIMENTAL_AUDIT SET READ WRITE")
+		db.Exec("ALTER TABLE defaultdb.election_stats EXPERIMENTAL_AUDIT SET READ WRITE")
+
+		// Chat table
+		db.Exec(fmt.Sprintf("GRANT INSERT ON TABLE defaultdb.enc_chat_messages TO %s", box))
+		db.Exec(fmt.Sprintf("GRANT SELECT ON TABLE defaultdb.enc_chat_messages TO %s", box))
+
+		// Voter status table
+		db.Exec(fmt.Sprintf("GRANT INSERT ON TABLE defaultdb.enc_voter_statuses TO %s", box))
+		db.Exec(fmt.Sprintf("GRANT DELETE ON TABLE defaultdb.enc_voter_statuses TO %s", box))
+		db.Exec(fmt.Sprintf("GRANT SELECT ON TABLE defaultdb.enc_voter_statuses TO %s", box))
+
+		// Voter registry table
+		db.Exec(fmt.Sprintf("GRANT SELECT ON TABLE defaultdb.enc_voters TO %s", box))
+
+		// Stats table
+		db.Exec(fmt.Sprintf("GRANT SELECT ON TABLE defaultdb.election_stats TO %s", box))
+		db.Exec(fmt.Sprintf("GRANT UPDATE ON TABLE defaultdb.election_stats TO %s", box))
+	}
 
 	return &CampusVoteStorage{conf: conf, cipher: cipher}
 }
