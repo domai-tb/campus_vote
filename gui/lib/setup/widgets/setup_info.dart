@@ -78,7 +78,7 @@ class SetupInfoState extends State<SetupInfo> {
         boxSelf = boxData;
       });
     } catch (e) {
-      print(e);
+      // ignore because this indicates that this instance ist the election committee
     }
   }
 }

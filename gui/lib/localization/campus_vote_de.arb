@@ -33,5 +33,11 @@
   "voterStatusGrey": "Fehler!",
   "errMsgVoterNotFound": "Kein Eintrag mit dieser Martrikelnummer gefunden.",
   "btnTxtClose": "Schließen",
-  "btnTxtGiveBallot": "Wahlzettel aushändigen"
+  "btnTxtGiveBallot": "Wahlzettel aushändigen",
+  "btnTxtRegisterVote": "Wahl bestätigen",
+  "infTxtPleaseSetupAElec": "Du musst zuerst eine neue Wahl anlegen, bevor die Wahl gestartet werden kann.",
+  "infTxtPleaseStartElec": "Beginne die Wahl in dem du auf allen Geräten auf den oberen Button drückst.",
+  "infTxtCreateElection": "Erstelle die Wahl!",
+  "txtIsAfternoon": "Wahlvergänge werden statistisch nachmittags erfasst.",
+  "txtIsNotAfternoon": "Wahlvergänge werden statistisch vormittags erfasst."
 }

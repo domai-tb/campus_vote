@@ -39,8 +39,16 @@ class CampusVoteState extends ChangeNotifier {
     return state != CVStates.ELECTION_STARTED;
   }
 
-  bool apiIsStarted() {
+  bool apiHasStarted() {
     return state == CVStates.ELECTION_STARTED;
+  }
+
+  bool electionIsReadyToStart() {
+    return state == CVStates.READY_TO_START_ELECTION;
+  }
+
+  bool awaitingSetup() {
+    return state == CVStates.AWAITING_SETUP;
   }
 
   Future<void> changeState(
@@ -115,7 +123,6 @@ class CampusVoteState extends ChangeNotifier {
             await stateServices.startingElection(setupData!);
             await changeState(CVStates.ELECTION_STARTED);
           } catch (e) {
-            print(e);
             await changeState(CVStates.READY_TO_START_ELECTION);
           }
           await changeState(CVStates.ELECTION_STARTED);

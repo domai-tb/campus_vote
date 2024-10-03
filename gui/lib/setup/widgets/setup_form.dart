@@ -96,9 +96,6 @@ class SetupForm extends StatelessWidget {
                     child: CVButton(
                       onPressed: () async {
                         if (setupForm.currentState!.validate()) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Success')),
-                          );
                           setupForm.currentState!.save();
                           final setupModel = setupFormDataToModel(
                             setupForm.currentState!.value,
@@ -112,6 +109,7 @@ class SetupForm extends StatelessWidget {
                                 .then((_) async {
                               await crypto.getExportEncKey().then((encKey) async {
                                 await showDialog(
+                                  // ignore: use_build_context_synchronously
                                   context: setupPageContext,
                                   builder: (BuildContext context) => ShowPasswordDialog(password: encKey.base64),
                                 );
@@ -120,7 +118,7 @@ class SetupForm extends StatelessWidget {
                           }
                         }
                       },
-                      labelText: 'Validate',
+                      labelText: AppLocalizations.of(context)!.infTxtCreateElection,
                       icon: const Icon(Icons.check_outlined),
                     ),
                   ),

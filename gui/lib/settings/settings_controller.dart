@@ -28,6 +28,9 @@ class SettingsController with ChangeNotifier {
   /// Get current theme mode .
   ThemeMode get themeMode => _currentSettings.themeMode;
 
+  /// Get isAfternoon for sending correct stats.
+  bool get isAfternoon => _currentSettings.isAfternoon;
+
   void updateLanguage(Locale? newLanguage) {
     if (newLanguage == null) return;
 
@@ -55,6 +58,15 @@ class SettingsController with ChangeNotifier {
     if (newThemeMode == _currentSettings.themeMode) return;
 
     _updateSettings(_currentSettings.copyWith(themeMode: newThemeMode));
+  }
+
+  /// Updates the current setting for counting votes as afternoon votes.
+  // ignore: avoid_positional_boolean_parameters
+  void updateIsAfternoon(bool isAfternoon) {
+    // Do not perform any work if new and old are identical
+    if (isAfternoon == _currentSettings.isAfternoon) return;
+
+    _updateSettings(_currentSettings.copyWith(isAfternoon: isAfternoon));
   }
 
   /// Notifies the listeners whenever the settings are changed and saves

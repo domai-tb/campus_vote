@@ -16,20 +16,21 @@ class HeaderView extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            flex: 2,
+            flex: 8,
             child: Text('Current State is ${campusVoteState.state}'),
           ),
-          Expanded(
-            child: CVButton(
-              icon: campusVoteState.apiIsStarted() ? const Icon(Icons.pause_outlined) : const Icon(Icons.play_arrow_outlined),
-              labelText: campusVoteState.apiIsStarted() ? 'Shutdown Campus Vote' : 'Start API',
-              onPressed: () {
-                if (!campusVoteState.apiIsStarted()) {
-                  campusVoteState.changeState(CVStates.STARTING_ELECTION);
-                }
-              },
+          if (campusVoteState.electionIsReadyToStart())
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(25),
+                child: CVButton(
+                  icon: const Icon(Icons.play_arrow_outlined),
+                  labelText: 'Start API',
+                  onPressed: () => campusVoteState.changeState(CVStates.STARTING_ELECTION),
+                ),
+              ),
             ),
-          ),
         ],
       ),
     );

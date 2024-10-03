@@ -44,14 +44,6 @@ class SetupView extends StatelessWidget {
                       boxDataPassword: boxDataPassword,
                     );
                   } catch (e) {
-                    // TODO: Write more useful error message
-                    // final String msg;
-                    // switch (e) {
-                    //   default:
-                    //     msg =
-                    //         AppLocalizations.of(context)!.errMsgWrongPassword;
-                    //     break;
-                    // }
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

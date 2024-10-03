@@ -39,7 +39,7 @@ class SetupServices {
 
     // Generate a CA certificate "<certs-dir>/ca.crt" and CA key "<ca-key>".
     // The certs directory is created if it does not exist.
-    final createCA = await Isolate.run(() {
+    await Isolate.run(() {
       BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
       return Process.runSync(
         cockroachBin,
@@ -54,12 +54,6 @@ class SetupServices {
         ],
       );
     });
-
-    if (createCA.exitCode != 0) {
-      print('Error running executable: ${createCA.stderr}');
-    } else {
-      print('Output: ${createCA.stdout}');
-    }
 
     // Will be committee because this function is only called in the
     // setup process. Only committee setups new elections.

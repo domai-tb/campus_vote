@@ -11,9 +11,8 @@ import 'package:sidebarx/sidebarx.dart';
 
 class MainFrame extends StatefulWidget {
   final SidebarXController controller;
-  final campusVoteState = serviceLocator<CampusVoteState>();
 
-  MainFrame({
+  const MainFrame({
     super.key,
     required this.controller,
   });
@@ -23,12 +22,14 @@ class MainFrame extends StatefulWidget {
 }
 
 class MainFrameState extends State<MainFrame> {
+  final campusVoteState = serviceLocator<CampusVoteState>();
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return ListenableBuilder(
-      listenable: widget.campusVoteState,
+      listenable: campusVoteState,
       builder: (BuildContext context, Widget? child) {
         return Row(
           children: [
@@ -46,9 +47,7 @@ class MainFrameState extends State<MainFrame> {
                       builder: (context, child) {
                         switch (widget.controller.selectedIndex) {
                           case 0:
-                            return DashboardView();
-                          // case 1:
-                          //   return ChatView();
+                            return const DashboardView();
                           case 1:
                             return SetupView();
                           case 2:
@@ -67,19 +66,21 @@ class MainFrameState extends State<MainFrame> {
                       },
                     ),
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: VoterForm(),
-                  ),
+                  if (campusVoteState.apiHasStarted())
+                    Expanded(
+                      flex: 2,
+                      child: VoterForm(),
+                    ),
                 ],
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(25),
-                child: ChatView(),
+            if (campusVoteState.apiHasStarted())
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(25),
+                  child: ChatView(),
+                ),
               ),
-            ),
           ],
         );
       },

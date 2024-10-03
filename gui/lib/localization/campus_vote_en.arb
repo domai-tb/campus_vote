@@ -33,5 +33,11 @@
   "voterStatusGrey": "Error!",
   "errMsgVoterNotFound": "No student found with this ID",
   "btnTxtClose": "Close",
-  "btnTxtGiveBallot": "Handing out ballot"
+  "btnTxtGiveBallot": "Handing out ballot",
+  "btnTxtRegisterVote": "Register Vote",
+  "infTxtPleaseSetupAElec": "Please setup an election first!",
+  "infTxtPleaseStartElec": "Please start the election with the upper right button. Do this for all ballot boxes.",
+  "infTxtCreateElection": "Create Election!",
+  "txtIsAfternoon": "Votes will be counted as afternoon votes",
+  "txtIsNotAfternoon": "Votes will be counted as morning votes"
 }

@@ -5,17 +5,18 @@ import 'package:campus_vote/core/api/generated/vote.pbgrpc.dart';
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
 
 class DashboardView extends StatefulWidget {
-  final campusVoteState = serviceLocator<CampusVoteState>();
-
-  DashboardView({super.key});
+  const DashboardView({super.key});
 
   @override
   State<DashboardView> createState() => _DashboardViewState();
 }
 
 class _DashboardViewState extends State<DashboardView> {
+  final campusVoteState = serviceLocator<CampusVoteState>();
+
   late CampusVoteAPIClient client;
 
   Timer? updateTimer;
@@ -24,8 +25,9 @@ class _DashboardViewState extends State<DashboardView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final locals = AppLocalizations.of(context);
 
-    if (widget.campusVoteState.apiIsStarted() && serviceLocator.isRegistered<CampusVoteAPIClient>()) {
+    if (campusVoteState.apiHasStarted() && serviceLocator.isRegistered<CampusVoteAPIClient>()) {
       client = serviceLocator<CampusVoteAPIClient>();
       return FutureBuilder(
         future: updateStats(),
@@ -36,10 +38,17 @@ class _DashboardViewState extends State<DashboardView> {
           );
         },
       );
+    } else if (campusVoteState.electionIsReadyToStart()) {
+      return Center(
+        child: Text(
+          locals!.infTxtPleaseStartElec,
+          style: theme.textTheme.headlineMedium,
+        ),
+      );
     } else {
       return Center(
         child: Text(
-          'Please setup an election first!',
+          locals!.infTxtPleaseSetupAElec,
           style: theme.textTheme.headlineMedium,
         ),
       );

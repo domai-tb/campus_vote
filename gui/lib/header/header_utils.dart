@@ -22,29 +22,19 @@ Future<void> awaitCockRoachNode({
 
   while (attempts < retries) {
     attempts++;
-    try {
-      final result = Process.runSync(
-        cockroachBin,
-        [
-          'node',
-          'status',
-          '--certs-dir=${await getCockroachCertsDir()}',
-          '--host=$listenAddr',
-        ],
-      );
 
-      if (result.exitCode == 0) {
-        // Command executed successfully
-        print('Command executed successfully.');
-        return;
-      } else {
-        // Command failed, log the error
-        print(
-          'Command failed with exit code ${result.exitCode}: ${result.stderr}',
-        );
-      }
-    } catch (e) {
-      print('Command execution failed: $e');
+    final result = Process.runSync(
+      cockroachBin,
+      [
+        'node',
+        'status',
+        '--certs-dir=${await getCockroachCertsDir()}',
+        '--host=$listenAddr',
+      ],
+    );
+
+    if (result.exitCode == 0) {
+      return;
     }
 
     if (attempts < retries) {

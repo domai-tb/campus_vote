@@ -8,12 +8,14 @@ import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
 /// When a user changes a setting, the SettingsController is updated and
 /// Widgets that listen to the SettingsController are rebuilt.
 class SettingsView extends StatelessWidget {
-  final SettingsController _settingsController = serviceLocator<SettingsController>();
+  final SettingsController settingsController = serviceLocator<SettingsController>();
 
   SettingsView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final locals = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -28,9 +30,9 @@ class SettingsView extends StatelessWidget {
           children: [
             DropdownButton<ThemeMode>(
               // Read the selected themeMode from the controller
-              value: _settingsController.themeMode,
+              value: settingsController.themeMode,
               // Call the updateThemeMode method any time the user selects a theme.
-              onChanged: _settingsController.updateThemeMode,
+              onChanged: settingsController.updateThemeMode,
               items: const [
                 DropdownMenuItem(
                   value: ThemeMode.system,
@@ -48,9 +50,9 @@ class SettingsView extends StatelessWidget {
             ),
             DropdownButton<Locale>(
               // Read the selected themeMode from the controller
-              value: _settingsController.language,
+              value: settingsController.language,
               // Call the updateThemeMode method any time the user selects a theme.
-              onChanged: _settingsController.updateLanguage,
+              onChanged: settingsController.updateLanguage,
               items: [
                 DropdownMenuItem(
                   value: const Locale('en'),
@@ -62,9 +64,22 @@ class SettingsView extends StatelessWidget {
                 ),
               ],
             ),
+            Row(
+              children: [
+                Switch(
+                  value: settingsController.isAfternoon,
+                  activeColor: Theme.of(context).primaryColor,
+                  onChanged: settingsController.updateIsAfternoon,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(settingsController.isAfternoon ? locals!.txtIsAfternoon : locals!.txtIsNotAfternoon),
+                ),
+              ],
+            ),
             const SizedBox(height: 20),
             Text(
-              'Campus Vote Version: ${_settingsController.packageInfo.version}',
+              'Campus Vote Version: ${settingsController.packageInfo.version}',
             ),
           ],
         ),

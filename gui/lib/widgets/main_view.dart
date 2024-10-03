@@ -1,3 +1,5 @@
+import 'package:campus_vote/core/injection.dart';
+import 'package:campus_vote/core/state/state_controller.dart';
 import 'package:campus_vote/themes/theme_dark.dart';
 import 'package:campus_vote/widgets/main_frame.dart';
 import 'package:flutter/material.dart';
@@ -5,15 +7,17 @@ import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 class MainView extends StatelessWidget {
-  final sideBarController = SidebarXController(
-    selectedIndex: 0,
-    extended: true,
-  );
+  final campusVoteState = serviceLocator<CampusVoteState>();
 
   MainView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final sideBarController = SidebarXController(
+      selectedIndex: campusVoteState.awaitingSetup() ? 1 : 0,
+      extended: true,
+    );
+
     return Scaffold(
       body: Row(
         children: [
@@ -84,10 +88,6 @@ class MainView extends StatelessWidget {
                 icon: Icons.home_outlined,
                 label: AppLocalizations.of(context)!.dashboardTitle,
               ),
-              // SidebarXItem(
-              //   icon: Icons.chat_outlined,
-              //   label: AppLocalizations.of(context)!.chatTitle,
-              // ),
               SidebarXItem(
                 icon: Icons.create_outlined,
                 label: AppLocalizations.of(context)!.setupTitle,

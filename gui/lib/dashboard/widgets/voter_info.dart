@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:campus_vote/core/api/client.dart';
 import 'package:campus_vote/core/api/generated/vote.pb.dart';
 import 'package:campus_vote/core/injection.dart';
@@ -93,7 +95,7 @@ class VoterInfoPopUp extends StatelessWidget {
         ),
       ),
       actions: <Widget>[
-        if (voter.status == 0)
+        if (voter.status != 2)
           TextButton(
             onPressed: () async {
               final client = serviceLocator<CampusVoteAPIClient>();
@@ -104,7 +106,9 @@ class VoterInfoPopUp extends StatelessWidget {
               });
               Navigator.of(context).pop();
             },
-            child: Text(AppLocalizations.of(context)!.btnTxtGiveBallot),
+            child: voter.status == 0
+                ? Text(AppLocalizations.of(context)!.btnTxtGiveBallot)
+                : Text(AppLocalizations.of(context)!.btnTxtRegisterVote),
           ),
         TextButton(
           onPressed: () {
