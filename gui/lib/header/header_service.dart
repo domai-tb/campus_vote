@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 
@@ -45,22 +46,32 @@ class HeaderServices {
       host = boxSelf.ipAddr;
     }
 
-    // Start the campusvote api.
-    await Process.start(
-      campusVoteBin,
-      [
-        'start',
-        '-b=$ballotboxFlag',
-        '-c=${path.join(await getCockroachCertsDir(), 'client.$username.crt')}',
-        '-k=${path.join(await getCockroachCertsDir(), 'client.$username.key')}',
-        '-a=$host',
-        '-p=26258',
-        '-r=${path.join(await getCockroachCertsDir(), 'ca.crt')}',
-        '-u=$username',
-        '-m=${path.join(await getAPICertsDir(), 'api-ca.crt')}',
-        '-s=${path.join(await getAPICertsDir(), 'api-server.crt')}',
-        '-o=${path.join(await getAPICertsDir(), 'api-server.key')}',
-      ],
+    final cockroachCerts = await getCockroachCertsDir();
+    final apiCerts = await getAPICertsDir();
+
+    unawaited(
+      // Restarts the API if child process dies for some reason
+      Isolate.run(() {
+        while (true) {
+          // Start the campusvote api.
+          Process.runSync(
+            campusVoteBin,
+            [
+              'start',
+              '-b=$ballotboxFlag',
+              '-c=${path.join(cockroachCerts, 'client.$username.crt')}',
+              '-k=${path.join(cockroachCerts, 'client.$username.key')}',
+              '-a=$host',
+              '-p=26258',
+              '-r=${path.join(cockroachCerts, 'ca.crt')}',
+              '-u=$username',
+              '-m=${path.join(apiCerts, 'api-ca.crt')}',
+              '-s=${path.join(apiCerts, 'api-server.crt')}',
+              '-o=${path.join(apiCerts, 'api-server.key')}',
+            ],
+          );
+        }
+      }),
     );
   }
 
@@ -86,21 +97,28 @@ class HeaderServices {
     final cockraochCertsDir = await getCockroachCertsDir();
     final cockroachNodeDir = await getCockroachNodeDir();
 
-    // Start the cockroach node.
-    await Process.start(
-      cockroachBin,
-      [
-        'start',
-        '--certs-dir=$cockraochCertsDir',
-        '--store=$cockroachNodeDir',
-        '--listen-addr=$listenAddr',
-        '--sql-addr=$sqlAddr',
-        '--cluster-name=stupa-bochum',
-        '--join=$ballotboxJoins',
-        '--advertise-addr=$listenAddr',
-        '--advertise-sql-addr=$sqlAddr',
-        '--background',
-      ],
+    unawaited(
+      // Restarts the API if child process dies for some reason
+      Isolate.run(() {
+        while (true) {
+          // Start the cockroach node.
+          Process.runSync(
+            cockroachBin,
+            [
+              'start',
+              '--certs-dir=$cockraochCertsDir',
+              '--store=$cockroachNodeDir',
+              '--listen-addr=$listenAddr',
+              '--sql-addr=$sqlAddr',
+              '--cluster-name=stupa-bochum',
+              '--join=$ballotboxJoins',
+              '--advertise-addr=$listenAddr',
+              '--advertise-sql-addr=$sqlAddr',
+              '--background',
+            ],
+          );
+        }
+      }),
     );
 
     final isInitialized = await storage.read(key: STORAGEKEY_INITIALIZED_COCKROACH_NODE);
@@ -120,14 +138,15 @@ class HeaderServices {
         },
       );
 
-      if (initCluster.exitCode != 0) {
-        print('Error running executable: ${initCluster.stderr}');
-      } else {
-        print('Output: ${initCluster.stdout}');
+      if (initCluster.exitCode == 0) {
         await storage.write(
           key: STORAGEKEY_INITIALIZED_COCKROACH_NODE,
           value: 'true',
         );
+      } else {
+        // Cluster initialisation failed, so retry
+        unawaited(startCockroachNode(setupDate, boxSelf));
+        return;
       }
     }
 
