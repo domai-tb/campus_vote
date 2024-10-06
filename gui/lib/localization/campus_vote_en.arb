@@ -39,5 +39,8 @@
   "infTxtPleaseStartElec": "Please start the election with the upper right button. Do this for all ballot boxes.",
   "infTxtCreateElection": "Create Election!",
   "txtIsAfternoon": "Votes will be counted as afternoon votes",
-  "txtIsNotAfternoon": "Votes will be counted as morning votes"
+  "txtIsNotAfternoon": "Votes will be counted as morning votes",
+  "btnStartElection": "Start Election",
+  "startFormPassword": "Password to encrypt all data",
+  "startFormVoterFile": "Upload voter data as CSV"
 }

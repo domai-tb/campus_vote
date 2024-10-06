@@ -7,6 +7,7 @@ import 'package:campus_vote/core/utils/path_utils.dart';
 import 'package:campus_vote/header/header_utils.dart';
 import 'package:campus_vote/setup/setup_models.dart';
 import 'package:campus_vote/setup/setup_services.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart' as path;
@@ -154,5 +155,15 @@ class HeaderServices {
       BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
       awaitCockRoachNode(listenAddr: listenAddr);
     });
+  }
+
+  /// Creates the
+  void createVoterDatabase(String csvFilePath) {
+    final csvData = File(csvFilePath).readAsStringSync();
+    final List<List<dynamic>> voterData = const CsvToListConverter().convert(csvData);
+
+    for (final row in voterData) {
+      print(row);
+    }
   }
 }

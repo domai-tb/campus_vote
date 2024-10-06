@@ -43,16 +43,15 @@ class CVButton extends StatelessWidget {
           padding: const EdgeInsets.all(2.5),
           child: MaterialButton(
             onPressed: onPressed,
-            child: Row(
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 if (icon != null) icon!,
                 Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: Center(
-                    child: Text(
-                      labelText,
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                  child: Text(
+                    labelText,
+                    style: Theme.of(context).textTheme.labelSmall,
                   ),
                 ),
               ],

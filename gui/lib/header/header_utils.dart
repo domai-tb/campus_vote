@@ -6,9 +6,14 @@ import 'package:campus_vote/core/utils/path_utils.dart';
 /// first startup.
 const STORAGEKEY_INITIALIZED_COCKROACH_NODE = 'clusterIsInitialized';
 
-/// Executes a command with retries on failure.
-/// - [command]: The command to execute.
-/// - [arguments]: The arguments for the command.
+/// This is Flutter Secure Strage's identifier for the database encryption
+/// password. All data will be encrypted inside CockroachDB with this password.
+const STORAGEKEY_DATABASE_ENCRYPTION_KEY = 'database_encryption_key';
+
+const FORMKEY_ENCRYPTION_PASSWORD = 'startForm_encPassword';
+
+/// Executes the cockroach node status command with retries on failure.
+/// The status command return non-zero return values if node isn't ready yet.
 /// - [retries]: The number of retries on failure.
 /// - [delaySeconds]: The delay between retries in seconds.
 Future<void> awaitCockRoachNode({

@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:campus_vote/core/api/client.dart';
 import 'package:campus_vote/core/api/generated/vote.pb.dart';
 import 'package:campus_vote/core/injection.dart';
@@ -100,10 +98,12 @@ class VoterInfoPopUp extends StatelessWidget {
             onPressed: () async {
               final client = serviceLocator<CampusVoteAPIClient>();
               await client.votingStep(voter.studentId.num.toString()).then((msg) {
+                // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(msg)),
                 );
               });
+              // ignore: use_build_context_synchronously
               Navigator.of(context).pop();
             },
             child: voter.status == 0

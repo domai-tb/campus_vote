@@ -7,6 +7,6 @@ final studentIdValidator = FormBuilderValidators.compose([
   FormBuilderValidators.required(),
   FormBuilderValidators.integer(radix: 10),
   FormBuilderValidators.maxWordsCount(1),
-  FormBuilderValidators.maxLength(11),
-  FormBuilderValidators.minLength(11),
+  FormBuilderValidators.maxLength(12),
+  FormBuilderValidators.minLength(12),
 ]);

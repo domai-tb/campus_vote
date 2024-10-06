@@ -1,8 +1,9 @@
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
-import 'package:campus_vote/core/state/state_utils.dart';
+import 'package:campus_vote/header/widgets/start_election_popup.dart';
 import 'package:campus_vote/widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
 
 class HeaderView extends StatelessWidget {
   final campusVoteState = serviceLocator<CampusVoteState>();
@@ -22,12 +23,13 @@ class HeaderView extends StatelessWidget {
           if (campusVoteState.electionIsReadyToStart())
             Expanded(
               flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(25),
-                child: CVButton(
-                  icon: const Icon(Icons.play_arrow_outlined),
-                  labelText: 'Start API',
-                  onPressed: () => campusVoteState.changeState(CVStates.STARTING_ELECTION),
+              child: CVButton(
+                icon: const Icon(Icons.play_arrow_outlined),
+                labelText: AppLocalizations.of(context)!.btnStartElection,
+                onPressed: () => showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => const StartElectionPopup(),
                 ),
               ),
             ),

@@ -92,12 +92,16 @@ class SetupServices {
       // Generate a node certificate "<certs-dir>/node.crt" and key "<certs-dir>/node.key".
       final bbIsolate = Isolate.run(() async {
         BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
-        await Process.run(
+
+        // Store CA TLS certificate in ballot specific config directory
+        await File('$tmpCVDir${pathSep}ca.crt').copy('${certsDir.path}${pathSep}ca.crt');
+
+        Process.runSync(
           cockroachBin,
           [
             'cert',
             'create-node',
-            '--certs-dir=$tmpCVDir',
+            '--certs-dir=${certsDir.path}',
             '--ca-key=$tmpCVDir${pathSep}ca.key',
             '--key-size=4096',
             '--overwrite', // Certificate and key files are overwritten if they exist.
@@ -106,17 +110,13 @@ class SetupServices {
           ],
         );
 
-        // Rename Node key and cert to ballotbox specific name
-        await File('$tmpCVDir${pathSep}node.key').rename('${certsDir.path}${pathSep}node.key');
-        await File('$tmpCVDir${pathSep}node.crt').rename('${certsDir.path}${pathSep}node.crt');
-
         // Generate a client certificate "<certs-dir>/client.crt" and key "<certs-dir>/node.key".
-        await Process.run(
+        Process.runSync(
           cockroachBin,
           [
             'cert',
             'create-client',
-            '--certs-dir=$tmpCVDir',
+            '--certs-dir=${certsDir.path}',
             '--ca-key=$tmpCVDir${pathSep}ca.key',
             '--key-size=4096',
             '--overwrite', // Certificate and key files are overwritten if they exist.
@@ -124,17 +124,6 @@ class SetupServices {
             box.name,
           ],
         );
-
-        // Rename client key and cert to ballotbox specific name
-        await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.key').rename(
-          '${certsDir.path}${pathSep}client.${box.name.toLowerCase()}.key',
-        );
-        await File('$tmpCVDir${pathSep}client.${box.name.toLowerCase()}.crt').rename(
-          '${certsDir.path}${pathSep}client.${box.name.toLowerCase()}.crt',
-        );
-
-        // Store CA TLS certificate in ballot specific config directory
-        await File('$tmpCVDir${pathSep}ca.crt').copy('${certsDir.path}${pathSep}ca.crt');
 
         // Store setup data to ballotbox specific config directory
         await saveSetupSettingsModelToFile(
@@ -153,49 +142,57 @@ class SetupServices {
     await crypto.getExportEncKey(overwriteKey: true);
 
     // Encrypt ballotbox data and export
-    await crypto.zipAndEncryptDirectories(tmpCVDir, appCVDir);
+    await Isolate.run(() {
+      BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
+      crypto.zipAndEncryptDirectories(tmpCVDir, appCVDir);
+    });
 
     // Committe Node & Client
     final ecCertsDir = await getCockroachCertsDir();
+    final cvDataDir = await getCVDataDir();
 
-    // Generate a node certificate "<certs-dir>/node.crt" and key "<certs-dir>/node.key".
-    await Process.run(
-      cockroachBin,
-      [
-        'cert',
-        'create-node',
-        '--certs-dir=$tmpCVDir',
-        '--ca-key=$tmpCVDir${pathSep}ca.key',
-        '--key-size=4096',
-        '--overwrite', // Certificate and key files are overwritten if they exist.
-        //'--lifetime=365d' // Certificate will be valid for 10 years (default).
-        setupData.committeeIpAddr,
-      ],
-    );
+    await Isolate.run(() async {
+      BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
 
-    await Process.run(
-      cockroachBin,
-      [
-        'cert',
-        'create-client',
-        '--certs-dir=$tmpCVDir',
-        '--ca-key=$tmpCVDir${pathSep}ca.key',
-        '--key-size=4096',
-        '--overwrite', // Certificate and key files are overwritten if they exist.
-        //'--lifetime=365d' // Certificate will be valid for 10 years (default).
-        'root',
-      ],
-    );
+      // Generate a node certificate "<certs-dir>/node.crt" and key "<certs-dir>/node.key".
+      await Process.run(
+        cockroachBin,
+        [
+          'cert',
+          'create-node',
+          '--certs-dir=$tmpCVDir',
+          '--ca-key=$tmpCVDir${pathSep}ca.key',
+          '--key-size=4096',
+          '--overwrite', // Certificate and key files are overwritten if they exist.
+          //'--lifetime=365d' // Certificate will be valid for 10 years (default).
+          setupData.committeeIpAddr,
+        ],
+      );
 
-    // Rename Node key and cert to commiittee specific name
-    await File('$tmpCVDir${pathSep}node.key').copy('$ecCertsDir${pathSep}node.key');
-    await File('$tmpCVDir${pathSep}node.crt').copy('$ecCertsDir${pathSep}node.crt');
-    await File('$tmpCVDir${pathSep}client.root.key').copy('$ecCertsDir${pathSep}client.root.key');
-    await File('$tmpCVDir${pathSep}client.root.crt').copy('$ecCertsDir${pathSep}client.root.crt');
+      await Process.run(
+        cockroachBin,
+        [
+          'cert',
+          'create-client',
+          '--certs-dir=$tmpCVDir',
+          '--ca-key=$tmpCVDir${pathSep}ca.key',
+          '--key-size=4096',
+          '--overwrite', // Certificate and key files are overwritten if they exist.
+          //'--lifetime=365d' // Certificate will be valid for 10 years (default).
+          'root',
+        ],
+      );
 
-    await File('$tmpCVDir${pathSep}ca.crt').copy('$ecCertsDir${pathSep}ca.crt');
+      // Rename Node key and cert to commiittee specific name
+      await File('$tmpCVDir${pathSep}node.key').copy('$ecCertsDir${pathSep}node.key');
+      await File('$tmpCVDir${pathSep}node.crt').copy('$ecCertsDir${pathSep}node.crt');
+      await File('$tmpCVDir${pathSep}client.root.key').copy('$ecCertsDir${pathSep}client.root.key');
+      await File('$tmpCVDir${pathSep}client.root.crt').copy('$ecCertsDir${pathSep}client.root.crt');
 
-    await saveSetupSettingsModelToFile(setupData, '${await getCVDataDir()}${pathSep}settings.json');
+      await File('$tmpCVDir${pathSep}ca.crt').copy('$ecCertsDir${pathSep}ca.crt');
+
+      await saveSetupSettingsModelToFile(setupData, '$cvDataDir${pathSep}settings.json');
+    });
 
     // Encrypt ballotbox data and export
     await crypto.zipAndEncryptDirectories(
@@ -203,7 +200,7 @@ class SetupServices {
       await getAppDirPath(),
     );
 
-    File('${await getCVDataDir()}.zip.enc').renameSync(await getCommitteeDataFilePath());
+    File('$cvDataDir.zip.enc').renameSync(await getCommitteeDataFilePath());
 
     // Delete temporary directory
     await Isolate.run(() {
@@ -259,30 +256,32 @@ class SetupServices {
     final bbDir = await getCVDataDir();
     final ballotboxFile = await getBallotBoxDataFilePath();
 
-    // Store decryption password
-    await crypto.storeExportEncKey(boxDataPassword);
+    if (!Directory(bbDir).existsSync()) {
+      // Store decryption password
+      await crypto.storeExportEncKey(boxDataPassword);
 
-    // Copy encrypted file to application dir
-    if (filePath != ballotboxFile) {
-      await File(ballotboxFile).writeAsBytes(
-        await File(filePath).readAsBytes(),
-      );
+      // Copy encrypted file to application dir
+      if (filePath != ballotboxFile) {
+        await File(ballotboxFile).writeAsBytes(
+          await File(filePath).readAsBytes(),
+        );
+      }
+
+      // decrypt and unpack ballotbox data
+      final bbPath = await crypto.decryptAndUnzipFile(ballotboxFile, appCVDir);
+
+      // Rename output directory to "ballotbox"
+      try {
+        Directory(bbPath).renameSync(bbDir);
+      } catch (e) {
+        // Directory.rename will throw an excpetion on
+        // non empty directory at deletion time. Do it manually.
+        Directory(bbPath).deleteSync(recursive: true);
+      }
+
+      // Set file permissions for keys correctly
+      await changeAllFilePermissions(await getAppDirPath(), '600');
     }
-
-    // decrypt and unpack ballotbox data
-    final bbPath = await crypto.decryptAndUnzipFile(ballotboxFile, appCVDir);
-
-    // Rename output directory to "ballotbox"
-    try {
-      Directory(bbPath).renameSync(bbDir);
-    } catch (e) {
-      // Directory.rename will throw an excpetion on
-      // non empty directory at deletion time. Do it manually.
-      Directory(bbPath).deleteSync(recursive: true);
-    }
-
-    // Set file permissions for keys correctly
-    await changeAllFilePermissions(await getAppDirPath(), '600');
 
     final setupData = await loadSetupSettingsModelFromFile('$bbDir${pathSep}settings.json');
 
@@ -295,11 +294,13 @@ class SetupServices {
     final ecDir = await getCVDataDir();
     final ecFile = await getCommitteeDataFilePath();
 
-    // Decrypt ballotbox data
-    await crypto.decryptAndUnzipFile(ecFile, appCVDir);
+    if (!Directory(ecDir).existsSync() && File(ecFile).existsSync()) {
+      // Decrypt ballotbox data
+      await crypto.decryptAndUnzipFile(ecFile, appCVDir);
 
-    // Set file permissions for keys correctly
-    await changeAllFilePermissions(await getAppDirPath(), '600');
+      // Set file permissions for keys correctly
+      await changeAllFilePermissions(await getAppDirPath(), '600');
+    }
 
     final setupData = await loadSetupSettingsModelFromFile('$ecDir${pathSep}settings.json');
 
