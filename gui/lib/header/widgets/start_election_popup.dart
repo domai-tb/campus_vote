@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
 import 'package:campus_vote/core/state/state_utils.dart';
 import 'package:campus_vote/header/header_service.dart';
 import 'package:campus_vote/header/header_utils.dart';
 import 'package:campus_vote/setup/setup_services.dart';
+import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -73,10 +76,11 @@ class _StartElectionPopupState extends State<StartElectionPopup> {
                 Navigator.of(context).pop();
 
                 // Create voter directory as soon as API is ready
-                headerServices.createVoterDatabase(voterFile.files.first.path!);
+                final csvData = File(voterFile.files.first.path!).readAsStringSync();
+                final List<List<dynamic>> voterData = const CsvToListConverter().convert(csvData);
 
                 // Start CockroachDB Node and API
-                await campusVoteState.changeState(CVStates.STARTING_ELECTION);
+                await campusVoteState.changeState(CVStates.STARTING_ELECTION, voterData: voterData);
               }
             }
           },

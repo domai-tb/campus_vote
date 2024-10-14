@@ -21,6 +21,7 @@ class CampusVoteState extends ChangeNotifier {
   SetupSettingsModel? setupData;
   FilePickerResult? boxDataFile;
   String? boxDataPassword;
+  List<List<dynamic>>? voterData;
 
   CampusVoteState({
     required this.storage,
@@ -31,6 +32,7 @@ class CampusVoteState extends ChangeNotifier {
     this.setupData,
     this.boxDataFile,
     this.boxDataPassword,
+    this.voterData,
   }) {
     _handleState().then((_) => notifyListeners());
   }
@@ -56,10 +58,12 @@ class CampusVoteState extends ChangeNotifier {
     SetupSettingsModel? setupData,
     FilePickerResult? boxDataFile,
     String? boxDataPassword,
+    List<List<dynamic>>? voterData,
   }) async {
     this.setupData = setupData ?? this.setupData;
     this.boxDataFile = boxDataFile ?? this.boxDataFile;
     this.boxDataPassword = boxDataPassword ?? this.boxDataPassword;
+    this.voterData = voterData ?? this.voterData;
 
     state = newState;
     notifyListeners();
@@ -121,6 +125,7 @@ class CampusVoteState extends ChangeNotifier {
         if (setupData != null) {
           try {
             await stateServices.startingElection(setupData!);
+            await stateServices.createVoterDatabase(voterData!);
             await changeState(CVStates.ELECTION_STARTED);
           } catch (e) {
             await changeState(CVStates.READY_TO_START_ELECTION);

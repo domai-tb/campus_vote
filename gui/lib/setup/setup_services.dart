@@ -142,10 +142,8 @@ class SetupServices {
     await crypto.getExportEncKey(overwriteKey: true);
 
     // Encrypt ballotbox data and export
-    await Isolate.run(() {
-      BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
-      crypto.zipAndEncryptDirectories(tmpCVDir, appCVDir);
-    });
+    //? Running this function inside an Isolate leads to a crash of the whole app. (╯`Д´)╯︵ ┻━┻
+    await crypto.zipAndEncryptDirectories(tmpCVDir, appCVDir);
 
     // Committe Node & Client
     final ecCertsDir = await getCockroachCertsDir();
