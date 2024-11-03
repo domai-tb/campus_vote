@@ -18,7 +18,11 @@ class HeaderView extends StatelessWidget {
         children: [
           Expanded(
             flex: 8,
-            child: Text('Current State is ${campusVoteState.state}'),
+            child: Text(
+              AppLocalizations.of(context)!.titleTxt,
+              textScaler: const TextScaler.linear(2),
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
           ),
           if (campusVoteState.electionIsReadyToStart())
             Expanded(

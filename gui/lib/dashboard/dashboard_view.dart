@@ -4,6 +4,8 @@ import 'package:campus_vote/core/api/client.dart';
 import 'package:campus_vote/core/api/generated/vote.pbgrpc.dart';
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
+import 'package:campus_vote/dashboard/widgets/turnout_circle.dart';
+import 'package:campus_vote/dashboard/widgets/vote_count.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
 
@@ -32,9 +34,22 @@ class _DashboardViewState extends State<DashboardView> {
       return FutureBuilder(
         future: updateStats(),
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-          return Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: buildTable(),
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TurnoutCircle(totalVoters: stats!.totalVoters.toInt(), totalVotes: stats!.totalVotes.toInt()),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Table(
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: buildTable(),
+                  ),
+                ),
+              ],
+            ),
           );
         },
       );
@@ -56,15 +71,53 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   List<TableRow> buildTable() {
+    final locals = AppLocalizations.of(context)!;
+
     final retVal = <TableRow>[
-      const TableRow(
+      TableRow(
         children: [
-          TableCell(child: Text('Ballot Box')),
-          TableCell(child: Text('Monday')),
-          TableCell(child: Text('Tuesday')),
-          TableCell(child: Text('Wendsday')),
-          TableCell(child: Text('Thursday')),
-          TableCell(child: Text('Friday')),
+          TableCell(
+            child: Text(
+              locals.ballotBoxTxt,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+              textScaler: const TextScaler.linear(1.5),
+            ),
+          ),
+          TableCell(
+            child: Text(
+              locals.mondayTxt,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+              textScaler: const TextScaler.linear(1.5),
+            ),
+          ),
+          TableCell(
+            child: Text(
+              locals.tuesdayTxt,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+              textScaler: const TextScaler.linear(1.5),
+            ),
+          ),
+          TableCell(
+            child: Text(
+              locals.wendsdayTxt,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+              textScaler: const TextScaler.linear(1.5),
+            ),
+          ),
+          TableCell(
+            child: Text(
+              locals.thursdayTxt,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+              textScaler: const TextScaler.linear(1.5),
+            ),
+          ),
+          TableCell(
+            child: Text(
+              locals.fridayTxt,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+              textScaler: const TextScaler.linear(1.5),
+            ),
+          ),
         ],
       ),
     ];
@@ -78,7 +131,7 @@ class _DashboardViewState extends State<DashboardView> {
         TableCell(child: Text(box.name)),
       ];
       for (final day in box.votesPerDay) {
-        rowCells.add(TableCell(child: Text('${day.totalVotes} Votes')));
+        rowCells.add(TableCell(child: VoteCount(day: day)));
       }
       retVal.add(TableRow(children: rowCells));
     }

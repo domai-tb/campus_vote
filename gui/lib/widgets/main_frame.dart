@@ -1,5 +1,6 @@
 import 'package:campus_vote/chat/chat_view.dart';
 import 'package:campus_vote/core/injection.dart';
+import 'package:campus_vote/core/responsiv.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
 import 'package:campus_vote/dashboard/dashboard_view.dart';
 import 'package:campus_vote/dashboard/widgets/voter_form.dart';
@@ -51,6 +52,13 @@ class MainFrameState extends State<MainFrame> {
                           case 1:
                             return SetupView();
                           case 2:
+                            if (isDesktop(context)) {
+                              return SettingsView();
+                            } else {
+                              return ChatView();
+                            }
+                          case 3:
+                            // case can only appear in non desktop
                             return SettingsView();
                           default:
                             return Container(
@@ -74,7 +82,7 @@ class MainFrameState extends State<MainFrame> {
                 ],
               ),
             ),
-            if (campusVoteState.apiHasStarted())
+            if (campusVoteState.apiHasStarted() && isDesktop(context))
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(25),

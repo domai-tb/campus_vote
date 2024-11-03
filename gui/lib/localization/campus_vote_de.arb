@@ -39,8 +39,16 @@
   "infTxtPleaseStartElec": "Beginne die Wahl in dem du auf allen Geräten auf den oberen Button drückst.",
   "infTxtCreateElection": "Erstelle die Wahl!",
   "txtIsAfternoon": "Wahlvergänge werden statistisch nachmittags erfasst.",
-  "txtIsNotAfternoon": "Wahlvergänge werden statistisch vormittags erfasst.",
+  "txtIsNotAfternoon": "Wahlvorgänge werden statistisch vormittags erfasst.",
   "btnStartElection": "Wahl Beginnen",
   "startFormPassword": "Verschlüsselungspasswort",
-  "startFormVoterFile": "Wählerverzeichnis als CSV Hochladen"
+  "startFormVoterFile": "Wählerverzeichnis als CSV Hochladen",
+  "titleTxt": "Wahlen zum Studierendenparlament der Ruhr-Universität Bochum",
+  "btnCheckStudentId": "Martrikelnummer prüfen",
+  "ballotBoxTxt": "Urne",
+  "mondayTxt": "Montag",
+  "tuesdayTxt": "Dienstag",
+  "wendsdayTxt": "Mittwoch",
+  "thursdayTxt": "Donnerstag",
+  "fridayTxt": "Freitag"
 }

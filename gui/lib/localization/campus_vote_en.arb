@@ -42,5 +42,13 @@
   "txtIsNotAfternoon": "Votes will be counted as morning votes",
   "btnStartElection": "Start Election",
   "startFormPassword": "Password to encrypt all data",
-  "startFormVoterFile": "Upload voter data as CSV"
+  "startFormVoterFile": "Upload voter data as CSV",
+  "titleTxt": "Elections to the student parliament of the Ruhr-Universität Bochum",
+  "btnCheckStudentId": "Check Student-ID",
+  "ballotBoxTxt": "Ballot Box",
+  "mondayTxt": "Monday",
+  "tuesdayTxt": "Tuesday",
+  "wendsdayTxt": "Wendsday",
+  "thursdayTxt": "Thursday",
+  "fridayTxt": "Friday"
 }

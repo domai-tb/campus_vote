@@ -65,7 +65,7 @@ class VoterForm extends StatelessWidget {
                           );
                         }
                       },
-                      labelText: 'Check StudentId',
+                      labelText: AppLocalizations.of(context)!.btnCheckStudentId,
                       icon: const Icon(Icons.wysiwyg_outlined),
                     ),
                   ],

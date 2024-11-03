@@ -27,6 +27,7 @@ class _ChatViewState extends State<ChatView> {
   Timer? updateTimer;
   List<types.Message> chatMessages = [];
 
+  // Will be overwritten / just for initializing the UI
   final types.User user1 = const types.User(id: 'Committee', firstName: 'Committee');
   final types.User user2 = const types.User(id: 'ID', firstName: 'ID');
 

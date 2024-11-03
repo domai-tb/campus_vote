@@ -1,4 +1,5 @@
 import 'package:campus_vote/core/injection.dart';
+import 'package:campus_vote/core/responsiv.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
 import 'package:campus_vote/themes/theme_dark.dart';
 import 'package:campus_vote/widgets/main_frame.dart';
@@ -15,7 +16,7 @@ class MainView extends StatelessWidget {
   Widget build(BuildContext context) {
     final sideBarController = SidebarXController(
       selectedIndex: campusVoteState.awaitingSetup() ? 1 : 0,
-      extended: true,
+      extended: isDesktop(context),
     );
 
     return Scaffold(
@@ -92,6 +93,11 @@ class MainView extends StatelessWidget {
                 icon: Icons.create_outlined,
                 label: AppLocalizations.of(context)!.setupTitle,
               ),
+              if (!isDesktop(context) && campusVoteState.apiHasStarted())
+                SidebarXItem(
+                  icon: Icons.chat_outlined,
+                  label: AppLocalizations.of(context)!.chatTitle,
+                ),
             ],
             footerItems: [
               SidebarXItem(
