@@ -67,15 +67,16 @@ const BallotBoxStats$json = {
   '2': [
     {'1': 'name', '3': 1, '4': 1, '5': 9, '10': 'name'},
     {'1': 'totalVotes', '3': 2, '4': 1, '5': 3, '10': 'totalVotes'},
-    {'1': 'votesPerDay', '3': 3, '4': 3, '5': 11, '6': '.CampusVote.VotingDayStats', '10': 'votesPerDay'},
+    {'1': 'totalVoters', '3': 3, '4': 1, '5': 3, '10': 'totalVoters'},
+    {'1': 'votesPerDay', '3': 4, '4': 3, '5': 11, '6': '.CampusVote.VotingDayStats', '10': 'votesPerDay'},
   ],
 };
 
 /// Descriptor for `BallotBoxStats`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List ballotBoxStatsDescriptor = $convert.base64Decode(
     'Cg5CYWxsb3RCb3hTdGF0cxISCgRuYW1lGAEgASgJUgRuYW1lEh4KCnRvdGFsVm90ZXMYAiABKA'
-    'NSCnRvdGFsVm90ZXMSPAoLdm90ZXNQZXJEYXkYAyADKAsyGi5DYW1wdXNWb3RlLlZvdGluZ0Rh'
-    'eVN0YXRzUgt2b3Rlc1BlckRheQ==');
+    'NSCnRvdGFsVm90ZXMSIAoLdG90YWxWb3RlcnMYAyABKANSC3RvdGFsVm90ZXJzEjwKC3ZvdGVz'
+    'UGVyRGF5GAQgAygLMhouQ2FtcHVzVm90ZS5Wb3RpbmdEYXlTdGF0c1ILdm90ZXNQZXJEYXk=');
 
 @$core.Deprecated('Use electionStatsDescriptor instead')
 const ElectionStats$json = {
@@ -83,15 +84,17 @@ const ElectionStats$json = {
   '2': [
     {'1': 'electionYear', '3': 1, '4': 1, '5': 5, '10': 'electionYear'},
     {'1': 'totalVotes', '3': 2, '4': 1, '5': 3, '10': 'totalVotes'},
-    {'1': 'ballotBoxes', '3': 3, '4': 3, '5': 11, '6': '.CampusVote.BallotBoxStats', '10': 'ballotBoxes'},
+    {'1': 'totalVoters', '3': 3, '4': 1, '5': 3, '10': 'totalVoters'},
+    {'1': 'ballotBoxes', '3': 4, '4': 3, '5': 11, '6': '.CampusVote.BallotBoxStats', '10': 'ballotBoxes'},
   ],
 };
 
 /// Descriptor for `ElectionStats`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List electionStatsDescriptor = $convert.base64Decode(
     'Cg1FbGVjdGlvblN0YXRzEiIKDGVsZWN0aW9uWWVhchgBIAEoBVIMZWxlY3Rpb25ZZWFyEh4KCn'
-    'RvdGFsVm90ZXMYAiABKANSCnRvdGFsVm90ZXMSPAoLYmFsbG90Qm94ZXMYAyADKAsyGi5DYW1w'
-    'dXNWb3RlLkJhbGxvdEJveFN0YXRzUgtiYWxsb3RCb3hlcw==');
+    'RvdGFsVm90ZXMYAiABKANSCnRvdGFsVm90ZXMSIAoLdG90YWxWb3RlcnMYAyABKANSC3RvdGFs'
+    'Vm90ZXJzEjwKC2JhbGxvdEJveGVzGAQgAygLMhouQ2FtcHVzVm90ZS5CYWxsb3RCb3hTdGF0c1'
+    'ILYmFsbG90Qm94ZXM=');
 
 @$core.Deprecated('Use voteReqDescriptor instead')
 const VoteReq$json = {

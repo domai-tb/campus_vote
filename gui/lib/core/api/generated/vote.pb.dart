@@ -271,6 +271,7 @@ class BallotBoxStats extends $pb.GeneratedMessage {
   factory BallotBoxStats({
     $core.String? name,
     $fixnum.Int64? totalVotes,
+    $fixnum.Int64? totalVoters,
     $core.Iterable<VotingDayStats>? votesPerDay,
   }) {
     final $result = create();
@@ -279,6 +280,9 @@ class BallotBoxStats extends $pb.GeneratedMessage {
     }
     if (totalVotes != null) {
       $result.totalVotes = totalVotes;
+    }
+    if (totalVoters != null) {
+      $result.totalVoters = totalVoters;
     }
     if (votesPerDay != null) {
       $result.votesPerDay.addAll(votesPerDay);
@@ -292,7 +296,8 @@ class BallotBoxStats extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'BallotBoxStats', package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'name')
     ..aInt64(2, _omitFieldNames ? '' : 'totalVotes', protoName: 'totalVotes')
-    ..pc<VotingDayStats>(3, _omitFieldNames ? '' : 'votesPerDay', $pb.PbFieldType.PM, protoName: 'votesPerDay', subBuilder: VotingDayStats.create)
+    ..aInt64(3, _omitFieldNames ? '' : 'totalVoters', protoName: 'totalVoters')
+    ..pc<VotingDayStats>(4, _omitFieldNames ? '' : 'votesPerDay', $pb.PbFieldType.PM, protoName: 'votesPerDay', subBuilder: VotingDayStats.create)
     ..hasRequiredFields = false
   ;
 
@@ -336,13 +341,23 @@ class BallotBoxStats extends $pb.GeneratedMessage {
   void clearTotalVotes() => clearField(2);
 
   @$pb.TagNumber(3)
-  $core.List<VotingDayStats> get votesPerDay => $_getList(2);
+  $fixnum.Int64 get totalVoters => $_getI64(2);
+  @$pb.TagNumber(3)
+  set totalVoters($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasTotalVoters() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearTotalVoters() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.List<VotingDayStats> get votesPerDay => $_getList(3);
 }
 
 class ElectionStats extends $pb.GeneratedMessage {
   factory ElectionStats({
     $core.int? electionYear,
     $fixnum.Int64? totalVotes,
+    $fixnum.Int64? totalVoters,
     $core.Iterable<BallotBoxStats>? ballotBoxes,
   }) {
     final $result = create();
@@ -351,6 +366,9 @@ class ElectionStats extends $pb.GeneratedMessage {
     }
     if (totalVotes != null) {
       $result.totalVotes = totalVotes;
+    }
+    if (totalVoters != null) {
+      $result.totalVoters = totalVoters;
     }
     if (ballotBoxes != null) {
       $result.ballotBoxes.addAll(ballotBoxes);
@@ -364,7 +382,8 @@ class ElectionStats extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ElectionStats', package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
     ..a<$core.int>(1, _omitFieldNames ? '' : 'electionYear', $pb.PbFieldType.O3, protoName: 'electionYear')
     ..aInt64(2, _omitFieldNames ? '' : 'totalVotes', protoName: 'totalVotes')
-    ..pc<BallotBoxStats>(3, _omitFieldNames ? '' : 'ballotBoxes', $pb.PbFieldType.PM, protoName: 'ballotBoxes', subBuilder: BallotBoxStats.create)
+    ..aInt64(3, _omitFieldNames ? '' : 'totalVoters', protoName: 'totalVoters')
+    ..pc<BallotBoxStats>(4, _omitFieldNames ? '' : 'ballotBoxes', $pb.PbFieldType.PM, protoName: 'ballotBoxes', subBuilder: BallotBoxStats.create)
     ..hasRequiredFields = false
   ;
 
@@ -408,7 +427,16 @@ class ElectionStats extends $pb.GeneratedMessage {
   void clearTotalVotes() => clearField(2);
 
   @$pb.TagNumber(3)
-  $core.List<BallotBoxStats> get ballotBoxes => $_getList(2);
+  $fixnum.Int64 get totalVoters => $_getI64(2);
+  @$pb.TagNumber(3)
+  set totalVoters($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasTotalVoters() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearTotalVoters() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.List<BallotBoxStats> get ballotBoxes => $_getList(3);
 }
 
 class VoteReq extends $pb.GeneratedMessage {

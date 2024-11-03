@@ -28,13 +28,15 @@ message VotingDayStats {
 message BallotBoxStats {
   string name = 1;
   int64 totalVotes = 2;
-  repeated VotingDayStats votesPerDay = 3;
+  int64 totalVoters = 3;
+  repeated VotingDayStats votesPerDay = 4;
 }
 
 message ElectionStats {
   int32 electionYear = 1;
   int64 totalVotes = 2;
-  repeated BallotBoxStats ballotBoxes = 3;
+  int64 totalVoters = 3;
+  repeated BallotBoxStats ballotBoxes = 4;
 }
 
 message VoteReq {

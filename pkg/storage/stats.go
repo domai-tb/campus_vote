@@ -13,6 +13,7 @@ type VotingDay struct {
 type BallotBox struct {
 	BallotBoxName string `gorm:"primaryKey"`
 	TotalVotes    int
+	TotalVoters   int
 	VotesPerDay   [5]VotingDay `gorm:"type:bytes;serializer:json"`
 }
 
@@ -30,6 +31,7 @@ func newStats(year int, ballotboxes []string) *ElectionStats {
 		boxes = append(boxes, BallotBox{
 			BallotBoxName: box,
 			TotalVotes:    0,
+			TotalVoters:   0,
 			VotesPerDay: [5]VotingDay{
 				{ // monday
 					Total:     0,
@@ -77,13 +79,22 @@ func (cvdb *CampusVoteStorage) GetElectionStats() ElectionStats {
 	return stats
 }
 
-func (cvdb *CampusVoteStorage) countVoter() {
+func (cvdb *CampusVoteStorage) countVoter(voter Voter) {
 	db := cvdb.conf.GetCockroachDB()
 
 	var stats ElectionStats
 	db.First(&stats)
 
+	// find correct ballot box
+	var indexOfBoxToCount int
+	for i, box := range stats.BallotBoxs {
+		if box.BallotBoxName == voter.BallotBox {
+			indexOfBoxToCount = i
+		}
+	}
+
 	stats.TotalVoters += 1
+	stats.BallotBoxs[indexOfBoxToCount].TotalVoters += 1
 
 	db.Save(stats)
 }

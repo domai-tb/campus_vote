@@ -75,7 +75,7 @@ func (cvdb *CampusVoteStorage) CreateNewVoter(voter Voter) error {
 		return core.FailedToCreateVoterError(result.Error.Error())
 	}
 
-	cvdb.countVoter()
+	cvdb.countVoter(voter)
 	return nil
 }
 
