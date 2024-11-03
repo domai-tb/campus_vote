@@ -64,6 +64,10 @@ class CampusVoteAPIClient {
   Future<Voter> getVoterByStudentID(String studentId) async {
     return await voteClient.getVoterByStudentId(StudentId(num: parseLongInt(studentId)));
   }
+
+  Future<common.StatusCode> createVoter(Voter voter) async {
+    return await voteClient.createVoter(voter);
+  }
 }
 
 class CVAPIChannelCredentials extends ChannelCredentials {

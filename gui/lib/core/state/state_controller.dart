@@ -21,6 +21,7 @@ class CampusVoteState extends ChangeNotifier {
   SetupSettingsModel? setupData;
   FilePickerResult? boxDataFile;
   String? boxDataPassword;
+  FilePickerResult? voterDataFile;
 
   CampusVoteState({
     required this.storage,
@@ -31,6 +32,7 @@ class CampusVoteState extends ChangeNotifier {
     this.setupData,
     this.boxDataFile,
     this.boxDataPassword,
+    this.voterDataFile,
   }) {
     _handleState().then((_) => notifyListeners());
   }
@@ -56,10 +58,12 @@ class CampusVoteState extends ChangeNotifier {
     SetupSettingsModel? setupData,
     FilePickerResult? boxDataFile,
     String? boxDataPassword,
+    FilePickerResult? voterDataFile,
   }) async {
     this.setupData = setupData ?? this.setupData;
     this.boxDataFile = boxDataFile ?? this.boxDataFile;
     this.boxDataPassword = boxDataPassword ?? this.boxDataPassword;
+    this.voterDataFile = voterDataFile ?? this.voterDataFile;
 
     state = newState;
     notifyListeners();
@@ -121,6 +125,7 @@ class CampusVoteState extends ChangeNotifier {
         if (setupData != null) {
           try {
             await stateServices.startingElection(setupData!);
+            await stateServices.createVoterDatabase(voterDataFile!);
             await changeState(CVStates.ELECTION_STARTED);
           } catch (e) {
             await changeState(CVStates.READY_TO_START_ELECTION);

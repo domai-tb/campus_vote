@@ -17,7 +17,7 @@ const FORMKEY_ENCRYPTION_PASSWORD = 'startForm_encPassword';
 /// - [retries]: The number of retries on failure.
 /// - [delaySeconds]: The delay between retries in seconds.
 Future<void> awaitCockRoachNode({
-  required String listenAddr,
+  required String sqlAddr,
   int retries = 3,
   int delaySeconds = 2,
 }) async {
@@ -34,7 +34,7 @@ Future<void> awaitCockRoachNode({
         'node',
         'status',
         '--certs-dir=${await getCockroachCertsDir()}',
-        '--host=$listenAddr',
+        '--host=$sqlAddr',
       ],
     );
 

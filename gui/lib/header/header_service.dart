@@ -7,7 +7,6 @@ import 'package:campus_vote/core/utils/path_utils.dart';
 import 'package:campus_vote/header/header_utils.dart';
 import 'package:campus_vote/setup/setup_models.dart';
 import 'package:campus_vote/setup/setup_services.dart';
-import 'package:csv/csv.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart' as path;
@@ -52,10 +51,10 @@ class HeaderServices {
 
     unawaited(
       // Restarts the API if child process dies for some reason
-      Isolate.run(() {
+      Isolate.run(() async {
         while (true) {
           // Start the campusvote api.
-          Process.runSync(
+          await Process.run(
             campusVoteBin,
             [
               'start',
@@ -100,10 +99,10 @@ class HeaderServices {
 
     unawaited(
       // Restarts the API if child process dies for some reason
-      Isolate.run(() {
+      Isolate.run(() async {
         while (true) {
           // Start the cockroach node.
-          Process.runSync(
+          await Process.run(
             cockroachBin,
             [
               'start',
@@ -153,17 +152,7 @@ class HeaderServices {
 
     await Isolate.run(() {
       BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
-      awaitCockRoachNode(listenAddr: listenAddr);
+      awaitCockRoachNode(sqlAddr: sqlAddr);
     });
-  }
-
-  /// Creates the
-  void createVoterDatabase(String csvFilePath) {
-    final csvData = File(csvFilePath).readAsStringSync();
-    final List<List<dynamic>> voterData = const CsvToListConverter().convert(csvData);
-
-    for (final row in voterData) {
-      print(row);
-    }
   }
 }

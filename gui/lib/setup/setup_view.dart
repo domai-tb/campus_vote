@@ -4,6 +4,7 @@ import 'package:campus_vote/core/api/client.dart';
 import 'package:campus_vote/core/crypto/crypto.dart';
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
+import 'package:campus_vote/core/state/state_service.dart';
 import 'package:campus_vote/core/state/state_utils.dart';
 import 'package:campus_vote/core/utils/path_utils.dart';
 import 'package:campus_vote/setup/widgets/popup_dialog.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
 
 class SetupView extends StatelessWidget {
   final campusVoteState = serviceLocator<CampusVoteState>();
+  final stateServices = serviceLocator<CampusVoteStateServices>();
   final crypto = serviceLocator<Crypto>();
 
   SetupView({super.key});
@@ -25,6 +27,22 @@ class SetupView extends StatelessWidget {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.setupTitle),
         actions: [
+          if (campusVoteState.state == CVStates.ELECTION_STARTED)
+            IconButton(
+              onPressed: () async {
+                final FilePickerResult? voterFile = await FilePicker.platform.pickFiles();
+
+                if (voterFile != null) {
+                  // Add voter data to current database
+                  await stateServices.createVoterDatabase(voterFile);
+                }
+              },
+              icon: Icon(
+                Icons.add_reaction_outlined,
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(128),
+              ),
+              tooltip: AppLocalizations.of(context)!.tooltipLoadSetup,
+            ),
           if (campusVoteState.state == CVStates.AWAITING_SETUP)
             IconButton(
               onPressed: () async {

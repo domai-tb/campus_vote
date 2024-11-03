@@ -72,11 +72,8 @@ class _StartElectionPopupState extends State<StartElectionPopup> {
                 // ignore: use_build_context_synchronously
                 Navigator.of(context).pop();
 
-                // Create voter directory as soon as API is ready
-                headerServices.createVoterDatabase(voterFile.files.first.path!);
-
                 // Start CockroachDB Node and API
-                await campusVoteState.changeState(CVStates.STARTING_ELECTION);
+                await campusVoteState.changeState(CVStates.STARTING_ELECTION, voterDataFile: voterFile);
               }
             }
           },
