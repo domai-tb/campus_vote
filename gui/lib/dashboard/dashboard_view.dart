@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:campus_vote/core/api/client.dart';
 import 'package:campus_vote/core/api/generated/vote.pbgrpc.dart';
 import 'package:campus_vote/core/injection.dart';
+import 'package:campus_vote/core/responsiv.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
 import 'package:campus_vote/dashboard/widgets/turnout_circle.dart';
 import 'package:campus_vote/dashboard/widgets/vote_count.dart';
@@ -64,7 +65,7 @@ class _DashboardViewState extends State<DashboardView> {
       return Center(
         child: Text(
           locals!.infTxtPleaseSetupAElec,
-          style: theme.textTheme.headlineMedium,
+          style: theme.textTheme.headlineMedium!.copyWith(color: Theme.of(context).primaryColor),
         ),
       );
     }
@@ -80,42 +81,42 @@ class _DashboardViewState extends State<DashboardView> {
             child: Text(
               locals.ballotBoxTxt,
               style: const TextStyle(fontWeight: FontWeight.w800),
-              textScaler: const TextScaler.linear(1.5),
+              textScaler: TextScaler.linear(isDesktop(context) ? 1.5 : 1.2),
             ),
           ),
           TableCell(
             child: Text(
               locals.mondayTxt,
               style: const TextStyle(fontWeight: FontWeight.w800),
-              textScaler: const TextScaler.linear(1.5),
+              textScaler: TextScaler.linear(isDesktop(context) ? 1.5 : 1.2),
             ),
           ),
           TableCell(
             child: Text(
               locals.tuesdayTxt,
               style: const TextStyle(fontWeight: FontWeight.w800),
-              textScaler: const TextScaler.linear(1.5),
+              textScaler: TextScaler.linear(isDesktop(context) ? 1.5 : 1.2),
             ),
           ),
           TableCell(
             child: Text(
               locals.wendsdayTxt,
               style: const TextStyle(fontWeight: FontWeight.w800),
-              textScaler: const TextScaler.linear(1.5),
+              textScaler: TextScaler.linear(isDesktop(context) ? 1.5 : 1.2),
             ),
           ),
           TableCell(
             child: Text(
               locals.thursdayTxt,
               style: const TextStyle(fontWeight: FontWeight.w800),
-              textScaler: const TextScaler.linear(1.5),
+              textScaler: TextScaler.linear(isDesktop(context) ? 1.5 : 1.2),
             ),
           ),
           TableCell(
             child: Text(
               locals.fridayTxt,
               style: const TextStyle(fontWeight: FontWeight.w800),
-              textScaler: const TextScaler.linear(1.5),
+              textScaler: TextScaler.linear(isDesktop(context) ? 1.5 : 1.2),
             ),
           ),
         ],
