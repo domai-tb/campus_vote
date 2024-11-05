@@ -1,0 +1,33 @@
+display_name: Campus Vote
+generic_name: Campus Vote
+package_name: campusvote
+
+icon: assets/images/stupa_logo_light.png
+
+maintainer:
+  name: Tim Barsch
+  email: tim.barsch@rub.de
+
+priority: optional
+section: x11
+installed_size: 1
+essential: false
+startup_notify: true
+
+postinstall_scripts:
+  - echo "Installed Campus Vote"
+postuninstall_scripts:
+  - echo "Uninstalled Campus Vote"
+
+keywords:
+  - Voting
+  - Wahl
+  - StuPa
+  - Students
+
+categories:
+  - Utility
+
+dependencies:
+  - libsecret-1-0
+  - libjsoncpp25

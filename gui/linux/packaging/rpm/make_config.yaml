@@ -1,0 +1,24 @@
+display_name: Campus Vote
+generic_name: Campus Vote
+
+icon: assets/images/stupa_logo_light.png
+summary: Campus Vote - Digital Voter Registry
+
+license: AGPLv3
+url: https://github.com/domai-tb/campus_vote
+
+packager: Tim Barsch
+packagerEmail: tim.barsch@rub.de
+vendor: Studierendenparlament der Ruhr-Universität Bochum
+
+keywords:
+  - Voting
+  - Wahl
+  - StuPa
+  - Students
+
+group: Application/Utility
+categories:
+  - Utility
+
+startup_notify: true
