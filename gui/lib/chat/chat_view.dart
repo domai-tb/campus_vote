@@ -41,7 +41,9 @@ class _ChatViewState extends State<ChatView> {
 
     return Chat(
       messages: chatMessages,
-      onSendPressed: (types.PartialText _) {},
+      onSendPressed: (types.PartialText txt) {
+        sendChatMessage(txt.text);
+      },
       user: user1,
       showUserNames: true,
       theme: DefaultChatTheme(

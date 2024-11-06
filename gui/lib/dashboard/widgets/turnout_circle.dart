@@ -15,14 +15,11 @@ class TurnoutCircle extends StatelessWidget {
       lineWidth: 13,
       animation: true,
       percent: totalVotes * (100 / totalVoters),
-      center: Column(
-        children: [
-          Text(
-            '${totalVotes * (100 / totalVoters)}%',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-          ),
-          Text(AppLocalizations.of(context)!.turnoutTxt),
-        ],
+      center: Center(
+        child: Text(
+          '${totalVotes * (100 / totalVoters)}%\n${AppLocalizations.of(context)!.turnoutTxt}',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+        ),
       ),
       circularStrokeCap: CircularStrokeCap.round,
       progressColor: Colors.green,
