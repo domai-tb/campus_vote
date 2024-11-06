@@ -2,7 +2,7 @@ display_name: Campus Vote
 generic_name: Campus Vote
 package_name: campusvote
 
-icon: assets/images/stupa_logo_light.png
+icon: assets/images/campus_vote_logo.png
 
 maintainer:
   name: Tim Barsch
