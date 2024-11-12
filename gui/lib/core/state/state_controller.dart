@@ -125,7 +125,6 @@ class CampusVoteState extends ChangeNotifier {
         if (setupData != null) {
           try {
             await stateServices.startingElection(setupData!);
-            await stateServices.createVoterDatabase(voterDataFile!);
             await changeState(CVStates.ELECTION_STARTED);
           } catch (e) {
             await changeState(CVStates.READY_TO_START_ELECTION);

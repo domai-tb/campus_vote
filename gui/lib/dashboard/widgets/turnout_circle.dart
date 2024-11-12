@@ -10,19 +10,22 @@ class TurnoutCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircularPercentIndicator(
-      radius: 100,
-      lineWidth: 13,
-      animation: true,
-      percent: totalVotes * (100 / totalVoters),
-      center: Center(
-        child: Text(
-          '${totalVotes * (100 / totalVoters)}%\n${AppLocalizations.of(context)!.turnoutTxt}',
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+    return Container(
+      alignment: Alignment.center,
+      child: CircularPercentIndicator(
+        radius: 100,
+        lineWidth: 13,
+        animation: true,
+        percent: totalVotes * (100 / totalVoters),
+        center: Center(
+          child: Text(
+            '${totalVotes * (100 / totalVoters)}%',
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+          ),
         ),
+        circularStrokeCap: CircularStrokeCap.round,
+        progressColor: Colors.green,
       ),
-      circularStrokeCap: CircularStrokeCap.round,
-      progressColor: Colors.green,
     );
   }
 }

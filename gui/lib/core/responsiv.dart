@@ -12,5 +12,5 @@ bool isTablet(BuildContext context) {
 
 /// Returns true if screen is in desktop mode
 bool isDesktop(BuildContext context) {
-  return MediaQuery.of(context).size.width >= 1100;
+  return MediaQuery.of(context).size.width >= 1100 && MediaQuery.of(context).size.height >= 800;
 }

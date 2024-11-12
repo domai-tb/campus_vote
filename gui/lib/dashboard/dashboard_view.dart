@@ -35,23 +35,43 @@ class _DashboardViewState extends State<DashboardView> {
       return FutureBuilder(
         future: updateStats(),
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-          return SingleChildScrollView(
-            child: Column(
+          if (snapshot.hasError) {
+            return Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TurnoutCircle(totalVoters: stats!.totalVoters.toInt(), totalVotes: stats!.totalVotes.toInt()),
+                const Icon(
+                  Icons.error_outline,
+                  color: Colors.red,
+                  size: 60,
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Table(
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: buildTable(),
-                  ),
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Text('Error: ${snapshot.error}'),
                 ),
               ],
-            ),
-          );
+            );
+          } else {
+            if (stats == null) {
+              return const Center(child: CircularProgressIndicator.adaptive());
+            } else {
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: TurnoutCircle(totalVoters: stats!.totalVoters.toInt(), totalVotes: stats!.totalVotes.toInt()),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Table(
+                        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                        children: buildTable(),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          }
         },
       );
     } else if (campusVoteState.electionIsReadyToStart()) {

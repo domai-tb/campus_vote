@@ -1,29 +1,33 @@
 output: ../build/dist/
 releases:
-  - name: dev
+  - name: linux
     jobs:
-      - name: release-dev-linux-deb
+      - name: deb
         package:
           platform: linux
           target: deb
-      - name: release-dev-linux-rpm
+      - name: rpm
         package:
           platform: linux
           target: rpm
-      - name: release-dev-linux-zip
+      - name: zip
         package:
           platform: linux
           target: zip
-      # Experimental:
-      # - name: release-dev-windows-msix
-      #   package:
-      #     platform: windows
-      #     target: msix
-      # - name: release-dev-windows-msix
-      #   package:
-      #     platform: windows
-      #     target: exe
-      # - name: release-dev-macos-dmg
-      #   package:
-      #     platform: macos
-      #     target: dmg
+  # Experimental:
+  # - name: windows
+  #   jobs:
+  #     - name: msix
+  #       package:
+  #         platform: windows
+  #         target: msix
+  #     - name: exe
+  #       package:
+  #         platform: windows
+  #         target: exe
+  # - name: macos
+  #   jobs:
+  #     - name: dmg
+  #       package:
+  #         platform: macos
+  #         target: dmg

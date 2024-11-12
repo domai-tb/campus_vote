@@ -4,7 +4,6 @@ import 'package:campus_vote/core/state/state_utils.dart';
 import 'package:campus_vote/header/header_service.dart';
 import 'package:campus_vote/header/header_utils.dart';
 import 'package:campus_vote/setup/setup_services.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
@@ -66,18 +65,14 @@ class _StartElectionPopupState extends State<StartElectionPopup> {
                 value: formData[FORMKEY_ENCRYPTION_PASSWORD],
               );
 
-              final FilePickerResult? voterFile = await FilePicker.platform.pickFiles();
+              // ignore: use_build_context_synchronously
+              Navigator.of(context).pop();
 
-              if (voterFile != null) {
-                // ignore: use_build_context_synchronously
-                Navigator.of(context).pop();
-
-                // Start CockroachDB Node and API
-                await campusVoteState.changeState(CVStates.STARTING_ELECTION, voterDataFile: voterFile);
-              }
+              // Start CockroachDB Node and API
+              await campusVoteState.changeState(CVStates.STARTING_ELECTION);
             }
           },
-          child: Text(AppLocalizations.of(context)!.startFormVoterFile),
+          child: const Text('Start'),
         ),
         TextButton(
           onPressed: () {

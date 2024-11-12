@@ -33,8 +33,30 @@ class SetupView extends StatelessWidget {
                 final FilePickerResult? voterFile = await FilePicker.platform.pickFiles();
 
                 if (voterFile != null) {
-                  // Add voter data to current database
-                  await stateServices.createVoterDatabase(voterFile);
+                  try {
+                    // Add voter data to current database
+                    await stateServices.createVoterDatabase(voterFile);
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Will create voters')),
+                    );
+                  } catch (e) {
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Row(
+                          children: [
+                            const Icon(
+                              Icons.warning_outlined,
+                              color: Colors.red,
+                            ),
+                            const SizedBox(width: 20),
+                            Text(e.toString()),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
                 }
               },
               icon: Icon(

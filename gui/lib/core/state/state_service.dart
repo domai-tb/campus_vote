@@ -38,17 +38,24 @@ class CampusVoteStateServices {
       onDone: () async {
         // skip CSV header
         for (final voter in voterData.sublist(1)) {
-          await client.createVoter(
-            Voter(
-              studentId: StudentId(num: parseLongInt(voter[0])), // Martrikelnummer
-              firstname: voter[1], // Vorname
-              lastname: voter[2], // Nachname
-              ballotBox: voter[3], // Urne
-              faculity: voter[4], // Fakultät
-              status: 0, // can be ignored / just for convenience
-            ),
-          );
+          try {
+            await client.createVoter(
+              Voter(
+                studentId: StudentId(num: parseLongInt(voter[0])), // Martrikelnummer
+                firstname: voter[1], // Vorname
+                lastname: voter[2], // Nachname
+                ballotBox: voter[3], // Urne
+                faculity: voter[4], // Fakultät
+                status: 0, // can be ignored / just for convenience
+              ),
+            );
+          } catch (e) {
+            rethrow;
+          }
         }
+      },
+      onError: (_) {
+        throw Exception('failed to read voter database');
       },
     );
   }
