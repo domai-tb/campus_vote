@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
 
 class TurnoutCircle extends StatelessWidget {
   final int totalVotes;

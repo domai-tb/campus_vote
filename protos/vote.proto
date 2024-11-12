@@ -13,10 +13,11 @@ message Voter {
   StudentId studentId = 3;
   string ballotBox = 4;
   string faculity = 5;
+  string shk = 6;
   // 0 => not voted
   // 1 => got ballot
   // 2 => voted
-  uint32 status = 6;
+  uint32 status = 7;
 }
 
 message VotingDayStats {

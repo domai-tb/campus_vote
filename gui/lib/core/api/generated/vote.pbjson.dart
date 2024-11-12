@@ -34,7 +34,8 @@ const Voter$json = {
     {'1': 'studentId', '3': 3, '4': 1, '5': 11, '6': '.CampusVote.StudentId', '10': 'studentId'},
     {'1': 'ballotBox', '3': 4, '4': 1, '5': 9, '10': 'ballotBox'},
     {'1': 'faculity', '3': 5, '4': 1, '5': 9, '10': 'faculity'},
-    {'1': 'status', '3': 6, '4': 1, '5': 13, '10': 'status'},
+    {'1': 'shk', '3': 6, '4': 1, '5': 9, '10': 'shk'},
+    {'1': 'status', '3': 7, '4': 1, '5': 13, '10': 'status'},
   ],
 };
 
@@ -43,7 +44,7 @@ final $typed_data.Uint8List voterDescriptor = $convert.base64Decode(
     'CgVWb3RlchIcCglmaXJzdG5hbWUYASABKAlSCWZpcnN0bmFtZRIaCghsYXN0bmFtZRgCIAEoCV'
     'IIbGFzdG5hbWUSMwoJc3R1ZGVudElkGAMgASgLMhUuQ2FtcHVzVm90ZS5TdHVkZW50SWRSCXN0'
     'dWRlbnRJZBIcCgliYWxsb3RCb3gYBCABKAlSCWJhbGxvdEJveBIaCghmYWN1bGl0eRgFIAEoCV'
-    'IIZmFjdWxpdHkSFgoGc3RhdHVzGAYgASgNUgZzdGF0dXM=');
+    'IIZmFjdWxpdHkSEAoDc2hrGAYgASgJUgNzaGsSFgoGc3RhdHVzGAcgASgNUgZzdGF0dXM=');
 
 @$core.Deprecated('Use votingDayStatsDescriptor instead')
 const VotingDayStats$json = {

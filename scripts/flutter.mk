@@ -25,3 +25,8 @@ localization:
 run:
 	@cd ../gui/ && \
 	flutter run
+
+build-linux:
+	@cd ../gui/ && \
+	flutter build linux --release
+	flutter build linux --debug

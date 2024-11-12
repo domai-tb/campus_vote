@@ -55,6 +55,7 @@ func (cvapi *CampusVoteAPI) CreateVoter(c context.Context, v *Voter) (*StatusCod
 		StudentId: int(v.StudentId.Num),
 		BallotBox: v.BallotBox,
 		Faculity:  v.Faculity,
+		SHK:       v.Shk,
 	})
 
 	if err == nil {
@@ -85,6 +86,7 @@ func (cvapi *CampusVoteAPI) GetVoterByStudentId(c context.Context, id *StudentId
 			StudentId: &StudentId{Num: int64(student.StudentId)},
 			BallotBox: student.BallotBox,
 			Faculity:  student.Faculity,
+			Shk:       student.SHK,
 			Status:    uint32(status),
 		}, nil
 	}

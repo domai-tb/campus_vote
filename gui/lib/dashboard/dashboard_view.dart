@@ -81,6 +81,8 @@ class _DashboardViewState extends State<DashboardView> {
           style: theme.textTheme.headlineMedium,
         ),
       );
+    } else if (campusVoteState.apiIsStarting()) {
+      return const Center(child: CircularProgressIndicator());
     } else {
       return Center(
         child: Text(

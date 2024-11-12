@@ -41,6 +41,10 @@ class CampusVoteState extends ChangeNotifier {
     return state != CVStates.ELECTION_STARTED;
   }
 
+  bool apiIsStarting() {
+    return state == CVStates.STARTING_ELECTION;
+  }
+
   bool apiHasStarted() {
     return state == CVStates.ELECTION_STARTED;
   }

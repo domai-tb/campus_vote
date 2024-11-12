@@ -46,6 +46,7 @@ class CampusVoteStateServices {
                 lastname: voter[2], // Nachname
                 ballotBox: voter[3], // Urne
                 faculity: voter[4], // Fakultät
+                shk: voter[5], // SHK Wahlkreis
                 status: 0, // can be ignored / just for convenience
               ),
             );

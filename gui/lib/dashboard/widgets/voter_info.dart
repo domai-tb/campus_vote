@@ -77,6 +77,18 @@ class VoterInfoPopUp extends StatelessWidget {
               ),
               Row(
                 children: [
+                  Text('${AppLocalizations.of(context)!.voterInfoSHK}:     '),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [Text(voter.shk)],
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(),
+              Row(
+                children: [
                   Text('${AppLocalizations.of(context)!.voterInfoVoterStatus}:      '),
                   Expanded(
                     child: Row(

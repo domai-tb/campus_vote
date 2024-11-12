@@ -11,6 +11,7 @@ type Voter struct {
 	StudentId int    `gorm:"primaryKey;type:bytes;<-:create"`
 	BallotBox string `gorm:"<-:create"`
 	Faculity  string `gorm:"<-:create"`
+	SHK       string `gorm:"<-:create"`
 }
 
 type EncVoter struct {
@@ -19,6 +20,7 @@ type EncVoter struct {
 	StudentId []byte `gorm:"primaryKey;type:bytes;<-:create"`
 	BallotBox []byte `gorm:"type:bytes;<-:create"`
 	Faculity  []byte `gorm:"type:bytes;<-:create"`
+	SHK       []byte `gorm:"type:bytes;<-:create"`
 }
 
 type VoterStatus struct {
@@ -41,6 +43,7 @@ func (cvdb *CampusVoteStorage) encryptVoter(v Voter) EncVoter {
 		StudentId: cvdb.encryptWithoutNonce(strconv.Itoa(v.StudentId)),
 		BallotBox: cvdb.encrypt(v.BallotBox),
 		Faculity:  cvdb.encrypt(v.Faculity),
+		SHK:       cvdb.encrypt(v.SHK),
 	}
 }
 
@@ -76,12 +79,18 @@ func (cvdb *CampusVoteStorage) decryptVoter(v EncVoter) (Voter, error) {
 		return Voter{}, fmt.Errorf("failed to decrypt voter: %w", err)
 	}
 
+	shk, err := cvdb.decrypt(v.SHK)
+	if err != nil {
+		return Voter{}, fmt.Errorf("failed to decrypt voter: %w", err)
+	}
+
 	return Voter{
 		Firstname: firstname,
 		Lastname:  lastname,
 		StudentId: id,
 		BallotBox: ballotBox,
 		Faculity:  faculity,
+		SHK:       shk,
 	}, nil
 }
 

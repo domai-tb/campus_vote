@@ -27,6 +27,7 @@
   "voterInfoStudentId": "Student-ID",
   "voterInfoVoterStatus": "Status",
   "voterInfoVoterTitle": "Student",
+  "voterInfoSHK": "SHK-Constituency",
   "voterStatusGreen": "Allowed to vote",
   "voterStatusAmber": "Allready got a ballot!",
   "voterStatusRed": "Allready voted",
