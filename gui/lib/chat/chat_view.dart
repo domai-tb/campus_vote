@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:campus_vote/core/api/client.dart';
 import 'package:campus_vote/core/injection.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
+import 'package:campus_vote/setup/setup_services.dart';
 import 'package:campus_vote/themes/theme_dark.dart';
 import 'package:campus_vote/widgets/button.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
 
 class ChatView extends StatefulWidget {
   final campusVoteState = serviceLocator<CampusVoteState>();
+  final setupServices = serviceLocator<SetupServices>();
 
   ChatView({super.key});
 
@@ -23,6 +25,7 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   late CampusVoteAPIClient client;
+  late bool isElectionCommittee = false;
 
   Timer? updateTimer;
   List<types.Message> chatMessages = [];
@@ -38,7 +41,9 @@ class _ChatViewState extends State<ChatView> {
 
     return Chat(
       messages: chatMessages,
-      onSendPressed: (types.PartialText _) {},
+      onSendPressed: (types.PartialText txt) {
+        sendChatMessage(txt.text);
+      },
       user: user1,
       showUserNames: true,
       theme: DefaultChatTheme(
@@ -88,24 +93,26 @@ class _ChatViewState extends State<ChatView> {
           ],
         );
       },
-      customBottomWidget: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Text(locals.chatSendAMessage),
-          ),
-          SizedBox(
-            height: 150,
-            child: ListView(
+      customBottomWidget: isElectionCommittee
+          ? null
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CVButton(labelText: locals.chatNeedMoreBallots, onPressed: () => sendChatMessage(locals.chatNeedMoreBallots)),
-                CVButton(labelText: locals.chatHaveAProblem, onPressed: () => sendChatMessage(locals.chatHaveAProblem)),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(locals.chatSendAMessage),
+                ),
+                SizedBox(
+                  height: 150,
+                  child: ListView(
+                    children: [
+                      CVButton(labelText: locals.chatNeedMoreBallots, onPressed: () => sendChatMessage(locals.chatNeedMoreBallots)),
+                      CVButton(labelText: locals.chatHaveAProblem, onPressed: () => sendChatMessage(locals.chatHaveAProblem)),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -119,6 +126,11 @@ class _ChatViewState extends State<ChatView> {
   void initState() {
     super.initState();
     startTimer();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final isEC = await widget.setupServices.isElectionCommittee();
+      setState(() => isElectionCommittee = isEC);
+    });
   }
 
   // For the testing purposes, you should probably use https://pub.dev/packages/uuid.

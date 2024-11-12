@@ -4,7 +4,7 @@ description: "Campus Vote - A digital election registry."
 # Prevent accidental publishing to pub.dev.
 publish_to: "none"
 
-version: 0.0.1
+version: 1.0.0
 
 environment:
   sdk: ">=3.3.4 <4.0.0"

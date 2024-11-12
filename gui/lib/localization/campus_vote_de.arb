@@ -50,5 +50,6 @@
   "tuesdayTxt": "Dienstag",
   "wendsdayTxt": "Mittwoch",
   "thursdayTxt": "Donnerstag",
-  "fridayTxt": "Freitag"
+  "fridayTxt": "Freitag",
+  "turnoutTxt": "Wahlbeteiligung"
 }

@@ -1,8 +1,8 @@
 display_name: Campus Vote
 generic_name: Campus Vote
 
-icon: assets/images/stupa_logo_light.png
-summary: Campus Vote - Digital Voter Registry
+icon: assets/images/campus_vote_logo.png
+summary: Campus Vote - A digital election registry.
 
 license: AGPLv3
 url: https://github.com/domai-tb/campus_vote

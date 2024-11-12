@@ -39,6 +39,7 @@ class MainFrameState extends State<MainFrame> {
               child: Column(
                 children: [
                   Expanded(
+                    flex: isDesktop(context) ? 1 : 2,
                     child: Center(child: HeaderView()),
                   ),
                   Expanded(
@@ -52,10 +53,10 @@ class MainFrameState extends State<MainFrame> {
                           case 1:
                             return SetupView();
                           case 2:
-                            if (isDesktop(context)) {
-                              return SettingsView();
-                            } else {
+                            if (!isDesktop(context) && campusVoteState.apiHasStarted()) {
                               return ChatView();
+                            } else {
+                              return SettingsView();
                             }
                           case 3:
                             // case can only appear in non desktop

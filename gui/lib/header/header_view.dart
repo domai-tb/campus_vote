@@ -1,4 +1,5 @@
 import 'package:campus_vote/core/injection.dart';
+import 'package:campus_vote/core/responsiv.dart';
 import 'package:campus_vote/core/state/state_controller.dart';
 import 'package:campus_vote/header/widgets/start_election_popup.dart';
 import 'package:campus_vote/widgets/button.dart';
@@ -20,7 +21,7 @@ class HeaderView extends StatelessWidget {
             flex: 8,
             child: Text(
               AppLocalizations.of(context)!.titleTxt,
-              textScaler: const TextScaler.linear(2),
+              textScaler: TextScaler.linear(isDesktop(context) ? 2 : 1.25),
               style: TextStyle(color: Theme.of(context).primaryColor),
             ),
           ),
