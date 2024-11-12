@@ -15,7 +15,7 @@ class HeaderServices {
   final String cockroachBin = getCockroachBinPath();
   final String campusVoteBin = getCampusVoteBinPath();
 
-  final storage = serviceLocator<FlutterSecureStorage>();
+  final secureStorage = serviceLocator<FlutterSecureStorage>();
   final setupServices = serviceLocator<SetupServices>();
 
   final rootIsolateToken = RootIsolateToken.instance!; // Isolate root identifier for multi threading
@@ -48,6 +48,7 @@ class HeaderServices {
 
     final cockroachCerts = await getCockroachCertsDir();
     final apiCerts = await getAPICertsDir();
+    final password = await secureStorage.read(key: STORAGEKEY_DATABASE_ENCRYPTION_KEY);
 
     unawaited(
       // Restarts the API if child process dies for some reason
@@ -68,6 +69,7 @@ class HeaderServices {
               '-m=${path.join(apiCerts, 'api-ca.crt')}',
               '-s=${path.join(apiCerts, 'api-server.crt')}',
               '-o=${path.join(apiCerts, 'api-server.key')}',
+              password!, // function is only called after creating entry
             ],
           );
         }
@@ -121,7 +123,7 @@ class HeaderServices {
       }),
     );
 
-    final isInitialized = await storage.read(key: STORAGEKEY_INITIALIZED_COCKROACH_NODE);
+    final isInitialized = await secureStorage.read(key: STORAGEKEY_INITIALIZED_COCKROACH_NODE);
     if (isInitialized == null && await setupServices.isElectionCommittee()) {
       final initCluster = await Isolate.run(
         () async {
@@ -139,7 +141,7 @@ class HeaderServices {
       );
 
       if (initCluster.exitCode == 0) {
-        await storage.write(
+        await secureStorage.write(
           key: STORAGEKEY_INITIALIZED_COCKROACH_NODE,
           value: 'true',
         );

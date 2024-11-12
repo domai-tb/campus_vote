@@ -23,9 +23,15 @@ func main() {
 
 	// Campus Vote API
 	var startCmd = &cobra.Command{
-		Use:   "start",
+		Use:   "start <flags> 'password'",
 		Short: "Start Campus Vote API server",
+		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+
+			if len(args) != 1 {
+				panic("exactly one argument")
+			}
+
 			username, _ := cmd.Flags().GetString("cockroach-username")
 			host, _ := cmd.Flags().GetString("cockroach-host")
 			port, _ := cmd.Flags().GetInt("cockroach-port")
@@ -54,7 +60,7 @@ func main() {
 				ServerKey:    serverKey,
 			}
 
-			cvdb := storage.New(config, "123456")
+			cvdb := storage.New(config, args[0])
 			api.New(*cvdb)
 		},
 	}
