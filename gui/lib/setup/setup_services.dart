@@ -254,32 +254,30 @@ class SetupServices {
     final bbDir = await getCVDataDir();
     final ballotboxFile = await getBallotBoxDataFilePath();
 
-    if (!Directory(bbDir).existsSync()) {
-      // Store decryption password
-      await crypto.storeExportEncKey(boxDataPassword);
+    // Store decryption password
+    await crypto.storeExportEncKey(boxDataPassword);
 
-      // Copy encrypted file to application dir
-      if (filePath != ballotboxFile) {
-        await File(ballotboxFile).writeAsBytes(
-          await File(filePath).readAsBytes(),
-        );
-      }
-
-      // decrypt and unpack ballotbox data
-      final bbPath = await crypto.decryptAndUnzipFile(ballotboxFile, appCVDir);
-
-      // Rename output directory to "ballotbox"
-      try {
-        Directory(bbPath).renameSync(bbDir);
-      } catch (e) {
-        // Directory.rename will throw an excpetion on
-        // non empty directory at deletion time. Do it manually.
-        Directory(bbPath).deleteSync(recursive: true);
-      }
-
-      // Set file permissions for keys correctly
-      await changeAllFilePermissions(await getAppDirPath(), '600');
+    // Copy encrypted file to application dir
+    if (filePath != ballotboxFile) {
+      await File(ballotboxFile).writeAsBytes(
+        await File(filePath).readAsBytes(),
+      );
     }
+
+    // decrypt and unpack ballotbox data
+    final bbPath = await crypto.decryptAndUnzipFile(ballotboxFile, appCVDir);
+
+    // Rename output directory to "ballotbox"
+    try {
+      Directory(bbPath).renameSync(bbDir);
+    } catch (e) {
+      // Directory.rename will throw an excpetion on
+      // non empty directory at deletion time. Do it manually.
+      Directory(bbPath).deleteSync(recursive: true);
+    }
+
+    // Set file permissions for keys correctly
+    await changeAllFilePermissions(await getAppDirPath(), '600');
 
     final setupData = await loadSetupSettingsModelFromFile('$bbDir${pathSep}settings.json');
 
