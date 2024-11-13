@@ -11,10 +11,11 @@ type VotingDay struct {
 }
 
 type BallotBox struct {
-	BallotBoxName string `gorm:"primaryKey"`
-	TotalVotes    int
-	TotalVoters   int
-	VotesPerDay   [5]VotingDay `gorm:"type:bytes;serializer:json"`
+	BallotBoxName       string `gorm:"primaryKey"`
+	TotalVotes          int
+	TotalVoters         int
+	VotesPerDay         [5]VotingDay `gorm:"type:bytes;serializer:json"`
+	VotesFromOtherBoxes int          // votes of voters with another "home" ballotbox
 }
 
 type ElectionStats struct {
@@ -29,9 +30,10 @@ func newStats(year int, ballotboxes []string) *ElectionStats {
 	var boxes []BallotBox
 	for _, box := range ballotboxes {
 		boxes = append(boxes, BallotBox{
-			BallotBoxName: box,
-			TotalVotes:    0,
-			TotalVoters:   0,
+			BallotBoxName:       box,
+			TotalVotes:          0,
+			TotalVoters:         0,
+			VotesFromOtherBoxes: 0,
 			VotesPerDay: [5]VotingDay{
 				{ // monday
 					Total:     0,
@@ -99,7 +101,7 @@ func (cvdb *CampusVoteStorage) countVoter(voter Voter) {
 	db.Save(stats)
 }
 
-func (cvdb *CampusVoteStorage) countVote(ballotbox string, isAfternoon bool) {
+func (cvdb *CampusVoteStorage) countVote(votesBallotbox string, studentBallotbox string, isAfternoon bool) {
 	db := cvdb.conf.GetCockroachDB()
 
 	var stats ElectionStats
@@ -108,7 +110,7 @@ func (cvdb *CampusVoteStorage) countVote(ballotbox string, isAfternoon bool) {
 	// find correct ballot box
 	var indexOfBoxToCount int
 	for i, box := range stats.BallotBoxs {
-		if box.BallotBoxName == ballotbox {
+		if box.BallotBoxName == votesBallotbox {
 			indexOfBoxToCount = i
 		}
 	}
@@ -119,6 +121,10 @@ func (cvdb *CampusVoteStorage) countVote(ballotbox string, isAfternoon bool) {
 	stats.TotalVotes += 1
 	stats.BallotBoxs[indexOfBoxToCount].TotalVotes += 1
 	stats.BallotBoxs[indexOfBoxToCount].VotesPerDay[currentDay].Total += 1
+
+	if studentBallotbox != votesBallotbox {
+		stats.BallotBoxs[indexOfBoxToCount].VotesFromOtherBoxes += 1
+	}
 
 	if !isAfternoon {
 		stats.BallotBoxs[indexOfBoxToCount].VotesPerDay[currentDay].Morning += 1

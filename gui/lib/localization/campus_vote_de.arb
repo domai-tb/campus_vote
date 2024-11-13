@@ -20,6 +20,7 @@
   "errMsgInvalidFile": "Keine Valide Campus Vote Datei.",
   "chatSendAMessage": "Sende einen Nachricht:",
   "chatNeedMoreBallots": "Benötigen mehr Wahlzettel!",
+  "chatNeedJumper": "Benötigen einen Springer",
   "chatHaveAProblem": "Es gibt probleme an unserer Urne. Wahlausschuss bitte melden.",
   "chatEmptyPlaceholder": "Keine Nachrichten",
   "voterInfoLastname": "Nachname",
@@ -27,6 +28,8 @@
   "voterInfoStudentId": "Martrikelnummer",
   "voterInfoVoterStatus": "Status",
   "voterInfoVoterTitle": "Wähler:in",
+  "voterInfoVotersTitle": "Wähler:innen",
+  "voterInfoVotesTitle": "Stimmabgaben",
   "voterInfoSHK": "SHK-Wahlkreis",
   "voterStatusGreen": "Wahlberechtigt",
   "voterStatusAmber": "Hat bereits einen Wahlzettel bekommen!",
@@ -52,5 +55,7 @@
   "wendsdayTxt": "Mittwoch",
   "thursdayTxt": "Donnerstag",
   "fridayTxt": "Freitag",
-  "turnoutTxt": "Wahlbeteiligung"
+  "turnoutTxt": "Wahlbeteiligung",
+  "dashboardTableInfoTxt": "Die dick-gedruckte Zahl gibt die Stimmen für die jeweilige Wahlurne an dem jeweiligen Tag an. Die kleineren Zahlen stehen für die Stimmen die Vormittags (vordere Zahl) oder Nachmittags (hintere Zahl) abgegeben wurden.",
+  "dashboardAvrgOtherVotesTxt": "Durchschnittliche Prozentzahl der Wähler:innen die an einer anderen Wahlurne wählen als der ihnen zugeteilten Wahlurne"
 }

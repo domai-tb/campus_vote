@@ -28,12 +28,16 @@ type VoterStatus struct {
 	// 0 = student hasn't voted yet
 	// 1 = student got a ballot
 	// 2 = student has voted
-	Status int `gorm:"<-:create"`
+	Status           int    `gorm:"<-:create"`
+	StudentBallotbox string `gorm:"<-:create"`
+	VotedBallotbox   string `gorm:"<-:create"`
 }
 
 type EncVoterStatus struct {
-	StudentId []byte `gorm:"primaryKey;<-:create;type:bytes"`
-	Status    []byte `gorm:"<-:create;type:bytes"`
+	StudentId        []byte `gorm:"primaryKey;<-:create;type:bytes"`
+	Status           []byte `gorm:"<-:create;type:bytes"`
+	StudentBallotbox []byte `gorm:"<-:create;type:bytes"`
+	VotedBallotbox   []byte `gorm:"<-:create;type:bytes"`
 }
 
 func (cvdb *CampusVoteStorage) encryptVoter(v Voter) EncVoter {
@@ -96,8 +100,10 @@ func (cvdb *CampusVoteStorage) decryptVoter(v EncVoter) (Voter, error) {
 
 func (cvdb *CampusVoteStorage) encryptVoterStatus(v VoterStatus) EncVoterStatus {
 	return EncVoterStatus{
-		StudentId: cvdb.encryptWithoutNonce(strconv.Itoa(v.StudentId)),
-		Status:    cvdb.encrypt(strconv.Itoa(v.Status)),
+		StudentId:        cvdb.encryptWithoutNonce(strconv.Itoa(v.StudentId)),
+		Status:           cvdb.encrypt(strconv.Itoa(v.Status)),
+		StudentBallotbox: cvdb.encrypt(v.StudentBallotbox),
+		VotedBallotbox:   cvdb.encrypt(v.VotedBallotbox),
 	}
 }
 
@@ -123,8 +129,20 @@ func (cvdb *CampusVoteStorage) decryptVoterStatus(v EncVoterStatus) (VoterStatus
 		return VoterStatus{}, fmt.Errorf("failed to decode voter status: %w", err)
 	}
 
+	studentBallotbox, err := cvdb.decrypt(v.StudentBallotbox)
+	if err != nil {
+		return VoterStatus{}, fmt.Errorf("failed to decrypt voter status: %w", err)
+	}
+
+	votedBallotbox, err := cvdb.decrypt(v.VotedBallotbox)
+	if err != nil {
+		return VoterStatus{}, fmt.Errorf("failed to decrypt voter status: %w", err)
+	}
+
 	return VoterStatus{
-		StudentId: id,
-		Status:    status,
+		StudentId:        id,
+		Status:           status,
+		StudentBallotbox: studentBallotbox,
+		VotedBallotbox:   votedBallotbox,
 	}, nil
 }

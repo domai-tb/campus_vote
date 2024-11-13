@@ -25,22 +25,23 @@ class StudentId extends $pb.GeneratedMessage {
     return $result;
   }
   StudentId._() : super();
-  factory StudentId.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(i, r);
+  factory StudentId.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory StudentId.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'StudentId',
-      package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'StudentId', package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
     ..aInt64(1, _omitFieldNames ? '' : 'num')
-    ..hasRequiredFields = false;
+    ..hasRequiredFields = false
+  ;
 
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
   StudentId clone() => StudentId()..mergeFromMessage(this);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
   StudentId copyWith(void Function(StudentId) updates) => super.copyWith((message) => updates(message as StudentId)) as StudentId;
 
   $pb.BuilderInfo get info_ => _i;
@@ -56,10 +57,7 @@ class StudentId extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $fixnum.Int64 get num => $_getI64(0);
   @$pb.TagNumber(1)
-  set num($fixnum.Int64 v) {
-    $_setInt64(0, v);
-  }
-
+  set num($fixnum.Int64 v) { $_setInt64(0, v); }
   @$pb.TagNumber(1)
   $core.bool hasNum() => $_has(0);
   @$pb.TagNumber(1)
@@ -101,12 +99,10 @@ class Voter extends $pb.GeneratedMessage {
     return $result;
   }
   Voter._() : super();
-  factory Voter.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(i, r);
+  factory Voter.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory Voter.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Voter',
-      package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Voter', package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'firstname')
     ..aOS(2, _omitFieldNames ? '' : 'lastname')
     ..aOM<StudentId>(3, _omitFieldNames ? '' : 'studentId', protoName: 'studentId', subBuilder: StudentId.create)
@@ -114,15 +110,18 @@ class Voter extends $pb.GeneratedMessage {
     ..aOS(5, _omitFieldNames ? '' : 'faculity')
     ..aOS(6, _omitFieldNames ? '' : 'shk')
     ..a<$core.int>(7, _omitFieldNames ? '' : 'status', $pb.PbFieldType.OU3)
-    ..hasRequiredFields = false;
+    ..hasRequiredFields = false
+  ;
 
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
   Voter clone() => Voter()..mergeFromMessage(this);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
   Voter copyWith(void Function(Voter) updates) => super.copyWith((message) => updates(message as Voter)) as Voter;
 
   $pb.BuilderInfo get info_ => _i;
@@ -138,10 +137,7 @@ class Voter extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.String get firstname => $_getSZ(0);
   @$pb.TagNumber(1)
-  set firstname($core.String v) {
-    $_setString(0, v);
-  }
-
+  set firstname($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
   $core.bool hasFirstname() => $_has(0);
   @$pb.TagNumber(1)
@@ -150,10 +146,7 @@ class Voter extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.String get lastname => $_getSZ(1);
   @$pb.TagNumber(2)
-  set lastname($core.String v) {
-    $_setString(1, v);
-  }
-
+  set lastname($core.String v) { $_setString(1, v); }
   @$pb.TagNumber(2)
   $core.bool hasLastname() => $_has(1);
   @$pb.TagNumber(2)
@@ -162,10 +155,7 @@ class Voter extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   StudentId get studentId => $_getN(2);
   @$pb.TagNumber(3)
-  set studentId(StudentId v) {
-    setField(3, v);
-  }
-
+  set studentId(StudentId v) { setField(3, v); }
   @$pb.TagNumber(3)
   $core.bool hasStudentId() => $_has(2);
   @$pb.TagNumber(3)
@@ -176,10 +166,7 @@ class Voter extends $pb.GeneratedMessage {
   @$pb.TagNumber(4)
   $core.String get ballotBox => $_getSZ(3);
   @$pb.TagNumber(4)
-  set ballotBox($core.String v) {
-    $_setString(3, v);
-  }
-
+  set ballotBox($core.String v) { $_setString(3, v); }
   @$pb.TagNumber(4)
   $core.bool hasBallotBox() => $_has(3);
   @$pb.TagNumber(4)
@@ -188,10 +175,7 @@ class Voter extends $pb.GeneratedMessage {
   @$pb.TagNumber(5)
   $core.String get faculity => $_getSZ(4);
   @$pb.TagNumber(5)
-  set faculity($core.String v) {
-    $_setString(4, v);
-  }
-
+  set faculity($core.String v) { $_setString(4, v); }
   @$pb.TagNumber(5)
   $core.bool hasFaculity() => $_has(4);
   @$pb.TagNumber(5)
@@ -200,10 +184,7 @@ class Voter extends $pb.GeneratedMessage {
   @$pb.TagNumber(6)
   $core.String get shk => $_getSZ(5);
   @$pb.TagNumber(6)
-  set shk($core.String v) {
-    $_setString(5, v);
-  }
-
+  set shk($core.String v) { $_setString(5, v); }
   @$pb.TagNumber(6)
   $core.bool hasShk() => $_has(5);
   @$pb.TagNumber(6)
@@ -215,10 +196,7 @@ class Voter extends $pb.GeneratedMessage {
   @$pb.TagNumber(7)
   $core.int get status => $_getIZ(6);
   @$pb.TagNumber(7)
-  set status($core.int v) {
-    $_setUnsignedInt32(6, v);
-  }
-
+  set status($core.int v) { $_setUnsignedInt32(6, v); }
   @$pb.TagNumber(7)
   $core.bool hasStatus() => $_has(6);
   @$pb.TagNumber(7)
@@ -244,26 +222,26 @@ class VotingDayStats extends $pb.GeneratedMessage {
     return $result;
   }
   VotingDayStats._() : super();
-  factory VotingDayStats.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(i, r);
+  factory VotingDayStats.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory VotingDayStats.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'VotingDayStats',
-      package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'VotingDayStats', package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
     ..aInt64(1, _omitFieldNames ? '' : 'totalVotes', protoName: 'totalVotes')
     ..aInt64(2, _omitFieldNames ? '' : 'morningVotes', protoName: 'morningVotes')
     ..aInt64(3, _omitFieldNames ? '' : 'afternoonVotes', protoName: 'afternoonVotes')
-    ..hasRequiredFields = false;
+    ..hasRequiredFields = false
+  ;
 
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
   VotingDayStats clone() => VotingDayStats()..mergeFromMessage(this);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-      'Will be removed in next major version')
-  VotingDayStats copyWith(void Function(VotingDayStats) updates) =>
-      super.copyWith((message) => updates(message as VotingDayStats)) as VotingDayStats;
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  VotingDayStats copyWith(void Function(VotingDayStats) updates) => super.copyWith((message) => updates(message as VotingDayStats)) as VotingDayStats;
 
   $pb.BuilderInfo get info_ => _i;
 
@@ -278,10 +256,7 @@ class VotingDayStats extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $fixnum.Int64 get totalVotes => $_getI64(0);
   @$pb.TagNumber(1)
-  set totalVotes($fixnum.Int64 v) {
-    $_setInt64(0, v);
-  }
-
+  set totalVotes($fixnum.Int64 v) { $_setInt64(0, v); }
   @$pb.TagNumber(1)
   $core.bool hasTotalVotes() => $_has(0);
   @$pb.TagNumber(1)
@@ -290,10 +265,7 @@ class VotingDayStats extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $fixnum.Int64 get morningVotes => $_getI64(1);
   @$pb.TagNumber(2)
-  set morningVotes($fixnum.Int64 v) {
-    $_setInt64(1, v);
-  }
-
+  set morningVotes($fixnum.Int64 v) { $_setInt64(1, v); }
   @$pb.TagNumber(2)
   $core.bool hasMorningVotes() => $_has(1);
   @$pb.TagNumber(2)
@@ -302,10 +274,7 @@ class VotingDayStats extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   $fixnum.Int64 get afternoonVotes => $_getI64(2);
   @$pb.TagNumber(3)
-  set afternoonVotes($fixnum.Int64 v) {
-    $_setInt64(2, v);
-  }
-
+  set afternoonVotes($fixnum.Int64 v) { $_setInt64(2, v); }
   @$pb.TagNumber(3)
   $core.bool hasAfternoonVotes() => $_has(2);
   @$pb.TagNumber(3)
@@ -317,6 +286,7 @@ class BallotBoxStats extends $pb.GeneratedMessage {
     $core.String? name,
     $fixnum.Int64? totalVotes,
     $fixnum.Int64? totalVoters,
+    $fixnum.Int64? votesFromOtherBoxes,
     $core.Iterable<VotingDayStats>? votesPerDay,
   }) {
     final $result = create();
@@ -329,34 +299,37 @@ class BallotBoxStats extends $pb.GeneratedMessage {
     if (totalVoters != null) {
       $result.totalVoters = totalVoters;
     }
+    if (votesFromOtherBoxes != null) {
+      $result.votesFromOtherBoxes = votesFromOtherBoxes;
+    }
     if (votesPerDay != null) {
       $result.votesPerDay.addAll(votesPerDay);
     }
     return $result;
   }
   BallotBoxStats._() : super();
-  factory BallotBoxStats.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(i, r);
+  factory BallotBoxStats.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory BallotBoxStats.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'BallotBoxStats',
-      package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'BallotBoxStats', package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'name')
     ..aInt64(2, _omitFieldNames ? '' : 'totalVotes', protoName: 'totalVotes')
     ..aInt64(3, _omitFieldNames ? '' : 'totalVoters', protoName: 'totalVoters')
-    ..pc<VotingDayStats>(4, _omitFieldNames ? '' : 'votesPerDay', $pb.PbFieldType.PM,
-        protoName: 'votesPerDay', subBuilder: VotingDayStats.create)
-    ..hasRequiredFields = false;
+    ..aInt64(4, _omitFieldNames ? '' : 'VotesFromOtherBoxes', protoName: 'VotesFromOtherBoxes')
+    ..pc<VotingDayStats>(5, _omitFieldNames ? '' : 'votesPerDay', $pb.PbFieldType.PM, protoName: 'votesPerDay', subBuilder: VotingDayStats.create)
+    ..hasRequiredFields = false
+  ;
 
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
   BallotBoxStats clone() => BallotBoxStats()..mergeFromMessage(this);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-      'Will be removed in next major version')
-  BallotBoxStats copyWith(void Function(BallotBoxStats) updates) =>
-      super.copyWith((message) => updates(message as BallotBoxStats)) as BallotBoxStats;
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  BallotBoxStats copyWith(void Function(BallotBoxStats) updates) => super.copyWith((message) => updates(message as BallotBoxStats)) as BallotBoxStats;
 
   $pb.BuilderInfo get info_ => _i;
 
@@ -371,10 +344,7 @@ class BallotBoxStats extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.String get name => $_getSZ(0);
   @$pb.TagNumber(1)
-  set name($core.String v) {
-    $_setString(0, v);
-  }
-
+  set name($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
   $core.bool hasName() => $_has(0);
   @$pb.TagNumber(1)
@@ -383,10 +353,7 @@ class BallotBoxStats extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $fixnum.Int64 get totalVotes => $_getI64(1);
   @$pb.TagNumber(2)
-  set totalVotes($fixnum.Int64 v) {
-    $_setInt64(1, v);
-  }
-
+  set totalVotes($fixnum.Int64 v) { $_setInt64(1, v); }
   @$pb.TagNumber(2)
   $core.bool hasTotalVotes() => $_has(1);
   @$pb.TagNumber(2)
@@ -395,17 +362,23 @@ class BallotBoxStats extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   $fixnum.Int64 get totalVoters => $_getI64(2);
   @$pb.TagNumber(3)
-  set totalVoters($fixnum.Int64 v) {
-    $_setInt64(2, v);
-  }
-
+  set totalVoters($fixnum.Int64 v) { $_setInt64(2, v); }
   @$pb.TagNumber(3)
   $core.bool hasTotalVoters() => $_has(2);
   @$pb.TagNumber(3)
   void clearTotalVoters() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.List<VotingDayStats> get votesPerDay => $_getList(3);
+  $fixnum.Int64 get votesFromOtherBoxes => $_getI64(3);
+  @$pb.TagNumber(4)
+  set votesFromOtherBoxes($fixnum.Int64 v) { $_setInt64(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasVotesFromOtherBoxes() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearVotesFromOtherBoxes() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.List<VotingDayStats> get votesPerDay => $_getList(4);
 }
 
 class ElectionStats extends $pb.GeneratedMessage {
@@ -431,28 +404,27 @@ class ElectionStats extends $pb.GeneratedMessage {
     return $result;
   }
   ElectionStats._() : super();
-  factory ElectionStats.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(i, r);
+  factory ElectionStats.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory ElectionStats.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ElectionStats',
-      package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ElectionStats', package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
     ..a<$core.int>(1, _omitFieldNames ? '' : 'electionYear', $pb.PbFieldType.O3, protoName: 'electionYear')
     ..aInt64(2, _omitFieldNames ? '' : 'totalVotes', protoName: 'totalVotes')
     ..aInt64(3, _omitFieldNames ? '' : 'totalVoters', protoName: 'totalVoters')
-    ..pc<BallotBoxStats>(4, _omitFieldNames ? '' : 'ballotBoxes', $pb.PbFieldType.PM,
-        protoName: 'ballotBoxes', subBuilder: BallotBoxStats.create)
-    ..hasRequiredFields = false;
+    ..pc<BallotBoxStats>(4, _omitFieldNames ? '' : 'ballotBoxes', $pb.PbFieldType.PM, protoName: 'ballotBoxes', subBuilder: BallotBoxStats.create)
+    ..hasRequiredFields = false
+  ;
 
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
   ElectionStats clone() => ElectionStats()..mergeFromMessage(this);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-      'Will be removed in next major version')
-  ElectionStats copyWith(void Function(ElectionStats) updates) =>
-      super.copyWith((message) => updates(message as ElectionStats)) as ElectionStats;
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ElectionStats copyWith(void Function(ElectionStats) updates) => super.copyWith((message) => updates(message as ElectionStats)) as ElectionStats;
 
   $pb.BuilderInfo get info_ => _i;
 
@@ -467,10 +439,7 @@ class ElectionStats extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.int get electionYear => $_getIZ(0);
   @$pb.TagNumber(1)
-  set electionYear($core.int v) {
-    $_setSignedInt32(0, v);
-  }
-
+  set electionYear($core.int v) { $_setSignedInt32(0, v); }
   @$pb.TagNumber(1)
   $core.bool hasElectionYear() => $_has(0);
   @$pb.TagNumber(1)
@@ -479,10 +448,7 @@ class ElectionStats extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $fixnum.Int64 get totalVotes => $_getI64(1);
   @$pb.TagNumber(2)
-  set totalVotes($fixnum.Int64 v) {
-    $_setInt64(1, v);
-  }
-
+  set totalVotes($fixnum.Int64 v) { $_setInt64(1, v); }
   @$pb.TagNumber(2)
   $core.bool hasTotalVotes() => $_has(1);
   @$pb.TagNumber(2)
@@ -491,10 +457,7 @@ class ElectionStats extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   $fixnum.Int64 get totalVoters => $_getI64(2);
   @$pb.TagNumber(3)
-  set totalVoters($fixnum.Int64 v) {
-    $_setInt64(2, v);
-  }
-
+  set totalVoters($fixnum.Int64 v) { $_setInt64(2, v); }
   @$pb.TagNumber(3)
   $core.bool hasTotalVoters() => $_has(2);
   @$pb.TagNumber(3)
@@ -519,23 +482,24 @@ class VoteReq extends $pb.GeneratedMessage {
     return $result;
   }
   VoteReq._() : super();
-  factory VoteReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(i, r);
+  factory VoteReq.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory VoteReq.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'VoteReq',
-      package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'VoteReq', package: const $pb.PackageName(_omitMessageNames ? '' : 'CampusVote'), createEmptyInstance: create)
     ..aOM<StudentId>(1, _omitFieldNames ? '' : 'studentId', protoName: 'studentId', subBuilder: StudentId.create)
     ..aOB(2, _omitFieldNames ? '' : 'isAfternoon', protoName: 'isAfternoon')
-    ..hasRequiredFields = false;
+    ..hasRequiredFields = false
+  ;
 
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
   VoteReq clone() => VoteReq()..mergeFromMessage(this);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-      'Will be removed in next major version')
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
   VoteReq copyWith(void Function(VoteReq) updates) => super.copyWith((message) => updates(message as VoteReq)) as VoteReq;
 
   $pb.BuilderInfo get info_ => _i;
@@ -551,10 +515,7 @@ class VoteReq extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   StudentId get studentId => $_getN(0);
   @$pb.TagNumber(1)
-  set studentId(StudentId v) {
-    setField(1, v);
-  }
-
+  set studentId(StudentId v) { setField(1, v); }
   @$pb.TagNumber(1)
   $core.bool hasStudentId() => $_has(0);
   @$pb.TagNumber(1)
@@ -565,15 +526,13 @@ class VoteReq extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.bool get isAfternoon => $_getBF(1);
   @$pb.TagNumber(2)
-  set isAfternoon($core.bool v) {
-    $_setBool(1, v);
-  }
-
+  set isAfternoon($core.bool v) { $_setBool(1, v); }
   @$pb.TagNumber(2)
   $core.bool hasIsAfternoon() => $_has(1);
   @$pb.TagNumber(2)
   void clearIsAfternoon() => clearField(2);
 }
+
 
 const _omitFieldNames = $core.bool.fromEnvironment('protobuf.omit_field_names');
 const _omitMessageNames = $core.bool.fromEnvironment('protobuf.omit_message_names');

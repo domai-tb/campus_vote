@@ -103,10 +103,11 @@ class _ChatViewState extends State<ChatView> {
                   child: Text(locals.chatSendAMessage),
                 ),
                 SizedBox(
-                  height: 150,
+                  height: 175,
                   child: ListView(
                     children: [
                       CVButton(labelText: locals.chatNeedMoreBallots, onPressed: () => sendChatMessage(locals.chatNeedMoreBallots)),
+                      CVButton(labelText: locals.chatNeedJumper, onPressed: () => sendChatMessage(locals.chatNeedJumper)),
                       CVButton(labelText: locals.chatHaveAProblem, onPressed: () => sendChatMessage(locals.chatHaveAProblem)),
                     ],
                   ),

@@ -6,6 +6,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"io"
+	"math/big"
 )
 
 func (cvdb *CampusVoteStorage) encrypt(plaintext string) []byte {
@@ -61,4 +62,9 @@ func createCipher(key [32]byte) cipher.AEAD {
 	}
 
 	return cipher
+}
+
+func getRandInt() int {
+	retVal, _ := rand.Int(rand.Reader, big.NewInt(10))
+	return int(retVal.Int64())
 }

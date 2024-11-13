@@ -9,6 +9,7 @@ import 'package:campus_vote/dashboard/widgets/turnout_circle.dart';
 import 'package:campus_vote/dashboard/widgets/vote_count.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
+import 'package:intl/intl.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -60,11 +61,42 @@ class _DashboardViewState extends State<DashboardView> {
                       padding: const EdgeInsets.all(10),
                       child: TurnoutCircle(totalVoters: stats!.totalVoters.toInt(), totalVotes: stats!.totalVotes.toInt()),
                     ),
+                    const Divider(),
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: Table(
                         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                         children: buildTable(),
+                      ),
+                    ),
+                    const Divider(),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Text(locals!.dashboardTableInfoTxt),
+                          ),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Text('${locals.voterInfoVotesTitle}: ${stats!.totalVotes}'),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Text('${locals.voterInfoVotersTitle}: ${stats!.totalVoters}'),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Text(
+                                  '${locals.dashboardAvrgOtherVotesTxt}: ${getAveragePercentageOfVotesFromOtherBoxes(stats!)}%',
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
                     ),
                   ],
@@ -91,6 +123,18 @@ class _DashboardViewState extends State<DashboardView> {
         ),
       );
     }
+  }
+
+  String getAveragePercentageOfVotesFromOtherBoxes(ElectionStats stats) {
+    double retVal = 0;
+
+    for (final box in stats.ballotBoxes) {
+      if (box.totalVotes.toInt() != 0) {
+        retVal += box.votesFromOtherBoxes.toInt() * (100 / box.totalVotes.toInt());
+      }
+    }
+
+    return NumberFormat('0.##').format(retVal / stats.ballotBoxes.length);
   }
 
   List<TableRow> buildTable() {

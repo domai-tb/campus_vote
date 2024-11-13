@@ -20,6 +20,7 @@
   "errMsgInvalidFile": "No valid Campus Vote file.",
   "chatSendAMessage": "Send a message:",
   "chatNeedMoreBallots": "Need more ballots!",
+  "chatNeedJumper": "Need more helping hands!",
   "chatHaveAProblem": "Problem at our balllot box. Please come to us election committee.",
   "chatEmptyPlaceholder": "No Messages",
   "voterInfoLastname": "Lastname",
@@ -27,6 +28,8 @@
   "voterInfoStudentId": "Student-ID",
   "voterInfoVoterStatus": "Status",
   "voterInfoVoterTitle": "Student",
+  "voterInfoVotersTitle": "Voters",
+  "voterInfoVotesTitle": "Votes",
   "voterInfoSHK": "SHK-Constituency",
   "voterStatusGreen": "Allowed to vote",
   "voterStatusAmber": "Allready got a ballot!",
@@ -52,5 +55,7 @@
   "wendsdayTxt": "Wendsday",
   "thursdayTxt": "Thursday",
   "fridayTxt": "Friday",
-  "turnoutTxt": "Vote Turnout"
+  "turnoutTxt": "Vote Turnout",
+  "dashboardTableInfoTxt": "The number in thick print indicates the votes for the respective ballot box on the respective day. The smaller numbers represent the votes cast in the morning (front number) or afternoon (back number).",
+  "dashboardAvrgOtherVotesTxt": "Average percentage of voters who vote at a ballot box other than their assigned ballot box"
 }

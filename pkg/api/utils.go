@@ -105,10 +105,11 @@ func storageStatsToElectionStats(s storage.ElectionStats) *ElectionStats {
 		}
 
 		boxStats = append(boxStats, &BallotBoxStats{
-			Name:        box.BallotBoxName,
-			TotalVotes:  int64(box.TotalVotes),
-			TotalVoters: int64(box.TotalVoters),
-			VotesPerDay: votingDays,
+			Name:                box.BallotBoxName,
+			TotalVotes:          int64(box.TotalVotes),
+			TotalVoters:         int64(box.TotalVoters),
+			VotesPerDay:         votingDays,
+			VotesFromOtherBoxes: int64(box.VotesFromOtherBoxes),
 		})
 	}
 

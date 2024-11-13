@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class TurnoutCircle extends StatelessWidget {
@@ -15,10 +16,10 @@ class TurnoutCircle extends StatelessWidget {
         radius: 100,
         lineWidth: 13,
         animation: true,
-        percent: totalVotes * (100 / totalVoters),
+        percent: totalVotes * (1 / totalVoters),
         center: Center(
           child: Text(
-            '${totalVotes * (100 / totalVoters)}%',
+            '${NumberFormat('0.##').format(totalVotes * (100 / totalVoters))}%',
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
           ),
         ),

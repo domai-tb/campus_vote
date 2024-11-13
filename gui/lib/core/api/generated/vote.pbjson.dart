@@ -69,15 +69,17 @@ const BallotBoxStats$json = {
     {'1': 'name', '3': 1, '4': 1, '5': 9, '10': 'name'},
     {'1': 'totalVotes', '3': 2, '4': 1, '5': 3, '10': 'totalVotes'},
     {'1': 'totalVoters', '3': 3, '4': 1, '5': 3, '10': 'totalVoters'},
-    {'1': 'votesPerDay', '3': 4, '4': 3, '5': 11, '6': '.CampusVote.VotingDayStats', '10': 'votesPerDay'},
+    {'1': 'VotesFromOtherBoxes', '3': 4, '4': 1, '5': 3, '10': 'VotesFromOtherBoxes'},
+    {'1': 'votesPerDay', '3': 5, '4': 3, '5': 11, '6': '.CampusVote.VotingDayStats', '10': 'votesPerDay'},
   ],
 };
 
 /// Descriptor for `BallotBoxStats`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List ballotBoxStatsDescriptor = $convert.base64Decode(
     'Cg5CYWxsb3RCb3hTdGF0cxISCgRuYW1lGAEgASgJUgRuYW1lEh4KCnRvdGFsVm90ZXMYAiABKA'
-    'NSCnRvdGFsVm90ZXMSIAoLdG90YWxWb3RlcnMYAyABKANSC3RvdGFsVm90ZXJzEjwKC3ZvdGVz'
-    'UGVyRGF5GAQgAygLMhouQ2FtcHVzVm90ZS5Wb3RpbmdEYXlTdGF0c1ILdm90ZXNQZXJEYXk=');
+    'NSCnRvdGFsVm90ZXMSIAoLdG90YWxWb3RlcnMYAyABKANSC3RvdGFsVm90ZXJzEjAKE1ZvdGVz'
+    'RnJvbU90aGVyQm94ZXMYBCABKANSE1ZvdGVzRnJvbU90aGVyQm94ZXMSPAoLdm90ZXNQZXJEYX'
+    'kYBSADKAsyGi5DYW1wdXNWb3RlLlZvdGluZ0RheVN0YXRzUgt2b3Rlc1BlckRheQ==');
 
 @$core.Deprecated('Use electionStatsDescriptor instead')
 const ElectionStats$json = {

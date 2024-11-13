@@ -1,13 +1,15 @@
 import 'package:campus_vote/core/api/client.dart';
 import 'package:campus_vote/core/api/generated/vote.pb.dart';
 import 'package:campus_vote/core/injection.dart';
+import 'package:campus_vote/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/campus_vote_localizations.dart';
 
 class VoterInfoPopUp extends StatelessWidget {
   final Voter voter;
+  final settingsController = serviceLocator<SettingsController>();
 
-  const VoterInfoPopUp({super.key, required this.voter});
+  VoterInfoPopUp({super.key, required this.voter});
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +111,7 @@ class VoterInfoPopUp extends StatelessWidget {
           TextButton(
             onPressed: () async {
               final client = serviceLocator<CampusVoteAPIClient>();
-              await client.votingStep(voter.studentId.num.toString()).then((msg) {
+              await client.votingStep(voter.studentId.num.toString(), isAfternoon: settingsController.isAfternoon).then((msg) {
                 // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(msg)),

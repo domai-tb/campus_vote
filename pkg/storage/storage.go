@@ -110,10 +110,34 @@ func (cvdb *CampusVoteStorage) RegisterVotingStep(v Voter, box string, isAfterno
 	case 1:
 		// allready got ballot
 		db.Where("student_id = ?", cvdb.encryptWithoutNonce(strconv.Itoa(v.StudentId))).Delete(&EncVoterStatus{})
-		db.Create(cvdb.encryptVoterStatus(VoterStatus{StudentId: v.StudentId, Status: 2}))
-		cvdb.countVote(box, isAfternoon)
+
+		// store "home" ballotbox of voter in 10% of all voting cases
+		var voterStatus VoterStatus
+		if getRandInt()%10 == 0 {
+			voterStatus = VoterStatus{
+				StudentId:        v.StudentId,
+				Status:           2,
+				StudentBallotbox: v.BallotBox,
+				VotedBallotbox:   box,
+			}
+		} else {
+			voterStatus = VoterStatus{
+				StudentId:        v.StudentId,
+				Status:           2,
+				StudentBallotbox: "-",
+				VotedBallotbox:   "-",
+			}
+		}
+
+		db.Create(cvdb.encryptVoterStatus(voterStatus))
+		cvdb.countVote(box, v.BallotBox, isAfternoon)
 	case 0:
-		db.Create(cvdb.encryptVoterStatus(VoterStatus{StudentId: v.StudentId, Status: 1}))
+		db.Create(cvdb.encryptVoterStatus(VoterStatus{
+			StudentId:        v.StudentId,
+			Status:           1,
+			StudentBallotbox: "-",
+			VotedBallotbox:   "-",
+		}))
 	}
 
 	return nil
