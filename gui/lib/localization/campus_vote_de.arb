@@ -56,6 +56,7 @@
   "thursdayTxt": "Donnerstag",
   "fridayTxt": "Freitag",
   "turnoutTxt": "Wahlbeteiligung",
+  "createVotersTxt": "Wähler:innen werden angelegt.",
   "dashboardTableInfoTxt": "Die dick-gedruckte Zahl gibt die Stimmen für die jeweilige Wahlurne an dem jeweiligen Tag an. Die kleineren Zahlen stehen für die Stimmen die Vormittags (vordere Zahl) oder Nachmittags (hintere Zahl) abgegeben wurden.",
   "dashboardAvrgOtherVotesTxt": "Durchschnittliche Prozentzahl der Wähler:innen die an einer anderen Wahlurne wählen als der ihnen zugeteilten Wahlurne"
 }

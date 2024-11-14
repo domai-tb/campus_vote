@@ -7,6 +7,7 @@ import 'package:campus_vote/core/state/state_controller.dart';
 import 'package:campus_vote/core/state/state_service.dart';
 import 'package:campus_vote/core/state/state_utils.dart';
 import 'package:campus_vote/core/utils/path_utils.dart';
+import 'package:campus_vote/setup/setup_services.dart';
 import 'package:campus_vote/setup/widgets/popup_dialog.dart';
 import 'package:campus_vote/setup/widgets/setup_form.dart';
 import 'package:campus_vote/setup/widgets/setup_info.dart';
@@ -18,120 +19,134 @@ class SetupView extends StatelessWidget {
   final campusVoteState = serviceLocator<CampusVoteState>();
   final stateServices = serviceLocator<CampusVoteStateServices>();
   final crypto = serviceLocator<Crypto>();
+  final setupServices = serviceLocator<SetupServices>();
 
   SetupView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.setupTitle),
-        actions: [
-          if (campusVoteState.state == CVStates.ELECTION_STARTED)
-            IconButton(
-              onPressed: () async {
-                final FilePickerResult? voterFile = await FilePicker.platform.pickFiles();
+    final locals = AppLocalizations.of(context)!;
 
-                if (voterFile != null) {
-                  try {
-                    // Add voter data to current database
-                    await stateServices.createVoterDatabase(voterFile);
-                    // ignore: use_build_context_synchronously
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Will create voters')),
-                    );
-                  } catch (e) {
-                    // ignore: use_build_context_synchronously
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Row(
-                          children: [
-                            const Icon(
-                              Icons.warning_outlined,
-                              color: Colors.red,
-                            ),
-                            const SizedBox(width: 20),
-                            Text(e.toString()),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                }
-              },
-              icon: Icon(
-                Icons.add_reaction_outlined,
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(128),
-              ),
-              tooltip: AppLocalizations.of(context)!.tooltipLoadSetup,
-            ),
-          if (campusVoteState.state == CVStates.AWAITING_SETUP)
-            IconButton(
-              onPressed: () async {
-                final FilePickerResult? boxDataFile = await FilePicker.platform.pickFiles();
-                if (boxDataFile != null) {
-                  final boxDataPassword = await showDialog(
-                    // ignore: use_build_context_synchronously
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (_) => const PasswordDialog(),
-                  );
+    return FutureBuilder(
+      initialData: false,
+      future: setupServices.isElectionCommittee(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator.adaptive());
+        }
 
-                  try {
-                    await campusVoteState.changeState(
-                      CVStates.INITIALIZING_ELECTION,
-                      boxDataFile: boxDataFile,
-                      boxDataPassword: boxDataPassword,
-                    );
-                  } catch (e) {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Row(
-                            children: [
-                              const Icon(
-                                Icons.warning_outlined,
-                                color: Colors.red,
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(locals.setupTitle),
+            actions: [
+              if (campusVoteState.state == CVStates.ELECTION_STARTED)
+                if (snapshot.data!)
+                  IconButton(
+                    onPressed: () async {
+                      final FilePickerResult? voterFile = await FilePicker.platform.pickFiles();
+
+                      if (voterFile != null) {
+                        try {
+                          // Add voter data to current database
+                          await stateServices.createVoterDatabase(voterFile);
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(locals.createVotersTxt)),
+                          );
+                        } catch (e) {
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.warning_outlined,
+                                    color: Colors.red,
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Text(e.toString()),
+                                ],
                               ),
-                              const SizedBox(width: 20),
-                              Text(e.toString()),
-                            ],
-                          ),
-                        ),
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    icon: Icon(
+                      Icons.add_reaction_outlined,
+                      color: Theme.of(context).colorScheme.onSurface.withAlpha(128),
+                    ),
+                    tooltip: locals.tooltipLoadSetup,
+                  ),
+              if (campusVoteState.state == CVStates.AWAITING_SETUP)
+                IconButton(
+                  onPressed: () async {
+                    final FilePickerResult? boxDataFile = await FilePicker.platform.pickFiles();
+                    if (boxDataFile != null) {
+                      final boxDataPassword = await showDialog(
+                        // ignore: use_build_context_synchronously
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) => const PasswordDialog(),
                       );
+
+                      try {
+                        await campusVoteState.changeState(
+                          CVStates.INITIALIZING_ELECTION,
+                          boxDataFile: boxDataFile,
+                          boxDataPassword: boxDataPassword,
+                        );
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.warning_outlined,
+                                    color: Colors.red,
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Text(e.toString()),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                      }
                     }
-                  }
-                }
-              },
-              icon: Icon(
-                Icons.add_card_outlined,
-                color: Theme.of(context).colorScheme.tertiary,
-              ),
-              tooltip: AppLocalizations.of(context)!.tooltipLoadSetup,
-            ),
-          if (campusVoteState.state != CVStates.AWAITING_SETUP)
-            IconButton(
-              onPressed: () async {
-                serviceLocator.unregister<CampusVoteAPIClient>();
-                await Future.wait([
-                  Directory(await getAppDirPath()).delete(recursive: true),
-                  crypto.storage.deleteAll(),
-                  campusVoteState.changeState(CVStates.AWAITING_SETUP),
-                ]);
-              },
-              icon: Icon(
-                Icons.delete_forever_outlined,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              tooltip: AppLocalizations.of(context)!.tooltipDeleteSetup,
-            ),
-          const SizedBox(width: 20),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: getStateWidget(context),
-      ),
+                  },
+                  icon: Icon(
+                    Icons.add_card_outlined,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  tooltip: locals.tooltipLoadSetup,
+                ),
+              if (campusVoteState.state != CVStates.AWAITING_SETUP)
+                IconButton(
+                  onPressed: () async {
+                    serviceLocator.unregister<CampusVoteAPIClient>();
+                    await Future.wait([
+                      Directory(await getAppDirPath()).delete(recursive: true),
+                      crypto.storage.deleteAll(),
+                      campusVoteState.changeState(CVStates.AWAITING_SETUP),
+                    ]);
+                  },
+                  icon: Icon(
+                    Icons.delete_forever_outlined,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  tooltip: locals.tooltipDeleteSetup,
+                ),
+              const SizedBox(width: 20),
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16),
+            child: getStateWidget(context),
+          ),
+        );
+      },
     );
   }
 

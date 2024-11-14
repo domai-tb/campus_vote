@@ -56,6 +56,7 @@
   "thursdayTxt": "Thursday",
   "fridayTxt": "Friday",
   "turnoutTxt": "Vote Turnout",
+  "createVotersTxt": "Will create voters.",
   "dashboardTableInfoTxt": "The number in thick print indicates the votes for the respective ballot box on the respective day. The smaller numbers represent the votes cast in the morning (front number) or afternoon (back number).",
   "dashboardAvrgOtherVotesTxt": "Average percentage of voters who vote at a ballot box other than their assigned ballot box"
 }

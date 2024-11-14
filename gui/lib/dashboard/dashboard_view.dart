@@ -51,7 +51,7 @@ class _DashboardViewState extends State<DashboardView> {
               ],
             );
           } else {
-            if (stats == null) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator.adaptive());
             } else {
               return SingleChildScrollView(
@@ -95,7 +95,7 @@ class _DashboardViewState extends State<DashboardView> {
                                 ),
                               ),
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),
