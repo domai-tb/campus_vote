@@ -38,20 +38,24 @@ class CampusVoteStateServices {
       onDone: () async {
         // skip CSV header
         for (final voter in voterData.sublist(1)) {
-          try {
-            await client.createVoter(
-              Voter(
-                studentId: StudentId(num: parseLongInt(voter[0])), // Martrikelnummer
-                firstname: voter[1], // Vorname
-                lastname: voter[2], // Nachname
-                ballotBox: voter[3], // Urne
-                faculity: voter[4], // Fakultät
-                shk: voter[5], // SHK Wahlkreis
-                status: 0, // can be ignored / just for convenience
-              ),
-            );
-          } catch (e) {
-            rethrow;
+          final statusMsg = await client.createVoter(
+            Voter(
+              studentId: StudentId(num: parseLongInt(voter[0])), // Martrikelnummer
+              firstname: voter[1], // Vorname
+              lastname: voter[2], // Nachname
+              ballotBox: voter[3], // Urne
+              faculity: voter[4], // Fakultät
+              shk: voter[5], // SHK Wahlkreis
+              status: 0, // can be ignored / just for convenience
+            ),
+          );
+
+          if (statusMsg.status != 0) {
+            //! Print voter to stdout if it could not be created.
+            //! This error should be handled manually.
+
+            // ignore: avoid_print
+            print('[ERROR] ${statusMsg.msg}: $voter');
           }
         }
       },
