@@ -17,3 +17,7 @@ After starting Campus Vote, or in more detail the CockroachDB and the gRPC API w
 ## Ballotbox Setup
 
 Just import the correct `*.zip.enc`-file within the setup screen.
+
+---
+
+Created: 19.11.2024 | Last Update: 19.11.2024

@@ -73,4 +73,4 @@ Build the desktop application for your system by running the following commands:
 
 ---
 
-Created: 10.06.2024 | Last Update: 10.06.2024
+Created: 10.06.2024 | Last Update: 19.11.2024

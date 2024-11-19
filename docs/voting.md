@@ -38,3 +38,7 @@ sequenceDiagram
         Poll Worker-)Student: Nope!
     end
 ```
+
+---
+
+Created: 19.11.2024 | Last Update: 19.11.2024

@@ -6,3 +6,7 @@ Only the election committee has the ability to write freely, all ballot boxes ha
 #### Chat view
 
 ![](./media/chat.png)
+
+---
+
+Created: 19.11.2024 | Last Update: 19.11.2024
