@@ -1,4 +1,6 @@
-# Campus Vote
+<p align="center">
+    <img src="./docs/media/campus_vote_logo.png">
+</p>
 
 This project aims to develop a digital electoral directory for the student elections conducted at Ruhr-University Bochum. It is important to note that the scope of this initiative does not encompass the creation of a standalone digital voting system. Rather, Campus Vote serves as a centralized voter registry system.
 
