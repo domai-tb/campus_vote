@@ -64,12 +64,12 @@ Now, the interactive terminal client opens a authenticated gRPC mTLS session to 
 
 ### GUI / Flutter UI
 
-![](./media/gui-preview.2024-06-10.png)
-
 Build the desktop application for your system by running the following commands:
 
 1. Change to `gui`: `cd ../gui`
 2. Run Flutter: `flutter run -d <Linux|Windows|MacOS>`
+
+![](./media/gui.png)
 
 ---
 
