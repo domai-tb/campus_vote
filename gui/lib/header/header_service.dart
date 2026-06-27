@@ -18,7 +18,7 @@ class HeaderServices {
   final secureStorage = serviceLocator<FlutterSecureStorage>();
   final setupServices = serviceLocator<SetupServices>();
 
-  final rootIsolateToken = RootIsolateToken.instance!; // Isolate root identifier for multi threading
+  final rootIsolateToken = RootIsolateToken.instance; // Isolate root identifier for multi threading
 
   /// Starts the Campus Vote API.
   ///

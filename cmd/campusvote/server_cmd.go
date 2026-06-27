@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -10,16 +8,10 @@ import (
 	"github.com/domai-tb/campus_vote/pkg/api"
 	"github.com/domai-tb/campus_vote/pkg/core"
 	"github.com/domai-tb/campus_vote/pkg/storage"
-	util "github.com/domai-tb/campus_vote/pkg/util"
 )
 
-func main() {
+func getServerCmd() *cobra.Command {
 	var ballotBoxes []string
-
-	var rootCmd = &cobra.Command{
-		Use:   "campusvote",
-		Short: "Campus Vote CLI",
-	}
 
 	// Campus Vote API
 	var startCmd = &cobra.Command{
@@ -61,7 +53,7 @@ func main() {
 			}
 
 			cvdb := storage.New(config, args[0])
-			api.New(*cvdb)
+			api.NewServer(*cvdb)
 		},
 	}
 
@@ -93,43 +85,5 @@ func main() {
 	startCmd.MarkFlagRequired("campus_vote-serverCert")
 	startCmd.MarkFlagRequired("campus_vote-serverKey")
 
-	// Generate command
-	var generateCmd = &cobra.Command{
-		Use:   "gen",
-		Short: "Generate TLS specific keys, certificates and so on",
-	}
-
-	var genTLSCmd = &cobra.Command{
-		Use:   "tls",
-		Short: "Perform TLS Certificate generation",
-		Run: func(cmd *cobra.Command, args []string) {
-			ballotBoxes, _ := cmd.Flags().GetStringSlice("ballotbox")
-			boxDir, _ := cmd.Flags().GetString("ballotbox_directory")
-			committeeDir, _ := cmd.Flags().GetString("committee_directory")
-
-			if err := util.GenerateTLSCerts(ballotBoxes, boxDir, committeeDir); err != nil {
-				panic(err)
-			}
-		},
-	}
-
-	// TLS Flags
-	genTLSCmd.Flags().StringSliceP("ballotbox", "b", []string{}, "The ballot boxes to vote (comma-separated list)")
-	genTLSCmd.Flags().StringP("ballotbox_directory", "d", ".", "The directory to generate all ballot box certificates.")
-	genTLSCmd.Flags().StringP("committee_directory", "c", ".", "The directory to generate committee certificates.")
-
-	genTLSCmd.MarkFlagRequired("ballotbox")
-	genTLSCmd.MarkFlagRequired("ballotbox_directory")
-	genTLSCmd.MarkFlagRequired("committee_directory")
-
-	// Add utility commands
-	generateCmd.AddCommand(genTLSCmd)
-
-	// Add subcommands to root command
-	rootCmd.AddCommand(startCmd, generateCmd)
-
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	return startCmd
 }

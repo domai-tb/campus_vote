@@ -13,13 +13,13 @@ import (
 	"github.com/domai-tb/campus_vote/pkg/storage"
 )
 
-type CampusVoteAPI struct {
+type CampusVoteAPIServer struct {
 	cvdb storage.CampusVoteStorage
 	UnimplementedVoteServer
 	UnimplementedChatServer
 }
 
-func New(cvdb storage.CampusVoteStorage) {
+func NewServer(cvdb storage.CampusVoteStorage) {
 	lis, err := net.Listen("tcp", "127.0.0.1:21797")
 	if err != nil {
 		panic(err)
@@ -36,7 +36,7 @@ func New(cvdb storage.CampusVoteStorage) {
 		grpc.Creds(tlsCred),
 	)
 
-	campusVoteService := &CampusVoteAPI{cvdb: cvdb}
+	campusVoteService := &CampusVoteAPIServer{cvdb: cvdb}
 
 	// Register gRPC services
 	RegisterVoteServer(gRPCServer, campusVoteService)
@@ -48,7 +48,7 @@ func New(cvdb storage.CampusVoteStorage) {
 	}
 }
 
-func (cvapi *CampusVoteAPI) CreateVoter(c context.Context, v *Voter) (*StatusCode, error) {
+func (cvapi *CampusVoteAPIServer) CreateVoter(c context.Context, v *Voter) (*StatusCode, error) {
 	err := cvapi.cvdb.CreateNewVoter(storage.Voter{
 		Firstname: v.Firstname,
 		Lastname:  v.Lastname,
@@ -70,7 +70,7 @@ func (cvapi *CampusVoteAPI) CreateVoter(c context.Context, v *Voter) (*StatusCod
 	return statusUnexpectedError(err.Error()), err
 }
 
-func (cvapi *CampusVoteAPI) GetVoterByStudentId(c context.Context, id *StudentId) (*Voter, error) {
+func (cvapi *CampusVoteAPIServer) GetVoterByStudentId(c context.Context, id *StudentId) (*Voter, error) {
 	student, err := cvapi.cvdb.GetVoterByStudentId(int(id.Num))
 
 	if err != nil {
@@ -94,7 +94,7 @@ func (cvapi *CampusVoteAPI) GetVoterByStudentId(c context.Context, id *StudentId
 	return nil, err
 }
 
-func (cvapi *CampusVoteAPI) RegisterVotingStep(c context.Context, req *VoteReq) (*StatusCode, error) {
+func (cvapi *CampusVoteAPIServer) RegisterVotingStep(c context.Context, req *VoteReq) (*StatusCode, error) {
 
 	// Get client that calls the gRPC
 	boxName, err := getBoxNameFromTLSCert(c)
@@ -115,7 +115,7 @@ func (cvapi *CampusVoteAPI) RegisterVotingStep(c context.Context, req *VoteReq) 
 	return statusUnexpectedError(err.Error()), err
 }
 
-func (cvapi *CampusVoteAPI) CheckVoterStatus(c context.Context, id *StudentId) (*StatusCode, error) {
+func (cvapi *CampusVoteAPIServer) CheckVoterStatus(c context.Context, id *StudentId) (*StatusCode, error) {
 	status, err := cvapi.cvdb.CheckVoterStatusByStudentId(int(id.Num))
 
 	if err != nil {
@@ -134,12 +134,12 @@ func (cvapi *CampusVoteAPI) CheckVoterStatus(c context.Context, id *StudentId) (
 	return statusUnexpectedError(fmt.Sprintf("received undefinied voter status: %d", status)), nil
 }
 
-func (cvapi *CampusVoteAPI) GetElectionStats(context.Context, *Void) (*ElectionStats, error) {
+func (cvapi *CampusVoteAPIServer) GetElectionStats(context.Context, *Void) (*ElectionStats, error) {
 	stats := cvapi.cvdb.GetElectionStats()
 	return storageStatsToElectionStats(stats), nil
 }
 
-func (cvapi *CampusVoteAPI) SendChatMessage(c context.Context, msg *ChatMessage) (*StatusCode, error) {
+func (cvapi *CampusVoteAPIServer) SendChatMessage(c context.Context, msg *ChatMessage) (*StatusCode, error) {
 	// Get client that calls the gRPC
 	boxName, err := getBoxNameFromTLSCert(c)
 	if err != nil {
@@ -159,7 +159,7 @@ func (cvapi *CampusVoteAPI) SendChatMessage(c context.Context, msg *ChatMessage)
 	return statusOk(), nil
 }
 
-func (cvapi *CampusVoteAPI) ReadChatHistory(context.Context, *Void) (*ChatHistory, error) {
+func (cvapi *CampusVoteAPIServer) ReadChatHistory(context.Context, *Void) (*ChatHistory, error) {
 	var chatHistory []*ChatMessage
 
 	chat, err := cvapi.cvdb.ReadChat()

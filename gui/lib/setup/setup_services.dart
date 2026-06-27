@@ -17,7 +17,7 @@ class SetupServices {
   final crypto = serviceLocator<Crypto>();
   final storage = serviceLocator<FlutterSecureStorage>();
 
-  final rootIsolateToken = RootIsolateToken.instance!; // Isolate root identifier for multi threading
+  final rootIsolateToken = RootIsolateToken.instance; // Isolate root identifier for multi threading
 
   /// Creates the election data that is required to use CockRoachDB.
   ///

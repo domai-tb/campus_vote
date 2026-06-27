@@ -25,7 +25,7 @@ class SetupInfoState extends State<SetupInfo> {
     }
     loadBallotBoxData();
 
-    final data = widget.campusVoteState.setupData!;
+    final data = widget.campusVoteState.setupData;
     final electionStart = data.electionPeriod.start;
     final electionEnd = data.electionPeriod.end;
     final electionPeriod = '${electionStart.day}.${electionStart.month}. - ${electionEnd.day}.${electionEnd.month}.${electionEnd.year}';

@@ -1,4 +1,4 @@
-CAMPUSVOTE_CMD = ../cmd/campus_vote/main.go
+CAMPUSVOTE_CMD = ../cmd/campusvote/*.go
 CAMPUSVOTE_CMD_NAME = campusvote
 
 BUILD_PATH_DEBUG = ../build/debug/
